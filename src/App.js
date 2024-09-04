@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode'; // Using jwtDecode
 
 function App() {
   const [user, setUser] = useState(null);
 
   const handleSuccess = (credentialResponse) => {
     console.log('Credential Response:', credentialResponse);
-    const decodedToken = jwtDecode(credentialResponse.credential);
+    const decodedToken = jwtDecode(credentialResponse.credential); // Use jwtDecode
     console.log('Decoded Token:', decodedToken);
     setUser(decodedToken);
+  };
+
+  const handleLogout = () => {
+    setUser(null);
   };
 
   return (
@@ -20,6 +24,9 @@ function App() {
           <div style={styles.userInfo}>
             <h2>Welcome, {user.name}</h2>
             <p>Email: {user.email}</p>
+            <button style={styles.button} onClick={handleLogout}>
+              Sign Out
+            </button>
           </div>
         ) : (
           <GoogleLogin
@@ -59,6 +66,16 @@ const styles = {
   },
   userInfo: {
     fontSize: '18px',
+    marginTop: '20px',
+  },
+  button: {
+    background: '#4285F4',
+    color: '#fff',
+    border: 'none',
+    padding: '10px 20px',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    fontSize: '16px',
     marginTop: '20px',
   },
 };
