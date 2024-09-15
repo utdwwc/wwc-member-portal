@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode'; // Using jwtDecode
+import { useNavigate } from 'react-router-dom';
 
 function App() {
   const [user, setUser] = useState(null);
+  const navigate = useNavigate(); // Use navigate hook for navigation
 
   const handleSuccess = (credentialResponse) => {
     console.log('Credential Response:', credentialResponse);
@@ -14,6 +16,7 @@ function App() {
 
   const handleLogout = () => {
     setUser(null);
+    navigate('/'); // Redirect to home page after logout
   };
 
   return (
@@ -24,6 +27,9 @@ function App() {
           <div style={styles.userInfo}>
             <h2>Welcome, {user.name}</h2>
             <p>Email: {user.email}</p>
+            <button style={styles.button} onClick={() => navigate('/information')}>
+              Go to Information Page
+            </button>
             <button style={styles.button} onClick={handleLogout}>
               Sign Out
             </button>
@@ -77,6 +83,7 @@ const styles = {
     cursor: 'pointer',
     fontSize: '16px',
     marginTop: '20px',
+    marginRight: '10px',
   },
 };
 
