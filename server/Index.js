@@ -52,6 +52,26 @@ app.post('/', upload.single('resume'), async (req, res) => {
 // Serve static files from the 'files' directory
 app.use('/files', express.static(path.join(__dirname, 'files')));
 
+app.get('/user/:id', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    console.log(`Fetching user with ID: ${userId}`); // Log the ID for debugging
+    const user = await User.findById(userId);
+    if (!user) {
+      console.error(`User with ID ${userId} not found`);
+      return res.status(404).send('User not found');
+    }
+    // Return user information without the password
+    const { name, email, pronouns, major, year, resume } = user;
+    res.json({ name, email, pronouns, major, year, resume });
+  } catch (error) {
+    console.error(`Error fetching user details for user ID: ${req.params.id}`, error);
+    res.status(500).send('Server error');
+  }
+});
+
+
+
 app.get('/user/:id/resume', async (req, res) => {
   try {
     const user = await User.findById(req.params.id);

@@ -31,13 +31,11 @@ function Information() {
       });
   
       if (!result.ok) {
-        // Handle non-200 responses
-        throw new Error(`HTTP error! status: ${result.status}`);
+        throw new Error(`HTTP error1! status: ${result.status}`);
       }
   
       const contentType = result.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
-        // Handle non-JSON responses
         throw new TypeError("Received non-JSON response");
       }
   
@@ -47,23 +45,22 @@ function Information() {
       // Fetch the resume using the user ID
       const resumeResponse = await fetch(`http://localhost:4000/user/${result._id}/resume`);
       if (!resumeResponse.ok) {
-        throw new Error(`HTTP error! status: ${resumeResponse.status}`);
+        throw new Error(`HTTP error2! status: ${resumeResponse.status}`);
       }
   
       const resumeBlob = await resumeResponse.blob();
       const resumeUrl = URL.createObjectURL(resumeBlob);
-      console.log('Resume URL:', resumeUrl); // Debug: Check the URL
       setResumeUrl(resumeUrl); // Set the URL for the resume
   
       // Fetch user information
       const userResponse = await fetch(`http://localhost:4000/user/${result._id}`);
       if (!userResponse.ok) {
-        throw new Error(`HTTP error! status: ${userResponse.status}`);
+        throw new Error(`HTTP error3! status: ${userResponse.status}`);
       }
   
       const userData = await userResponse.json();
       setUserInfo(userData); // Set the user information
-      setGreeting(`Hello ${name} (${email})`);
+      setGreeting(`Hello ${userData.name} (${userData.email})`); // Set greeting with name and email
     } catch (error) {
       console.error('Error:', error);
     }
@@ -148,9 +145,18 @@ function Information() {
           >
             View Resume
           </button>
-        
+          <div>
+          <p><strong>Name:</strong> {userInfo.name}</p>
+          <p><strong>Email:</strong> {userInfo.email}</p> 
+          </div>
         </form>
-        
+
+        {/* Display greeting message with user's name and email */}
+        {greeting && (
+          <div style={styles.greeting}>
+            <h3>{greeting}</h3>
+          </div>
+        )}
       </div>
     </div>
   );
