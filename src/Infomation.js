@@ -10,10 +10,11 @@ function Information() {
   const [password, setPassword] = useState("");
   const [resumeUrl, setResumeUrl] = useState(""); // State to store the resume URL
   const [greeting, setGreeting] = useState(""); // State to store the greeting message
+  const [userInfo, setUserInfo] = useState({}); // State to store user information
 
   const collectData = async (e) => {
     e.preventDefault();
-
+  
     const formData = new FormData();
     formData.append('name', name);
     formData.append('email', email);
@@ -22,24 +23,46 @@ function Information() {
     formData.append('major', major); 
     formData.append('year', year); 
     if (resume) formData.append('resume', resume);
-
+  
     try {
       let result = await fetch('http://localhost:4000/', {
         method: 'POST',
         body: formData,
       });
-
+  
+      if (!result.ok) {
+        // Handle non-200 responses
+        throw new Error(`HTTP error! status: ${result.status}`);
+      }
+  
+      const contentType = result.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        // Handle non-JSON responses
+        throw new TypeError("Received non-JSON response");
+      }
+  
       result = await result.json();
       localStorage.setItem("user", JSON.stringify(result));
-
+  
       // Fetch the resume using the user ID
       const resumeResponse = await fetch(`http://localhost:4000/user/${result._id}/resume`);
+      if (!resumeResponse.ok) {
+        throw new Error(`HTTP error! status: ${resumeResponse.status}`);
+      }
+  
       const resumeBlob = await resumeResponse.blob();
       const resumeUrl = URL.createObjectURL(resumeBlob);
       console.log('Resume URL:', resumeUrl); // Debug: Check the URL
       setResumeUrl(resumeUrl); // Set the URL for the resume
-
-      // Set the greeting message
+  
+      // Fetch user information
+      const userResponse = await fetch(`http://localhost:4000/user/${result._id}`);
+      if (!userResponse.ok) {
+        throw new Error(`HTTP error! status: ${userResponse.status}`);
+      }
+  
+      const userData = await userResponse.json();
+      setUserInfo(userData); // Set the user information
       setGreeting(`Hello ${name} (${email})`);
     } catch (error) {
       console.error('Error:', error);
@@ -125,9 +148,9 @@ function Information() {
           >
             View Resume
           </button>
+        
         </form>
-        {/* Conditionally render the greeting message */}
-        {greeting && <h3 style={styles.greeting}>{greeting}</h3>}
+        
       </div>
     </div>
   );

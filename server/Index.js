@@ -62,6 +62,29 @@ app.get('/user/:id/resume', async (req, res) => {
       if (fs.existsSync(filePath)) {
         res.sendFile(filePath); // Send the file to the client
       } else {
+        console.error(`File not found: ${filePath}`);
+        res.status(404).send('File not found');
+      }
+    } else {
+      console.error(`User or resume not found for user ID: ${req.params.id}`);
+      res.status(404).send('User or resume not found');
+    }
+  } catch (error) {
+    console.error(`Server error while fetching resume for user ID: ${req.params.id}`, error);
+    res.status(500).send('Server error');
+  }
+});
+
+app.get('/user/:id/resume', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (user && user.resume) {
+      const filePath = path.join(__dirname, user.resume.path); // Build the file path
+
+      // Check if the file exists
+      if (fs.existsSync(filePath)) {
+        res.sendFile(filePath); // Send the file to the client
+      } else {
         res.status(404).send('File not found');
       }
     } else {

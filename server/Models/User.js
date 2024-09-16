@@ -24,7 +24,8 @@ const userSchema = new mongoose.Schema({
         
     },
     resume: {
-        data: Buffer,     // Store file as binary data
+        //data: Buffer,     // Store file as binary data
+        path:String,
         contentType: String,  // Store file type (e.g., 'application/pdf')
       
     }
