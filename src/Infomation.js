@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 function Information() {
   const [resume, setFile] = useState(null);
@@ -7,10 +7,15 @@ function Information() {
   const [pronouns, setPronouns] = useState(""); 
   const [major, setMajor] = useState(""); 
   const [year, setYear] = useState(""); 
+  const [JPMorgan, setJPMorgan] = useState(false);
   const [password, setPassword] = useState("");
   const [resumeUrl, setResumeUrl] = useState(""); // State to store the resume URL
   const [greeting, setGreeting] = useState(""); // State to store the greeting message
   const [userInfo, setUserInfo] = useState({}); // State to store user information
+
+  useEffect(() => {
+    console.log(JPMorgan);
+  }, [JPMorgan]);
 
   const collectData = async (e) => {
     e.preventDefault();
@@ -22,6 +27,7 @@ function Information() {
     formData.append('pronouns', pronouns); 
     formData.append('major', major); 
     formData.append('year', year); 
+    formData.append('JPMorgan', JPMorgan ? 'true' : 'false'); 
     if (resume) formData.append('resume', resume);
   
     try {
@@ -129,6 +135,15 @@ function Information() {
               value={year}
               onChange={(e) => setYear(e.target.value)}
             />
+          </div>
+          <div>
+            <label className='form-label'>JPMorgan</label>
+            <input
+  type='checkbox'
+  name='jpmorgan'
+  onChange={(e) => { setJPMorgan(e.target.checked) }} // This should set the value to true/false
+  checked={JPMorgan}
+/>
           </div>
           <div>
             <label className='form-label'>Resume</label>

@@ -23,6 +23,10 @@ const userSchema = new mongoose.Schema({
         type: String
         
     },
+    JPMorgan: {
+        type: Boolean,
+        default: true,
+    },
     resume: {
         //data: Buffer,     // Store file as binary data
         path:String,

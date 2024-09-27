@@ -26,7 +26,9 @@ const upload = multer({ storage: storage });
 
 app.post('/', upload.single('resume'), async (req, res) => {
   try {
-    const { name, email, password, pronouns,major,year } = req.body;
+    const { name, email, password, pronouns,major,year,JPMorgan } = req.body;
+
+    console.log('JPMorgan value received:', JPMorgan);
 
     const newUser = new User({
       name,
@@ -35,6 +37,7 @@ app.post('/', upload.single('resume'), async (req, res) => {
       pronouns,
       major,
       year,
+      JPMorgan: req.body.JPMorgan === 'true', // Converts string to boolean 
       resume: {
         path: req.file.path,          // Store the file path
         contentType: req.file.mimetype // Store the MIME type
@@ -62,8 +65,8 @@ app.get('/user/:id', async (req, res) => {
       return res.status(404).send('User not found');
     }
     // Return user information without the password
-    const { name, email, pronouns, major, year, resume } = user;
-    res.json({ name, email, pronouns, major, year, resume });
+    const { name, email, pronouns, major, year, JPMorgan, resume } = user;
+    res.json({ name, email, pronouns, major, year, JPMorgan, resume });
   } catch (error) {
     console.error(`Error fetching user details for user ID: ${req.params.id}`, error);
     res.status(500).send('Server error');
