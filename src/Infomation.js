@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Information() {
+  const navigate = useNavigate(); 
   const [resume, setFile] = useState(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -12,13 +14,20 @@ function Information() {
   const [resumeUrl, setResumeUrl] = useState(""); // State to store the resume URL
   const [greeting, setGreeting] = useState(""); // State to store the greeting message
   const [userInfo, setUserInfo] = useState({}); // State to store user information
+  const [ UserID, setUserID] = useState(null); 
+
 
   useEffect(() => {
     console.log(JPMorgan);
   }, [JPMorgan]);
 
+  useEffect(() => {
+    console.log(UserID);
+  }, [UserID]);
+
   const collectData = async (e) => {
     e.preventDefault();
+  
   
     const formData = new FormData();
     formData.append('name', name);
@@ -47,6 +56,7 @@ function Information() {
   
       result = await result.json();
       localStorage.setItem("user", JSON.stringify(result));
+      setUserID(result._id); // Save the user ID in the state
   
       // Fetch the resume using the user ID
       const resumeResponse = await fetch(`http://localhost:4000/user/${result._id}/resume`);
@@ -160,6 +170,9 @@ function Information() {
           >
             View Resume
           </button>
+          <button style={styles.button} onClick={() => navigate('/regularEvents', { state: {UserID} })}>
+    Events Page
+</button>
           <div>
           <p><strong>Name:</strong> {userInfo.name}</p>
           <p><strong>Email:</strong> {userInfo.email}</p> 

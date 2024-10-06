@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const mongoose = require('mongoose');
 const User = require('./Models/User');  // Adjust the path as needed
+const Event = require('./Models/RegularEvent'); // Note the './' indicating a relative path
 const path = require('path');
 const fs = require('fs');
 
@@ -117,6 +118,42 @@ app.get('/user/:id/resume', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+
+//events table 
+// RSVP endpoint
+app.post('/regularevents/:eventId/rsvp', async (req, res) => {
+  const eventId = req.params.eventId;
+  const { userId, isChecked } = req.body; // Now receiving isChecked from frontend
+
+  try {
+      // Find the event by ID
+      const event = await Event.findById(eventId);
+
+      if (!event) {
+          return res.status(404).json({ message: 'Event not found' });
+      }
+
+      if (isChecked) {
+          // Add user to the attendees list if they checked the box
+          if (!event.attendees.includes(userId)) {
+              event.attendees.push(userId);
+          } else {
+              return res.status(400).json({ message: 'User has already RSVPed' });
+          }
+      } else {
+          // Remove user from the attendees list if they unchecked the box
+          event.attendees = event.attendees.filter(id => id.toString() !== userId);
+      }
+
+      await event.save(); // Save the updated event
+
+      res.status(200).json({ message: 'RSVP updated successfully', event });
+  } catch (error) {
+      console.error('Error RSVPing for event:', error);
+      res.status(500).json({ error: 'Error RSVPing for event' });
+  }
+});
+
 
 app.listen(4000, () => {
   console.log('Server is running on port 4000');
