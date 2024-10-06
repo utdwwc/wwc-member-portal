@@ -1,34 +1,51 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import Modal from './Modal'; // Adjust the path to your Modal component
 import './App.css';
 
 const RegularEventsPage = () => {
     const location = useLocation();
-    const userId = location.state?.UserID; // Use UserID instead of userId
+    const userId = location.state?.UserID;
     const [isChecked, setIsChecked] = useState(false);
-
+    const [isModalOpen, setIsModalOpen] = useState(false); // State to control the modal
 
     const handleCheckboxChange = async () => {
         const newCheckedStatus = !isChecked;
         setIsChecked(newCheckedStatus);
 
         try {
-            // Send a POST request to update the RSVP status in the backend
-            const response = await fetch(`http://localhost:4000/regularevents/6701cc315e02bdc39d7666ae/rsvp`, { // Replace eventID (the last numbers) with the eventID of the specific event
+            const response = await fetch(`http://localhost:4000/regularevents/6701cc315e02bdc39d7666ae/rsvp`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    userId: userId,  // The current user's ID
-                    isChecked: newCheckedStatus, // RSVP status (true/false)
+                    userId: userId,
+                    isChecked: newCheckedStatus,
                 }),
             });
             const data = await response.json();
             console.log(data.message);
+            if (newCheckedStatus) {
+                setIsModalOpen(true); // Open modal if RSVPed
+            }
         } catch (error) {
             console.error('Error updating RSVP:', error);
         }
+    };
+
+    const handleAddToCalendar = () => {
+        const eventTitle = encodeURIComponent("Coding Workshop");
+        const eventDescription = encodeURIComponent("Join us for an exciting coding workshop where you will learn the basics of web development and build your first website!");
+        const eventLocation = encodeURIComponent("Room 101, Main Building");
+        const eventStartDate = encodeURIComponent("2024-10-15T10:00:00"); // Adjust the time
+        const eventEndDate = encodeURIComponent("2024-10-15T12:00:00"); // Adjust the time
+
+        // Create a Google Calendar link
+        const calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${eventTitle}&details=${eventDescription}&location=${eventLocation}&dates=${eventStartDate}/${eventEndDate}`;
+        
+        window.open(calendarUrl, '_blank'); // Open the link in a new tab
+        setIsModalOpen(false); // Close the modal
     };
 
     return (
@@ -49,6 +66,12 @@ const RegularEventsPage = () => {
                 RSVP
             </label>
             {isChecked && <p style={styles.confirmation}>You have RSVPed!</p>}
+            
+            <Modal 
+                isOpen={isModalOpen} 
+                onClose={() => setIsModalOpen(false)} 
+                onAddToCalendar={handleAddToCalendar} 
+            />
         </div>
     );
 };
