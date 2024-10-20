@@ -8,6 +8,7 @@ import reportWebVitals from './reportWebVitals';
 import { Routes, Route } from 'react-router-dom';
 import Information from './Infomation';
 import RegularEventsPage from './RegularEvents';
+import SpecialEvents from './SpecialEvents';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -19,6 +20,7 @@ root.render(
           <Route path="/" element={<App />} />
           <Route path="/information" element={<Information />} />
           <Route path="/regularEvents" element={<RegularEventsPage />} />
+          <Route path="/specialEvents" element={<SpecialEvents />} />
         </Routes>
         <App />
       </Router>

@@ -3,6 +3,7 @@ const multer = require('multer');
 const mongoose = require('mongoose');
 const User = require('./Models/User');  // Adjust the path as needed
 const Event = require('./Models/RegularEvent'); // Note the './' indicating a relative path
+const Application = require('./Models/SpecialEvents'); 
 const path = require('path');
 const fs = require('fs');
 
@@ -154,7 +155,36 @@ app.post('/regularevents/:eventId/rsvp', async (req, res) => {
   }
 });
 
+//specialEvents (applications table)
+app.post('/eventapplications/', async (req, res) => {
+  const { userId, eventId, name, email, year, reason } = req.body;
+
+  console.log('Incoming request data:', req.body);
+
+  // Validate incoming data
+  if (!userId || !eventId || !name || !email || !year || !reason) {
+      return res.status(400).json({ message: 'All fields are required' });
+  }
+
+  try {
+      const newApplication = new Application({
+          userId,
+          eventId,
+          name,
+          email,
+          year,
+          reason,
+      });
+
+      const savedApplication = await newApplication.save();
+      res.status(201).json({ message: 'Application submitted successfully', application: savedApplication });
+  } catch (error) {
+      console.error('Error saving application:', error);
+      res.status(500).json({ message: 'Error submitting application', error: error.message });
+  }
+});
 
 app.listen(4000, () => {
   console.log('Server is running on port 4000');
 });
+

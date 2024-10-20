@@ -1,20 +1,24 @@
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Modal from './Modal'; // Adjust the path to your Modal component
 import './App.css';
 
 const RegularEventsPage = () => {
     const location = useLocation();
+    const navigate = useNavigate();
+    console.log(location.state?.UserID); 
     const userId = location.state?.UserID;
     const [isChecked, setIsChecked] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false); // State to control the modal
+    const eventIDSpeedMentoring = '670949b3d99b8db6027933c7'; 
+    const eventIDCodingWorkshop = '6701cc315e02bdc39d7666ae'; 
 
     const handleCheckboxChange = async () => {
         const newCheckedStatus = !isChecked;
         setIsChecked(newCheckedStatus);
 
         try {
-            const response = await fetch(`http://localhost:4000/regularevents/6701cc315e02bdc39d7666ae/rsvp`, {
+            const response = await fetch(`http://localhost:4000/regularevents/${eventIDCodingWorkshop}/rsvp`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -49,8 +53,10 @@ const RegularEventsPage = () => {
     };
 
     return (
+        <div>
+        {/* Page title outside the container */}
+        <h1 style={styles.pageTitle}>Regular Events Page</h1>
         <div style={styles.container}>
-            <h1>Regular Events Page</h1>
             <h1 style={styles.title}>Event: Coding Workshop</h1>
             <p><strong>Description:</strong> Join us for an exciting coding workshop where you will learn the basics of web development and build your first website!</p>
             <p><strong>Date:</strong> October 15, 2024</p>
@@ -73,6 +79,22 @@ const RegularEventsPage = () => {
                 onAddToCalendar={handleAddToCalendar} 
             />
         </div>
+        <div style={styles.container}>
+            <h1 style={styles.title}>Event: Speed Mentoring</h1>
+            <p><strong>Description:</strong> Join us for an exciting coding workshop where you will learn the basics of web development and build your first website!</p>
+            <p><strong>Date:</strong> October 15, 2024</p>
+            <p><strong>Location:</strong> Room 101, Main Building</p>
+            <button style={styles.button} onClick={() => navigate('/specialEvents', { state: {userId, eventId : eventIDSpeedMentoring} })}>
+    Go to Application
+</button>
+            
+            <Modal 
+                isOpen={isModalOpen} 
+                onClose={() => setIsModalOpen(false)} 
+                onAddToCalendar={handleAddToCalendar} 
+            />
+        </div>
+        </div> 
     );
 };
 

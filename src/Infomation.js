@@ -21,9 +21,7 @@ function Information() {
     console.log(JPMorgan);
   }, [JPMorgan]);
 
-  useEffect(() => {
-    console.log(UserID);
-  }, [UserID]);
+ 
 
   const collectData = async (e) => {
     e.preventDefault();
@@ -57,6 +55,7 @@ function Information() {
       result = await result.json();
       localStorage.setItem("user", JSON.stringify(result));
       setUserID(result._id); // Save the user ID in the state
+        console.log(UserID); 
   
       // Fetch the resume using the user ID
       const resumeResponse = await fetch(`http://localhost:4000/user/${result._id}/resume`);
