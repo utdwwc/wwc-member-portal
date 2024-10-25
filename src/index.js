@@ -9,6 +9,7 @@ import { Routes, Route } from 'react-router-dom';
 import Information from './Infomation';
 import RegularEventsPage from './RegularEvents';
 import SpecialEvents from './SpecialEvents';
+import SignIn from './SignIn';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -21,6 +22,7 @@ root.render(
           <Route path="/information" element={<Information />} />
           <Route path="/regularEvents" element={<RegularEventsPage />} />
           <Route path="/specialEvents" element={<SpecialEvents />} />
+          <Route path="/signIn" element = {<SignIn/>} />
         </Routes>
         <App />
       </Router>

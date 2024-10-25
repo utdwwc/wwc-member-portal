@@ -6,7 +6,6 @@ import './App.css';
 const RegularEventsPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    console.log(location.state?.UserID); 
     const userId = location.state?.UserID;
     const [isChecked, setIsChecked] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false); // State to control the modal

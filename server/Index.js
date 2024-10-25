@@ -184,6 +184,38 @@ app.post('/eventapplications/', async (req, res) => {
   }
 });
 
+//points 
+app.post('/users', async (req, res) => {
+  const { email, eventID } = req.body; 
+  try {
+    // Check if the user exists
+    let user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found. Please register first.' });
+    }
+
+    user.points += 1;
+    await user.save();
+
+    let event = await RegularEvent.findOne({ eventID });
+    const userID = user._id;
+
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found.' });
+    }
+
+    if (!event.attendees.includes(userID.toString())) {
+      event.attendees.push(userID.toString());
+      await event.save();
+    }
+
+    res.json({ message: `Check-in successful! Your points are now ${user.points}.`, userID });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error during check-in.' });
+  }
+});
+
 app.listen(4000, () => {
   console.log('Server is running on port 4000');
 });

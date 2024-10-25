@@ -6,7 +6,8 @@ const eventSchema = new mongoose.Schema({
     date: { type: Date, required: true },
     location: { type: String, required: true },
     isSpecial: {type: Boolean, required: true}, 
-    attendees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] // Store user IDs of attendees
+    attendees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Store user IDs of attendees
+    actualAttendees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] // Store user IDs of attendees
 });
 const RegularEvent = mongoose.model('RegularEvent', eventSchema);
 
@@ -18,7 +19,8 @@ const insertEvent = async () => {
         date: new Date('2024-10-15'),
         location: 'Room 101, Main Building',
         isSpecial: false,
-        attendees: [] // Initially empty
+        attendees: [],  // Initially empty
+        actualAttendees: []
     });
 
     // New special event
@@ -28,7 +30,8 @@ const insertEvent = async () => {
         date: new Date('2024-10-22'), // Adjust the date as needed
         location: 'Room 202, Main Building',
         isSpecial: true,
-        attendees: [] // Initially empty
+        attendees: [], // Initially empty
+        actualAttendees: [], 
     });
 
     try {

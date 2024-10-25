@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: true,
     },
+    points: {
+        type: Number,
+        default: 0, 
+    }, 
     resume: {
         //data: Buffer,     // Store file as binary data
         path:String,
