@@ -5,8 +5,9 @@ const eventSchema = new mongoose.Schema({
     description: { type: String, required: true },
     date: { type: Date, required: true },
     location: { type: String, required: true },
-    isSpecial: {type: Boolean, required: true}, 
+    isSpecial: {type: Boolean, required: true, default: false}, 
     attendees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Store user IDs of attendees
+    attendeesNames: [{ name: { type: String }, userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' } }], // Store both names and user IDs
     actualAttendees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] // Store user IDs of attendees
 });
 const RegularEvent = mongoose.model('RegularEvent', eventSchema);

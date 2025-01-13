@@ -12,6 +12,8 @@ function App() {
     const decodedToken = jwtDecode(credentialResponse.credential); // Use jwtDecode
     console.log('Decoded Token:', decodedToken);
     setUser(decodedToken);
+
+  
   };
 
   const handleLogout = () => {
@@ -27,7 +29,7 @@ function App() {
           <div style={styles.userInfo}>
             <h2>Welcome, {user.name}</h2>
             <p>Email: {user.email}</p>
-            <button style={styles.button} onClick={() => navigate('/information')}>
+            <button style={styles.button} onClick={() => navigate('/information', {state: { email: user.email} })}>
               Go to Information Page
             </button>
             <button style={styles.button} onClick={handleLogout}>

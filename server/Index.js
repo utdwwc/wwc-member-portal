@@ -26,15 +26,17 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+//post sends information to the dataabse and get retrieves information from the database
 app.post('/', upload.single('resume'), async (req, res) => {
   try {
-    const { name, email, password, pronouns,major,year,JPMorgan } = req.body;
+    const { name, email, gmail, password, pronouns,major,year,JPMorgan } = req.body;
 
     console.log('JPMorgan value received:', JPMorgan);
 
     const newUser = new User({
       name,
       email,
+      gmail,
       password,
       pronouns,
       major,
@@ -75,6 +77,24 @@ app.get('/user/:id', async (req, res) => {
   }
 });
 
+ app.get('/user/gmail/:gmail', async (req, res) => {
+   try {
+    console.log(`Fetching user with email: `); // Log the ID for debugging
+     const gmailId = req.params.gmail;
+     console.log(`Fetching user with email: ${gmailId}`); // Log the ID for debugging
+    const user = await User.findOne({ gmail: gmailId });
+        if (!user) {
+       console.error(`User with ID ${gmailId} not found`);
+       return res.status(404).send('User not found');
+     }
+     // Return user information without the password
+          const { name, email, gmail, pronouns, major, year, } = user;
+     res.json({ name, email, gmail, pronouns, major, year});
+   } catch (error) {
+     console.error(`Error fetching user details for user ID: ${req.params.gmail}`, error);
+     res.status(500).send('Server error');
+  }
+ });
 
 
 app.get('/user/:id/resume', async (req, res) => {

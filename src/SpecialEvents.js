@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import Modal from './Modal'; // Adjust the path to your Modal component
 import './App.css';
 
 const EventApplicationForm = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const userId = location.state?.userId;
-    const eventID = location.state?.eventId; 
-
-
+    const eventID = location.state?.eventId;
+    const [submissionMessage, setSubmissionMessage] = useState('');
     const [formData, setFormData] = useState({
         email: '',
         name: '',
@@ -17,6 +15,7 @@ const EventApplicationForm = () => {
         reason: '',
     });
     const [errors, setErrors] = useState({});
+    const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -51,33 +50,33 @@ const EventApplicationForm = () => {
                     reason: formData.reason,
                 };
                 console.log('Sending data to the server:', payload);
-                // Send data to the server, including eventID and userId
+
                 const response = await fetch(`http://localhost:4000/eventapplications/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({
-                        userId: userId,
-                        eventId: eventID,
-                        name: formData.name,
-                        email: formData.email,
-                        year: formData.year,
-                        reason: formData.reason,
-                    }),
+                    body: JSON.stringify(payload),
                 });
 
                 const data = await response.json();
-                console.log(data.message); // Handle success or error messages from the server
-                
-                // Reset form after submission
-                // setFormData({
-                //     email: '',
-                //     name: '',
-                //     year: '',
-                //     reason: '',
-                // });
-                // setErrors({});
+                console.log(data.message); // Log server response
+
+                if (response.ok) {
+                    setShowSuccessMessage(true); // Show success pop-up
+                    setSubmissionMessage('Application submitted successfully!');
+
+                    // Reset form
+                    setFormData({
+                        email: '',
+                        name: '',
+                        year: '',
+                        reason: '',
+                    });
+                    setErrors({});
+                } else {
+                    console.error('Failed to submit:', data.message);
+                }
             } catch (error) {
                 console.error('Error submitting application:', error);
             }
@@ -87,6 +86,9 @@ const EventApplicationForm = () => {
     return (
         <div style={styles.container}>
             <h2>Event Application Form</h2>
+            {showSuccessMessage && (
+                <div style={styles.successMessage}>{submissionMessage}</div>
+            )}
             <form onSubmit={handleSubmit}>
                 <div style={styles.formGroup}>
                     <label>Email:</label>
@@ -138,6 +140,9 @@ const EventApplicationForm = () => {
                 <button type="submit" style={styles.button}>
                     Submit Application
                 </button>
+                <button style={styles.button} onClick={() => navigate('/regularEvents', { state: {userId} })}>
+    Back to Events
+</button>
             </form>
         </div>
     );
@@ -179,6 +184,15 @@ const styles = {
         borderRadius: '5px',
         cursor: 'pointer',
         fontSize: '16px',
+    },
+    successMessage: {
+        backgroundColor: '#d4edda',
+        color: '#155724',
+        padding: '10px',
+        margin: '10px 0',
+        border: '1px solid #c3e6cb',
+        borderRadius: '4px',
+        textAlign: 'center',
     },
     error: {
         color: 'red',

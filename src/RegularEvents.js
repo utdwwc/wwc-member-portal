@@ -7,10 +7,18 @@ const RegularEventsPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const userId = location.state?.UserID;
+    const gmail = location.state?.gmail; 
+    const name = location.state?.name; 
     const [isChecked, setIsChecked] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false); // State to control the modal
     const eventIDSpeedMentoring = '670949b3d99b8db6027933c7'; 
     const eventIDCodingWorkshop = '6701cc315e02bdc39d7666ae'; 
+    useEffect(() => {
+        console.log("UserID:", userId);
+        console.log("Gmail:", gmail);
+        console.log("Name:", name);
+    }, [userId, gmail, name]);
+    
 
     const handleCheckboxChange = async () => {
         const newCheckedStatus = !isChecked;
@@ -24,6 +32,7 @@ const RegularEventsPage = () => {
                 },
                 body: JSON.stringify({
                     userId: userId,
+                    userName: name,   
                     isChecked: newCheckedStatus,
                 }),
             });
@@ -92,6 +101,15 @@ const RegularEventsPage = () => {
                 onClose={() => setIsModalOpen(false)} 
                 onAddToCalendar={handleAddToCalendar} 
             />
+           <button style={styles.button} onClick={() => navigate('/admin')}>
+    Go to Admin
+</button>
+<button style={styles.button} onClick={() => {
+    console.log("Navigating to Profile with gmail:", gmail);
+    navigate('/profile', { state: {gmail} })}}>
+    Go to Profile
+</button>
+            
         </div>
         </div> 
     );

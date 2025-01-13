@@ -19,6 +19,11 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    gmail: {
+        type: String, 
+        required: true, 
+        unique: true
+    },
     password: {
         type: String
         
@@ -36,6 +41,10 @@ const userSchema = new mongoose.Schema({
         path:String,
         contentType: String,  // Store file type (e.g., 'application/pdf')
       
+    }, 
+    isAdmin : {
+        type: Boolean,
+        default: false, 
     }
 });
 

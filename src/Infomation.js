@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function Information() {
   const navigate = useNavigate(); 
@@ -15,6 +15,8 @@ function Information() {
   const [greeting, setGreeting] = useState(""); // State to store the greeting message
   const [userInfo, setUserInfo] = useState({}); // State to store user information
   const [ UserID, setUserID] = useState(null); 
+  const location = useLocation(); // Add this line
+  const gmail = location.state?.email; // Now this will work
 
 
   useEffect(() => {
@@ -30,6 +32,7 @@ function Information() {
     const formData = new FormData();
     formData.append('name', name);
     formData.append('email', email);
+    formData.append('gmail', gmail); 
     formData.append('password', password);
     formData.append('pronouns', pronouns); 
     formData.append('major', major); 
@@ -169,7 +172,7 @@ function Information() {
           >
             View Resume
           </button>
-          <button style={styles.button} onClick={() => navigate('/regularEvents', { state: {UserID} })}>
+          <button style={styles.button} onClick={() => navigate('/regularEvents', { state: {UserID, name, gmail} })}>
     Events Page
 </button>
           <div>
