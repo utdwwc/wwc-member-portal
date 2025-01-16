@@ -2,7 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const mongoose = require('mongoose');
 const User = require('./Models/User');  // Adjust the path as needed
-const Event = require('./Models/RegularEvent'); // Note the './' indicating a relative path
+const RegularEvent = require('./Models/RegularEvent'); // Add this line
 const Application = require('./Models/SpecialEvents'); 
 const path = require('path');
 const fs = require('fs');
@@ -45,14 +45,15 @@ app.post('/', upload.single('resume'), async (req, res) => {
       resume: {
         path: req.file.path,          // Store the file path
         contentType: req.file.mimetype // Store the MIME type
-      }
+      },
+      isAdmin: email === 'utdwwc@gmail.com' // Set isAdmin to true for this specific email
     });
 
     await newUser.save();
     res.status(201).json(newUser);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error saving user or resume' });
+    console.error('Error occurred:', error); // Log the error
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -234,6 +235,40 @@ app.post('/users', async (req, res) => {
     console.error(error);
     res.status(500).json({ message: 'Error during check-in.' });
   }
+});
+
+// Middleware to check if user is admin
+const isAdmin = async (req, res, next) => {
+  const userId = req.body.userId; // Assume userId is sent in the request body
+  const user = await User.findById(userId);
+  
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' });
+  }
+
+  if (user.email !== 'utdwwc@gmail.com') {
+    return res.status(403).json({ message: 'No admin privileges granted' });
+  }
+
+  if (user && user.isAdmin) {
+    next();
+  } else {
+    res.status(403).json({ message: 'Access denied' });
+  }
+};
+
+// Create an event
+app.post('/admin/events', isAdmin, async (req, res) => {
+  const { title, description, date, location } = req.body;
+  const newEvent = new Event({ title, description, date, location });
+  await newEvent.save();
+  res.status(201).json(newEvent);
+});
+
+// Get all users
+app.get('/admin/users', isAdmin, async (req, res) => {
+  const users = await User.find();
+  res.json(users);
 });
 
 app.listen(4000, () => {

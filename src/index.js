@@ -1,11 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter as Router } from 'react-router-dom'; // Routing import
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Routing import
 import { GoogleOAuthProvider } from '@react-oauth/google'; // Google OAuth
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { Routes, Route } from 'react-router-dom';
 import Information from './Infomation';
 import RegularEventsPage from './RegularEvents';
 import SpecialEvents from './SpecialEvents';
