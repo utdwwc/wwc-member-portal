@@ -41,6 +41,7 @@ function Information() {
     if (resume) formData.append('resume', resume);
   
     try {
+      // FETCH (POST/): Sends user data to backend + stores user ID
       let result = await fetch('http://localhost:4000/', {
         method: 'POST',
         body: formData,
@@ -57,27 +58,27 @@ function Information() {
   
       result = await result.json();
       localStorage.setItem("user", JSON.stringify(result));
-      setUserID(result._id); // Save the user ID in the state
+      setUserID(result._id); // Updates state with user's ID
         console.log(UserID); 
   
-      // Fetch the resume using the user ID
+      // FETCH (GET/): Retrieves the user's uploaded resume
       const resumeResponse = await fetch(`http://localhost:4000/user/${result._id}/resume`);
       if (!resumeResponse.ok) {
         throw new Error(`HTTP error2! status: ${resumeResponse.status}`);
       }
   
       const resumeBlob = await resumeResponse.blob();
-      const resumeUrl = URL.createObjectURL(resumeBlob);
-      setResumeUrl(resumeUrl); // Set the URL for the resume
+      const resumeUrl = URL.createObjectURL(resumeBlob); // Creates downloadable URL for file
+      setResumeUrl(resumeUrl); // Makes resume available for viewing
   
-      // Fetch user information
+      // FETCH (GET/): Retrieves user details to display 
       const userResponse = await fetch(`http://localhost:4000/user/${result._id}`);
       if (!userResponse.ok) {
         throw new Error(`HTTP error3! status: ${userResponse.status}`);
       }
   
       const userData = await userResponse.json();
-      setUserInfo(userData); // Set the user information
+      setUserInfo(userData); // Updates state with user's info
       setGreeting(`Hello ${userData.name} (${userData.email})`); // Set greeting with name and email
     } catch (error) {
       console.error('Error:', error);
@@ -173,8 +174,8 @@ function Information() {
             View Resume
           </button>
           <button style={styles.button} onClick={() => navigate('/regularEvents', { state: {UserID, name, gmail} })}>
-    Events Page
-</button>
+          Events Page
+          </button>
           <div>
           <p><strong>Name:</strong> {userInfo.name}</p>
           <p><strong>Email:</strong> {userInfo.email}</p> 

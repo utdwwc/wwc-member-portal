@@ -3,11 +3,13 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import './App.css';
 
 const EventApplicationForm = () => {
-    const location = useLocation();
-    const navigate = useNavigate();
+    const navigate = useNavigate(); // Helps move between pages dynamically
+    const location = useLocation(); // Extracts user data (userId, eventId) passed from previous page (aka: RegularEvents.js)
     const userId = location.state?.userId;
     const eventID = location.state?.eventId;
     const [submissionMessage, setSubmissionMessage] = useState('');
+
+    // useState stores user input for the application form
     const [formData, setFormData] = useState({
         email: '',
         name: '',
@@ -17,6 +19,7 @@ const EventApplicationForm = () => {
     const [errors, setErrors] = useState({});
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
+    // Function: updates 'formData' whenever the user types in the input fields
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -25,6 +28,7 @@ const EventApplicationForm = () => {
         });
     };
 
+    // Function: Ensures textboxes are not left blank
     const validateForm = () => {
         const newErrors = {};
         if (!formData.email) newErrors.email = 'Email is required';
@@ -34,6 +38,7 @@ const EventApplicationForm = () => {
         return newErrors;
     };
 
+    // Function: 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const validationErrors = validateForm();
@@ -50,7 +55,8 @@ const EventApplicationForm = () => {
                     reason: formData.reason,
                 };
                 console.log('Sending data to the server:', payload);
-
+                
+                // FETCH (POST/): Sends data (userId, eventId, and form data) to backend
                 const response = await fetch(`http://localhost:4000/eventapplications/`, {
                     method: 'POST',
                     headers: {
@@ -63,7 +69,7 @@ const EventApplicationForm = () => {
                 console.log(data.message); // Log server response
 
                 if (response.ok) {
-                    setShowSuccessMessage(true); // Show success pop-up
+                    setShowSuccessMessage(true); // If data successfully sends to backend, success message displayed
                     setSubmissionMessage('Application submitted successfully!');
 
                     // Reset form
