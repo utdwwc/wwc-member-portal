@@ -3,15 +3,24 @@ const multer = require('multer');
 const mongoose = require('mongoose');
 const User = require('./Models/User');  // Adjust the path as needed
 const RegularEvent = require('./Models/RegularEvent'); // Add this line
-const Application = require('./Models/SpecialEvents'); 
+const Application = require('./Models/EventApplication'); 
 const path = require('path');
 const fs = require('fs');
+const cors = require('cors');
+
+const jwt = require('jsonwebtoken'); // TESTING RQQQ: i dont like u jwt
+const bcrypt = require('bcryptjs'); // TESTING RQQQ: being difficult boohoo
 
 require('./db/connection');
 
 const app = express();
 app.use(express.json());
 app.use(require('cors')());
+
+app.use(cors({
+  origin: 'http://localhost:3000', // Your React app's URL
+  credentials: true
+}));
 
 // Set up multer for file uploads
 const storage = multer.diskStorage({
@@ -26,14 +35,31 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+
 //post sends information to the dataabse and get retrieves information from the database
 app.post('/', upload.single('resume'), async (req, res) => {
   try {
-    const { name, email, gmail, password, pronouns,major,year,JPMorgan } = req.body;
+    // Destructure with default values
+    const { 
+      name = '', 
+      email = '', 
+      gmail = '', 
+      password = '', 
+      pronouns = '', 
+      major = '', 
+      year = '', 
+      JPMorgan = 'false' // Default to string 'false'
+    } = req.body;
 
-    console.log('JPMorgan value received:', JPMorgan);
+    // Validate required fields
+    if (!name || !email || !gmail) {
+      return res.status(400).json({ 
+        error: 'Missing required fields (name, email, or gmail)' 
+      });
+    }
 
-    const newUser = new User({
+    // Create user object
+    const userData = {
       name,
       email,
       gmail,
@@ -41,19 +67,142 @@ app.post('/', upload.single('resume'), async (req, res) => {
       pronouns,
       major,
       year,
-      JPMorgan: req.body.JPMorgan === 'true', // Converts string to boolean 
-      resume: {
-        path: req.file.path,          // Store the file path
-        contentType: req.file.mimetype // Store the MIME type
-      },
-      isAdmin: email === 'utdwwc@gmail.com' // Set isAdmin to true for this specific email
+      JPMorgan: JPMorgan === 'true', // Convert to boolean
+      isAdmin: email === 'utdwwc@gmail.com'
+    };
+
+    const newUser = new User(userData);
+    const savedUser = await newUser.save();
+
+    // Only add resume if file exists
+    if (req.file) {
+      userData.resume = {
+        path: req.file.path,
+        contentType: req.file.mimetype
+      };
+    }
+    
+    res.status(201).json(savedUser);
+  } catch (error) {
+    console.error('Detailed save error:', {
+      message: error.message,
+      validationErrors: error.errors,
+      stack: error.stack
+    });
+    
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ 
+        error: 'Validation failed',
+        details: error.errors 
+      });
+    }
+    
+    if (error.code === 11000) { // Duplicate key error
+      return res.status(400).json({ 
+        error: 'Email or gmail already exists' 
+      });
+    }
+    
+    res.status(500).json({ 
+      error: 'Internal server error',
+      details: error.message 
+    });
+  }
+});
+
+// TESTINGGGG RQQQQ: Register route
+app.post('/register', async (req, res) => {
+  try {
+    console.log('Received registration data:', req.body);
+    
+    // Manually extract file if using multipart/form-data
+    const { name, email, password, pronouns, major, year, JPMorgan } = req.body;
+    
+    // Create user
+    const user = new User({
+      name,
+      email,
+      password,
+      pronouns,
+      major,
+      year,
+      JPMorgan: JPMorgan === 'true',
+      isAdmin: email === 'utdwwc@gmail.com'
     });
 
-    await newUser.save();
-    res.status(201).json(newUser);
+    // Handle file if uploaded
+    if (req.file) {
+      user.resume = {
+        path: req.file.path,
+        contentType: req.file.mimetype
+      };
+    }
+
+    await user.save();
+    console.log('User created successfully:', user);
+
+    // Generate token
+    const token = jwt.sign(
+      { userId: user._id, isAdmin: user.isAdmin },
+      'your-secret-key',
+      { expiresIn: '1h' }
+    );
+
+    res.status(201).json({ 
+      token,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin
+      }
+    });
   } catch (error) {
-    console.error('Error occurred:', error); // Log the error
-    res.status(500).json({ error: 'Internal server error' });
+    console.error('Registration error:', error);
+    res.status(400).json({ 
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+// TESTINGGGG RQQQQ: Login route
+app.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    
+    // Validate input
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
+    }
+
+    // Find user
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    // Check password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    // Generate token
+    const token = user.generateAuthToken();
+
+    res.json({
+      token,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin
+      }
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ message: 'Login failed', error: error.message });
   }
 });
 
@@ -237,7 +386,49 @@ app.post('/users', async (req, res) => {
   }
 });
 
-// Middleware to check if user is admin
+/* TESTINGGGG RQQQQQQQ: isAdmin middleware
+const isAdmin = async (req, res, next) => {
+  try {
+    // Get token from header
+    const authHeader = req.header('Authorization');
+    if (!authHeader) {
+      return res.status(401).json({ message: 'No token provided' });
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+    
+    // Verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    
+    // Find user
+    const user = await User.findById(decoded._id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check admin status
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: 'Admin access required' });
+    }
+
+    // Attach user to request
+    req.user = user;
+    req.token = token;
+    next();
+  } catch (error) {
+    console.error('Authentication error:', error);
+    
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({ message: 'Invalid token' });
+    }
+    
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({ message: 'Token expired' });
+    }
+    
+    res.status(500).json({ message: 'Authentication failed', error: error.message });
+  }
+}; */
 const isAdmin = async (req, res, next) => {
   const userId = req.body.userId; // Assume userId is sent in the request body
   const user = await User.findById(userId);
@@ -257,21 +448,87 @@ const isAdmin = async (req, res, next) => {
   }
 };
 
-// Create an event
+
+/* TESTINGGGG RQQQQQ: token and auth middleware
+app.get('/admin/test', isAdmin, (req, res) => {
+  res.json({ message: 'Admin access granted' });
+}); */
+
+// TESTINGGGGGG RQQQQQQQQ: Create event (admin only)
+/*
 app.post('/admin/events', isAdmin, async (req, res) => {
+  try {
+    const { title, description, date, location } = req.body;
+    
+    // Validate required fields
+    if (!title || !description || !date || !location) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    const newEvent = new Event({ 
+      title, 
+      description, 
+      date: new Date(date), 
+      location 
+    });
+
+    const savedEvent = await newEvent.save();
+    
+    res.status(201).json(savedEvent);
+  } catch (error) {
+    console.error('Error creating event:', error);
+    res.status(500).json({ error: 'Error creating event' });
+  }
+}); */
+
+
+// display events on admin page (without token) - TEMPORARY 
+// changed /events to /regularevents
+app.get('/regularevents', async (req, res) => {
+  try {
+    console.log('Fetching events from DB...'); //Debug
+    const events = await RegularEvent.find({})
+      .sort({ date: 1 }); //Sort by date ascending
+    console.log('Found events');
+    res.json(events);
+  } catch (error) {
+    console.log('DB Error:', error)
+    res.status(500).json({ error: error.message });
+  }
+});
+/*
+app.post('/admin/events', async (req, res) => {
   const { title, description, date, location } = req.body;
   const newEvent = new Event({ title, description, date, location });
   await newEvent.save();
   res.status(201).json(newEvent);
-});
+}); */
 
-// Get all users
-app.get('/admin/users', isAdmin, async (req, res) => {
-  const users = await User.find();
-  res.json(users);
+
+// display users on admins page
+app.get('/users', async (req, res) => {
+  try {
+    const users = await User.find({})
+      .select('-password -__v -resetToken') // Exclude sensitive fields
+      .sort({ createdAt: -1 }); // Newest first
+    
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
+/* TESTING RQQQ: taking out for now
+app.get('/admin/users', async (req, res) => {
+  try {
+    const users = await User.find({}, { password: 0 }); // Exclude passwords
+    res.json(users);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+*/
 
 app.listen(4000, () => {
   console.log('Server is running on port 4000');
 });
-

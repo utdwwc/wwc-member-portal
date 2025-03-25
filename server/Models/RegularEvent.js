@@ -9,13 +9,14 @@ const eventSchema = new mongoose.Schema({
     attendees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Store user IDs of attendees
     attendeesNames: [{ name: { type: String }, userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' } }], // Store both names and user IDs
     actualAttendees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] // Store user IDs of attendees
-});
+}); 
+
 const RegularEvent = mongoose.model('RegularEvent', eventSchema);
 
 const insertEvent = async () => {
     // New regular event
     const newRegularEvent = new RegularEvent({
-        title: 'Coding Workshop',
+        title: 'Coding WKSHP',
         description: 'Join us for an exciting coding workshop where you will learn the basics of web development and build your first website!',
         date: new Date('2024-10-15'),
         location: 'Room 101, Main Building',
@@ -26,7 +27,7 @@ const insertEvent = async () => {
 
     // New special event
     const newSpecialEvent = new RegularEvent({ // Assuming SpecialEvent extends RegularEvent
-        title: 'Speed Mentoring',
+        title: 'Speed Mentoring!!!',
         description: 'Get valuable insights and advice from industry professionals in a fast-paced mentoring session!',
         date: new Date('2024-10-22'), // Adjust the date as needed
         location: 'Room 202, Main Building',

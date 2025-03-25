@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 function Information() {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+  const location = useLocation(); // Add this line
+  const gmail = location.state?.email; // Now this will work
   const [resume, setFile] = useState(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -14,20 +16,16 @@ function Information() {
   const [resumeUrl, setResumeUrl] = useState(""); // State to store the resume URL
   const [greeting, setGreeting] = useState(""); // State to store the greeting message
   const [userInfo, setUserInfo] = useState({}); // State to store user information
-  const [ UserID, setUserID] = useState(null); 
-  const location = useLocation(); // Add this line
-  const gmail = location.state?.email; // Now this will work
-
-
-  useEffect(() => {
-    console.log(JPMorgan);
-  }, [JPMorgan]);
-
- 
-
+  const [UserID, setUserID] = useState(null); 
+  
   const collectData = async (e) => {
     e.preventDefault();
-  
+
+  // TESTING RQ: Validate required fields
+  if (!name || !email || !gmail || !password) {
+    alert('Please fill all required fields');
+    return;
+  }
   
     const formData = new FormData();
     formData.append('name', name);
@@ -37,7 +35,7 @@ function Information() {
     formData.append('pronouns', pronouns); 
     formData.append('major', major); 
     formData.append('year', year); 
-    formData.append('JPMorgan', JPMorgan ? 'true' : 'false'); 
+    formData.append('JPMorgan', JPMorgan ? 'true' : 'false');
     if (resume) formData.append('resume', resume);
   
     try {
@@ -92,7 +90,7 @@ function Information() {
       alert('No resume available to view.');
     }
   };
-
+  
   return (
     <div style={styles.container}>
       <div style={styles.card}>
@@ -152,11 +150,11 @@ function Information() {
           <div>
             <label className='form-label'>JPMorgan</label>
             <input
-  type='checkbox'
-  name='jpmorgan'
-  onChange={(e) => { setJPMorgan(e.target.checked) }} // This should set the value to true/false
-  checked={JPMorgan}
-/>
+              type='checkbox'
+              name='jpmorgan'
+              onChange={(e) => { setJPMorgan(e.target.checked) }} // This should set the value to true/false
+              checked={JPMorgan}
+            />
           </div>
           <div>
             <label className='form-label'>Resume</label>
@@ -182,7 +180,6 @@ function Information() {
           </div>
         </form>
 
-        {/* Display greeting message with user's name and email */}
         {greeting && (
           <div style={styles.greeting}>
             <h3>{greeting}</h3>

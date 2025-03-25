@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Modal from './Modal'; // Adjust the path to your Modal component
 import './App.css';
 
+
 const RegularEventsPage = () => {
     const navigate = useNavigate(); // Helps move between pages dynamically
     const location = useLocation(); // Extracts user data (ID, GMail, Name) passed from previous page

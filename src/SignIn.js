@@ -1,6 +1,90 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+const SignIn = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      console.log('Sending login request with:', { email, password });
+      
+      const response = await fetch('http://localhost:4000/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+      console.log('Full login response:', data); // Add this line
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
+      }
+
+      // Debug what's being stored
+      console.log('Data received:', {
+      token: data.token,
+      userId: data.userId,
+      name: data.name,
+      email: data.email,
+      isAdmin: data.isAdmin
+      });
+
+      // Store token and user data
+      //localStorage.setItem('token', data.token);
+      localStorage.setItem('userId', data.userId);
+      localStorage.setItem('user', JSON.stringify(data));
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+      }
+      
+      // Navigate based on admin status
+      if (data.isAdmin) {
+        navigate('/admin', { state: data });
+      } else {
+        navigate('/profile', { state: data });
+      }
+
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  return (
+    <div style={{ maxWidth: '400px', margin: '0 auto', padding: '20px' }}>
+      <h2>Login</h2>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Email:</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label>Password:</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  );
+};
 
 // Consider the event to be coding workshop: 6701cc315e02bdc39d7666ae
+/*
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
@@ -57,5 +141,6 @@ const SignIn = () => {
     </div>
   );
 };
+*/
 
 export default SignIn;

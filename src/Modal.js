@@ -15,6 +15,7 @@ const Modal = ({ isOpen, onClose, onAddToCalendar }) => {
     );
 };
 
+
 // Modal styles
 const styles = {
     modalOverlay: {

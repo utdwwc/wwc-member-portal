@@ -9,7 +9,7 @@ const applicationSchema = new mongoose.Schema({
     },
     eventId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'RegularEvent', // Reference to the SpecialEvent model
+        ref: 'Event', // Reference to the SpecialEvent model
         required: false,
         default: null
     },
@@ -30,11 +30,11 @@ const applicationSchema = new mongoose.Schema({
         required: true
     }
 });
-const SpecialEvents = mongoose.model('eventapplications', applicationSchema);
+const EventApplication = mongoose.model('eventapplications', applicationSchema);
 const insertEvent = async () => {
 
     // New special event
-    const newSpecialApplicationEvent = new SpecialEvents({ // Assuming SpecialEvent extends RegularEvent
+    const newSpecialApplicationEvent = new EventApplication({ // Assuming EventApplication extends RegularEvent
         userId: '6701d63c84d1943a2dac42dd', 
         eventId : '6701cc315e02bdc39d7666ae', 
         name: "aaryaa", 
@@ -53,4 +53,4 @@ const insertEvent = async () => {
 
 insertEvent(); 
 
-module.exports = SpecialEvents;
+module.exports = EventApplication;
