@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 // TESTING RQQQQQ: setting up token generation and verification
-const bcrypt = require('bcryptjs');
+// const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({

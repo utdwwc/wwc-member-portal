@@ -70,7 +70,6 @@ const Admin = () => {
 
     // FETCH (GET/): Retrieves list of existing events from backend
     const fetchEvents = async () => {
-
         try {
             const response = await fetch('http://localhost:4000/regularevents');
             const data = await response.json();
@@ -78,6 +77,7 @@ const Admin = () => {
           } catch (err) {
             setEvents([]); // Ensure state is always an array
           }
+
         /* TESTINGGG RQQQQ: with tokens
         try {
             const token = localStorage.getItem('token');
@@ -123,13 +123,16 @@ const Admin = () => {
         setErrorMessage('');
         
         try {
-            const response = await fetch('http://localhost:4000/admin/events', {
+            const response = await fetch('http://localhost:4000/regularevents', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}` //Authorization Token used again
+                    //'Authorization': `Bearer ${localStorage.getItem('token')}` //Authorization Token used again
                 },
-                body: JSON.stringify(eventData)
+                body: JSON.stringify({
+                  ...eventData,
+                  isSpecial: eventData.isSpecial ?? false,
+                })
             });
 
             if (!response.ok) {
@@ -143,8 +146,10 @@ const Admin = () => {
             setEventData({
                 title: '',
                 description: '',
-                date: '', location: ''
-            }); // Clear form
+                date: '',
+                location: '',
+                isSpecial: false,
+            }); // clear form
             console.log('Event created:', data);
         } catch (error) {
             console.error('Error creating event:', error);

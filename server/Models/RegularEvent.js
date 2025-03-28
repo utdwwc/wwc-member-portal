@@ -13,6 +13,7 @@ const eventSchema = new mongoose.Schema({
 
 const RegularEvent = mongoose.model('RegularEvent', eventSchema);
 
+/*
 const insertEvent = async () => {
     // New regular event
     const newRegularEvent = new RegularEvent({
@@ -48,5 +49,6 @@ const insertEvent = async () => {
 };
 
 insertEvent();
+*/
 
 module.exports = RegularEvent;
