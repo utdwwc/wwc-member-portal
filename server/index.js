@@ -302,7 +302,7 @@ app.post('/regularevents', async (req, res) => {
   
   try {
     console.log("Received request:", req.body); //debugging
-    const { title, description, date, location, isSpecial = false, points = 0 } = req.body;
+    const { title, description, date, location, appReq = false, points = 0 } = req.body;
 
     if (!title || !description || !date || !location) {
       return res.status(400).json({ message: 'Missing required fields' });
@@ -318,7 +318,7 @@ app.post('/regularevents', async (req, res) => {
       description,
       date: new Date(date),
       location,
-      isSpecial: isSpecial ?? false,
+      appReq: appReq ?? false,
       points: points ?? 0,
       attendees: [],
       actualAttendees: [],

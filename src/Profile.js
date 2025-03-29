@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);

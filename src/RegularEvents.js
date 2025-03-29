@@ -1,36 +1,53 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import Modal from './Modal'; // Adjust the path to your Modal component
+import Modal from './Modal'; //adjust the path to your modal component
 import './App.css';
 
-
 const RegularEventsPage = () => {
-    const navigate = useNavigate(); // Helps move between pages dynamically
-    const location = useLocation(); // Extracts user data (ID, GMail, Name) passed from previous page
+    const navigate = useNavigate(); //helps move between pages dynamically
+    const location = useLocation(); //extracts user data (ID, GMail, Name) passed from previous page
     const userId = location.state?.UserID;
     const gmail = location.state?.gmail; 
     const name = location.state?.name; 
-    const [isChecked, setIsChecked] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false); // State to control the modal
-    const eventIDSpeedMentoring = '670949b3d99b8db6027933c7'; 
-    const eventIDCodingWorkshop = '6701cc315e02bdc39d7666ae'; 
-    
-    // Logs user info when component loads
-    // Debugging: Helps verify that user data is correctly passed into this page
-    useEffect(() => {
-        console.log("UserID:", userId);
-        console.log("Gmail:", gmail);
-        console.log("Name:", name);
-    }, [userId, gmail, name]);
-    
-    // If checked: sends an RSVP request to the backend
-    const handleCheckboxChange = async () => {
-        const newCheckedStatus = !isChecked;
-        setIsChecked(newCheckedStatus);
 
+    const [events, setEvents] = useState([]); //connecting to database
+    const [rsvpStatus, setRsvpStatus] = useState({}); // { eventId1: true, eventId2: false }
+    const [currentEvent, setCurrentEvent] = useState(null);
+
+    
+    /* PURPOSE: Retrieves list of existing events from backend */
+    const fetchEvents = async () => {
         try {
-            // FETCH (POST/): Sends data (userId, userName, and isChecked) to backend
-            const response = await fetch(`http://localhost:4000/regularevents/${eventIDCodingWorkshop}/rsvp`, {
+            const response = await fetch('http://localhost:4000/regularevents');
+            const data = await response.json();
+            setEvents(data);
+
+            const initialRsvpStatus = {}; //initializes rsvp status if backend provides info
+            data.forEach(event => {
+                initialRsvpStatus[event._id] = event.userHasRsvped || false;
+            });
+            setRsvpStatus(initialRsvpStatus);
+          } catch (error) {
+            console.error("Error fetching events:", error)
+          }
+    };
+
+    /* PURPOSE: Runs Once Component Mounts */
+    useEffect(() => {
+        console.log("UserID:", userId); //debugging
+        console.log("Gmail:", gmail); //debugging
+        console.log("Name:", name); //debugging
+
+        fetchEvents(); //loads events from backend
+    }, []);
+    
+    /* PURPOSE: Sends an RSVP Request to Backend When Checked */
+    const handleCheckboxChange = async (eventId) => {
+        const currentStatus = rsvpStatus[eventId] || false;
+        const newStatus = !currentStatus;
+        try {
+            const response = await fetch(`http://localhost:4000/regularevents/${eventId}/rsvp`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -38,90 +55,104 @@ const RegularEventsPage = () => {
                 body: JSON.stringify({
                     userId: userId,
                     userName: name,   
-                    isChecked: newCheckedStatus,
+                    isChecked: newStatus,
                 }),
             });
+    
             const data = await response.json();
             console.log(data.message);
-            if (newCheckedStatus) {
-                setIsModalOpen(true); // If RSVP was checked, this opens a modal for adding the event to Google Calendar
+    
+            setRsvpStatus(prev => ({ //updates local state
+                ...prev,
+                [eventId]: newStatus
+            }));
+    
+            if (newStatus) {
+                setIsModalOpen(true);
             }
         } catch (error) {
             console.error('Error updating RSVP:', error);
         }
+
+        if (newStatus) {
+            const event = events.find(e => e._id === eventId); //find event obj that matches ID
+            setCurrentEvent(event);
+            setIsModalOpen(true);
+        }
     };
 
-    // Generates a Google Calendar event link with event details
+    /* PURPOSE: Generates a Google Calendar Event link */
     const handleAddToCalendar = () => {
-        const eventTitle = encodeURIComponent("Coding Workshop");
-        const eventDescription = encodeURIComponent("Join us for an exciting coding workshop where you will learn the basics of web development and build your first website!");
-        const eventLocation = encodeURIComponent("Room 101, Main Building");
-        const eventStartDate = encodeURIComponent("2024-10-15T10:00:00"); // Adjust the time
-        const eventEndDate = encodeURIComponent("2024-10-15T12:00:00"); // Adjust the time
-
-        const calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${eventTitle}&details=${eventDescription}&location=${eventLocation}&dates=${eventStartDate}/${eventEndDate}`;
+        if (!currentEvent) return;
         
-        window.open(calendarUrl, '_blank'); // Open the link in a new tab
-        setIsModalOpen(false); // Close the modal
+        const formatDate = (dateString, hours, minutes) => { //formats date in googcal's required format
+        const date = new Date(dateString);
+        date.setHours(hours, minutes, 0, 0);
+        return date.toISOString().replace(/-|:|\.\d+/g, '').slice(0, 15) + 'Z';
+    };
+
+        const eventStartDate = formatDate(currentEvent.date, 19, 0); //automatically is 7:00 PM
+        const eventEndDate = formatDate(currentEvent.date, 20, 0);   //automatically is 8:00 PM
+    
+        const calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${currentEvent.title}&details=${currentEvent.description}&location=${currentEvent.location}&dates=${eventStartDate}/${eventEndDate}`;
+        
+        window.open(calendarUrl, '_blank');
+        setIsModalOpen(false);
     };
 
     return (
         <div>
-        {/* Page title outside the container */}
-        <h1 style={styles.pageTitle}>Regular Events Page</h1>
-        <div style={styles.container}>
-            <h1 style={styles.title}>Event: Coding Workshop</h1>
-            <p><strong>Description:</strong> Join us for an exciting coding workshop where you will learn the basics of web development and build your first website!</p>
-            <p><strong>Date:</strong> October 15, 2024</p>
-            <p><strong>Location:</strong> Room 101, Main Building</p>
+            <h1 style={styles.pageTitle}>Regular Events Page</h1>
             
-            <label style={styles.label}>
-                <input 
-                    type="checkbox" 
-                    checked={isChecked} 
-                    onChange={handleCheckboxChange} 
-                    style={styles.checkbox} 
-                />
-                RSVP
-            </label>
-            {isChecked && <p style={styles.confirmation}>You have RSVPed!</p>}
-            
-            <Modal 
-                isOpen={isModalOpen} 
-                onClose={() => setIsModalOpen(false)} 
-                onAddToCalendar={handleAddToCalendar} 
-            />
+            {/* Navigation buttons (moved outside event mapping) */}
+            <div style={styles.container}>
+                <button style={styles.button} onClick={() => navigate('/admin')}>
+                    Go to Admin
+                </button>
+                <button style={styles.button} onClick={() => {
+                    console.log("Navigating to Profile with gmail:", gmail);
+                    navigate('/profile', { state: { gmail } })
+                }}>
+                    Go to Profile
+                </button>
+            </div>
+
+            {events.map((event) => (
+                <div key={event._id} style={styles.container}>
+                    <h1 style={styles.title}>Event: {event.title}</h1>
+                    <p><strong>Description:</strong> {event.description}</p>
+                    <p><strong>Date:</strong> {new Date(event.date).toLocaleDateString()}</p>
+                    <p><strong>Location:</strong> {event.location}</p>
+                    
+                <label style={styles.label}>
+                    <input 
+                        type="checkbox" 
+                        checked={rsvpStatus[event._id] || false} 
+                        onChange={() => handleCheckboxChange(event._id)} 
+                        style={styles.checkbox} 
+                    />
+                    RSVP
+                    </label>
+                    {rsvpStatus[event._id] && <p style={styles.confirmation}>You have RSVPed!</p>}
+                    
+                    <Modal 
+                        isOpen={isModalOpen} 
+                        onClose={() => setIsModalOpen(false)} 
+                        onAddToCalendar={handleAddToCalendar} 
+                        event={currentEvent}
+                    />
+                </div>
+            ))}
         </div>
-        <div style={styles.container}>
-            <h1 style={styles.title}>Event: Speed Mentoring</h1>
-            <p><strong>Description:</strong> Join us for an exciting coding workshop where you will learn the basics of web development and build your first website!</p>
-            <p><strong>Date:</strong> October 15, 2024</p>
-            <p><strong>Location:</strong> Room 101, Main Building</p>
-            <button style={styles.button} onClick={() => navigate('/specialEvents', { state: {userId, eventId : eventIDSpeedMentoring} })}>
-    Go to Application
-</button>
-            
-            <Modal 
-                isOpen={isModalOpen} 
-                onClose={() => setIsModalOpen(false)} 
-                onAddToCalendar={handleAddToCalendar} 
-            />
-           <button style={styles.button} onClick={() => navigate('/admin')}>
-    Go to Admin
-</button>
-<button style={styles.button} onClick={() => {
-    console.log("Navigating to Profile with gmail:", gmail);
-    navigate('/profile', { state: {gmail} })}}>
-    Go to Profile
-</button>
-            
-        </div>
-        </div> 
     );
 };
 
-// Inline styles for basic styling
 const styles = {
+    pageTitle: {
+        textAlign: 'center',
+        margin: '20px 0',
+        fontSize: '2rem',
+    },
     container: {
         fontFamily: 'Arial, sans-serif',
         margin: '20px',
@@ -132,6 +163,7 @@ const styles = {
     },
     title: {
         color: '#333',
+        marginBottom: '15px',
     },
     label: {
         display: 'flex',

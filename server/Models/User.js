@@ -5,43 +5,17 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true
-    },
+    name: { type: String, required: true },
     pronouns: String,
     major: String,
     year: String,
-    email: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    gmail: {
-        type: String, 
-        required: true, 
-        unique: true
-    },
-    password: {
-        type: String,
-        required: true // Add if passwords are mandatory
-    },
-    JPMorgan: { // Note: Consistent capitalization
-        type: Boolean,
-        default: false, // Change default to false
-    },
-    points: {
-        type: Number,
-        default: 0, 
-    }, 
-    resume: {
-        path: String,
-        contentType: String
-    }, 
-    isAdmin: {
-        type: Boolean,
-        default: false, 
-    }
+    email: {  type: String, required: true, unique: true },
+    gmail: { type: String, required: true, unique: true },
+    password: { type: String, required: true }, //add passwords if necessary
+    JPMorgan: { type: Boolean, default: false}, //note consistent capitalization
+    points: { type: Number, default: 0 }, 
+    resume: { path: String, contentType: String }, 
+    isAdmin: { type: Boolean, default: false }
 }, { timestamps: true }); // Add timestamps for debugging
 
 // TESTING RQQQQ: Hash password before saving

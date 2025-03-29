@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 const Admin = () => {
+    /* PURPOSE: State Initialization */
     const [events, setEvents] = useState([]);
     const [users, setUsers] = useState([]);
     const [eventData, setEventData] = useState({
@@ -8,22 +9,21 @@ const Admin = () => {
         description: '',
         date: '',
         location: '',
+        appReq: false, //changed from isSpecial
         points: 0,
-        isSpecial: false
     });
     const [errorMessage, setErrorMessage] = useState('');
 
-
-    // FETCH (GET/): Retrieves list of registered users from backend (!!!)
+    /* PURPOSE: Retrieves List of Registered Users from Backend */
     const fetchUsers = async () => {
         setErrorMessage('');
         
-        try { // TESTING RQ: simplified endpint without token (for now)
-            const response = await fetch('http://localhost:4000/users'); // Changed endpoint
+        try { //TESTING: simplified endpint without token (for now)
+            const response = await fetch('http://localhost:4000/users');
             const data = await response.json();
             setUsers(data);
           } catch (err) {
-            setUsers([]); // Ensure state is always an array
+            setUsers([]); //ensure state is always an array
           }
 
         /* TESTINGGGG RQQQQ: with tokens
@@ -69,15 +69,14 @@ const Admin = () => {
 
       };
 
-
-    // FETCH (GET/): Retrieves list of existing events from backend
+    /* PURPOSE: Retrieves List of Existing Events from Backend */
     const fetchEvents = async () => {
         try {
             const response = await fetch('http://localhost:4000/regularevents');
             const data = await response.json();
             setEvents(data);
           } catch (err) {
-            setEvents([]); // Ensure state is always an array
+            setEvents([]); //ensure state is always an array
           }
 
         /* TESTINGGG RQQQQ: with tokens
@@ -106,15 +105,13 @@ const Admin = () => {
         }*/
     };
 
-
-    // useEffect runs when component mounts
+    /* PURPOSE: Render User and Event List when Component Mounts */
     useEffect(() => {
         fetchUsers(); //
         fetchEvents();
     }, []);
 
-
-    // Function: Updates the 'eventData' state so that the form fields reflect the latest input values
+    /* PURPOSE: Updates Form with 'eventData' State */
     const handleEventChange = (e) => {
       const { name, value } = e.target;
       setEventData(prev => ({
@@ -123,8 +120,7 @@ const Admin = () => {
       }));
     };
 
-
-    // FETCH (POST/): Sends event form data to the backend to create a new event
+    /* PURPOSE: Creates New Event in Database */
     const createEvent = async (eventData) => {
         setErrorMessage('');
         
@@ -137,7 +133,7 @@ const Admin = () => {
                 },
                 body: JSON.stringify({
                   ...eventData,
-                  isSpecial: eventData.isSpecial ?? false,
+                  appReq: eventData.appReq ?? false,
                   points: eventData.points ?? 0,
                 })
             });
@@ -149,15 +145,15 @@ const Admin = () => {
             }
             
             const data = await response.json();
-            setEvents([...events, data]); // Add new event to the list
+            setEvents([...events, data]); //add new event to the list
             setEventData({
                 title: '',
                 description: '',
                 date: '',
                 location: '',
-                isSpecial: false,
+                appReq: false,
                 points: 0,
-            }); // clear form
+            }); //clear form
             console.log('Event created:', data);
         } catch (error) {
             console.error('Error creating event:', error);
@@ -179,19 +175,43 @@ const Admin = () => {
                 <input type="date" name="date" value={eventData.date} onChange={handleEventChange} required />
                 <input type="text" name="location" placeholder="Event Location" value={eventData.location} onChange={handleEventChange} required />
                 <input type="number" name="points" placeholder="Points Value" value={eventData.points || ''} onChange={handleEventChange} min="0" step="1" required />
+                <label>
+                  <input type="checkbox" checked={eventData.appReq} onChange={(e) => setEventData({...eventData, appReq: e.target.checked})}/>
+                  App Requirement 
+                </label>
                 <button type="submit">Create Event</button>
             </form>
 
             <h2>Existing Events</h2>
             {events.length > 0 ? (
-            <ul>
-                {events.map(event => (
-                    <li key={event._id}>
-                        <strong>{event.title}</strong> - {new Date(event.date).toLocaleDateString()} @ {event.location} - {event.points} points
-                        <p>{event.description}</p>
-                    </li>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                 <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Event</th>
+                    <th>Description</th>
+                    <th>Location</th>
+                    <th>App Req</th>
+                    <th>Points</th>
+                    <th>RSVPs</th>
+                    <th>Attended</th>
+                  </tr>
+                </thead>
+                <tbody>
+                 {events.map(event => (
+                  <tr key={event._id} style={{ borderBottom: '1px solid #ddd' }}>
+                    <td>{<td>{new Date(event.date).toLocaleDateString()}</td>}</td>
+                    <td>{event.title || '—'}</td>
+                    <td>{event.description || '—'}</td>
+                    <td>{event.location || '—'}</td>
+                    <td>{event.appReq ? 'Y' : 'N'}</td>
+                    <td>{event.points}</td>
+                    <td>{}</td>
+                    <td>{}</td>
+                  </tr>
                 ))}
-            </ul>
+            </tbody>
+        </table>
             ) : (
             <p>No events found.</p>
             )}
