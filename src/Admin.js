@@ -7,7 +7,9 @@ const Admin = () => {
         title: '',
         description: '',
         date: '',
-        location: ''
+        location: '',
+        points: 0,
+        isSpecial: false
     });
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -114,7 +116,11 @@ const Admin = () => {
 
     // Function: Updates the 'eventData' state so that the form fields reflect the latest input values
     const handleEventChange = (e) => {
-        setEventData({ ...eventData, [e.target.name]: e.target.value });
+      const { name, value } = e.target;
+      setEventData(prev => ({
+        ...prev,
+        [name]: name === 'points' ? parseInt(value) || 0 : value
+      }));
     };
 
 
@@ -132,6 +138,7 @@ const Admin = () => {
                 body: JSON.stringify({
                   ...eventData,
                   isSpecial: eventData.isSpecial ?? false,
+                  points: eventData.points ?? 0,
                 })
             });
 
@@ -149,6 +156,7 @@ const Admin = () => {
                 date: '',
                 location: '',
                 isSpecial: false,
+                points: 0,
             }); // clear form
             console.log('Event created:', data);
         } catch (error) {
@@ -170,6 +178,7 @@ const Admin = () => {
                 <input type="text" name="description" placeholder="Event Description" value={eventData.description} onChange={handleEventChange} required />
                 <input type="date" name="date" value={eventData.date} onChange={handleEventChange} required />
                 <input type="text" name="location" placeholder="Event Location" value={eventData.location} onChange={handleEventChange} required />
+                <input type="number" name="points" placeholder="Points Value" value={eventData.points || ''} onChange={handleEventChange} min="0" step="1" required />
                 <button type="submit">Create Event</button>
             </form>
 
@@ -178,7 +187,7 @@ const Admin = () => {
             <ul>
                 {events.map(event => (
                     <li key={event._id}>
-                        <strong>{event.title}</strong> - {new Date(event.date).toLocaleDateString()} @ {event.location}
+                        <strong>{event.title}</strong> - {new Date(event.date).toLocaleDateString()} @ {event.location} - {event.points} points
                         <p>{event.description}</p>
                     </li>
                 ))}

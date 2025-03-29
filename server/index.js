@@ -287,6 +287,51 @@ app.get('/user/:id/resume', async (req, res) => {
 
 /*  <------------  EVENTS TABLE  ------------>  */
 
+/* PURPOSE: Retrieve All Existing Events from Database */
+app.get('/regularevents', async (req, res) => {
+  try {
+    const events = await RegularEvent.find();
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+/* PURPOSE: General Event Creation */
+app.post('/regularevents', async (req, res) => {
+  
+  try {
+    console.log("Received request:", req.body); //debugging
+    const { title, description, date, location, isSpecial = false, points = 0 } = req.body;
+
+    if (!title || !description || !date || !location) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    if (points !== undefined && typeof points !== 'number') {
+      return res.status(400).json({ message: 'Points must be a number' });
+    }
+
+    // Create new event
+    const newEvent = new RegularEvent({
+      title,
+      description,
+      date: new Date(date),
+      location,
+      isSpecial: isSpecial ?? false,
+      points: points ?? 0,
+      attendees: [],
+      actualAttendees: [],
+  });
+
+    const savedEvent = await newEvent.save();
+    res.status(201).json(savedEvent); //returns saved event as json
+  } catch (error) {
+    console.error('Error creating event: ', error);
+    res.status(500).json({ message: 'Error saving event: ', error: error.message });
+  }
+});
+
 /* PURPOSE: Updates who RSVP'd -> Added to Attendees List */
 app.post('/regularevents/:eventId/rsvp', async (req, res) => {
   const eventId = req.params.eventId;
@@ -474,62 +519,6 @@ app.post('/admin/events', isAdmin, async (req, res) => {
     res.status(500).json({ error: 'Error creating event' });
   }
 }); */
-
-
-// display events on admin page (without token) - TEMPORARY 
-// changed /events to /regularevents
-/*app.get('/regularevents', async (req, res) => {
-  try {
-    console.log('Fetching events from DB...'); //Debug
-    const events = await RegularEvent.find({})
-      .sort({ date: 1 }); //Sort by date ascending
-    console.log('Found events');
-    res.json(events);
-  } catch (error) {
-    console.log('DB Error:', error)
-    res.status(500).json({ error: error.message });
-  }
-}); */
-
-// TESTING RQQQQ: route to get all events
-app.get('/regularevents', async (req, res) => {
-  try {
-    const events = await RegularEvent.find();
-    res.json(events);
-  } catch (error) {
-    res.status(500).json({ error: "Server error" });
-  }
-});
-
-/* PURPOSE: General Event Creation */
-app.post('/regularevents', async (req, res) => {
-  
-  try {
-    console.log("Received request:", req.body); //debugging
-    const { title, description, date, location, isSpecial = false } = req.body;
-
-    if (!title || !description || !date || !location) {
-      return res.status(400).json({ message: 'Missing required fields' });
-    }
-
-    // Create new event
-    const newEvent = new RegularEvent({
-      title,
-      description,
-      date: new Date(date),
-      location,
-      isSpecial: isSpecial ?? false,
-      attendees: [],
-      actualAttendees: [],
-  });
-
-    const savedEvent = await newEvent.save();
-    res.status(201).json(savedEvent); //returns saved event as json
-  } catch (error) {
-    console.error('Error creating event: ', error);
-    res.status(500).json({ message: 'Error saving event: ', error: error.message });
-  }
-});
 
 app.listen(4000, () => {
   console.log('Server is running on port 4000');
