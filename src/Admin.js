@@ -13,6 +13,8 @@ const Admin = () => {
         points: 0,
     });
     const [errorMessage, setErrorMessage] = useState('');
+    const [expandedEvent, setExpandedEvent] = useState(null);
+    const [eventsWithRsvps, setEventsWithRsvps] = useState([]);
 
     /* PURPOSE: Retrieves List of Registered Users from Backend */
     const fetchUsers = async () => {
@@ -67,7 +69,18 @@ const Admin = () => {
           setErrorMessage('Network error - check console');
         } */
 
-      };
+    };
+
+    /* PURPOSE: Retrieves Events with RSVPs from Backend */
+    const fetchEventsWithRsvps = async () => {
+      try {
+          const response = await fetch('http://localhost:4000/rsvps');
+          const data = await response.json();
+          setEventsWithRsvps(data);
+      } catch (err) {
+          setEventsWithRsvps([]);
+      }
+    };
 
     /* PURPOSE: Retrieves List of Existing Events from Backend */
     const fetchEvents = async () => {
@@ -107,9 +120,15 @@ const Admin = () => {
 
     /* PURPOSE: Render User and Event List when Component Mounts */
     useEffect(() => {
-        fetchUsers(); //
+        fetchUsers();
         fetchEvents();
+        fetchEventsWithRsvps(); // TESTING: rsvp system
     }, []);
+
+    /* PURPOSE: Allows Admin to View Users Who RSVP'd */
+    const toggleExpand = (eventId) => {
+      setExpandedEvent(expandedEvent === eventId ? null : eventId);
+    };
 
     /* PURPOSE: Updates Form with 'eventData' State */
     const handleEventChange = (e) => {
@@ -160,11 +179,11 @@ const Admin = () => {
         }
     };
 
-
     return (
         <div>
             <h1>Admin Dashboard</h1>
             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+
             <h2>Create Event</h2>
             <form onSubmit={(e) => {
                 e.preventDefault();
@@ -186,15 +205,14 @@ const Admin = () => {
             {events.length > 0 ? (
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                  <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Event</th>
-                    <th>Description</th>
-                    <th>Location</th>
-                    <th>App Req</th>
-                    <th>Points</th>
-                    <th>RSVPs</th>
-                    <th>Attended</th>
+                  <tr style={{ backgroundColor: '#f2f2f2' }}>
+                    <th style={{ padding: '10px' }}>Date</th>
+                    <th style={{ padding: '10px' }}>Event</th>
+                    <th style={{ padding: '10px' }}>Description</th>
+                    <th style={{ padding: '10px' }}>Location</th>
+                    <th style={{ padding: '10px' }}>App Req</th>
+                    <th style={{ padding: '10px' }}>Points</th>
+                    <th style={{ padding: '10px' }}>Attended</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -207,7 +225,6 @@ const Admin = () => {
                     <td>{event.appReq ? 'Y' : 'N'}</td>
                     <td>{event.points}</td>
                     <td>{}</td>
-                    <td>{}</td>
                   </tr>
                 ))}
             </tbody>
@@ -215,18 +232,89 @@ const Admin = () => {
             ) : (
             <p>No events found.</p>
             )}
+
+          <h2>Event RSVPs</h2>
+            {eventsWithRsvps.length > 0 ? (
+              <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
+                <thead>
+                  <tr style={{ backgroundColor: '#f2f2f2' }}>
+                    <th style={{ padding: '10px' }}>Event</th>
+                    <th style={{ padding: '10px' }}>Date</th>
+                    <th style={{ padding: '10px' }}>Total RSVPs</th>
+                    <th style={{ padding: '10px' }}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {eventsWithRsvps.map(event => (
+                    <React.Fragment key={event._id}>
+                      <tr style={{ borderBottom: '1px solid #ddd' }}>
+                        <td style={{ padding: '10px' }}>{event.title}</td>
+                        <td style={{ padding: '10px' }}>{new Date(event.date).toLocaleDateString()}</td>
+                        <td style={{ padding: '10px' }}>{event.rsvps.length}</td>
+                        <td style={{ padding: '10px' }}>
+                          <button 
+                            onClick={() => toggleExpand(event._id)}
+                            style={{
+                              padding: '5px 10px',
+                              backgroundColor: expandedEvent === event._id ? '#f44336' : '#4CAF50',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '4px',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            {expandedEvent === event._id ? 'Hide Users' : 'Show Users'}
+                          </button>
+                        </td>
+                      </tr>
+                      {expandedEvent === event._id && (
+                        <tr>
+                          <td colSpan="4" style={{ padding: '10px', backgroundColor: '#f9f9f9' }}>
+                            <h4 style={{ margin: '0 0 10px 0' }}>Show Users</h4>
+                            {event.rsvps.length > 0 ? (
+                              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead>
+                                  <tr>
+                                    <th style={{ padding: '8px', textAlign: 'left' }}>User ID</th>
+                                    <th style={{ padding: '8px', textAlign: 'left' }}>Name</th>
+                                    <th style={{ padding: '8px', textAlign: 'left' }}>+ Guests</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {event.rsvps.map(rsvp => (
+                                    <tr key={rsvp.userId}>
+                                      <td style={{ padding: '8px' }}>{rsvp.userId}</td>
+                                      <td style={{ padding: '8px' }}>{rsvp.name}</td>
+                                      <td style={{ padding: '8px' }}>{rsvp.guests}</td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            ) : (
+                              <p>No RSVPs yet</p>
+                            )}
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+                <p>No RSVP data available</p>
+            )}
             
 
             <h2>Registered Users</h2>
             {users.length > 0 ? (
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                  <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Major</th>
-                    <th>Year</th>
-                    <th>JPMorgan</th>
+                  <tr style={{ backgroundColor: '#f2f2f2' }}>
+                    <th style={{ padding: '10px' }}>Name</th>
+                    <th style={{ padding: '10px' }}>Email</th>
+                    <th style={{ padding: '10px' }}>Major</th>
+                    <th style={{ padding: '10px' }}>Year</th>
+                    <th style={{ padding: '10px' }}>JPMorgan</th>
                   </tr>
                 </thead>
                 <tbody>

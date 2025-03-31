@@ -18,6 +18,7 @@ function Information() {
   const [userInfo, setUserInfo] = useState({}); // State to store user information
   const [userID, setUserID] = useState(null); 
   
+  
   const collectData = async (e) => {
     e.preventDefault();
 
@@ -39,6 +40,8 @@ function Information() {
   if (resume) formData.append('resume', resume);
   
   try {
+    console.log([...formData.entries()]);//debugging
+
     // FETCH (POST/): Sends user data to backend + stores user ID
     let result = await fetch('http://localhost:4000/', {
       method: 'POST',

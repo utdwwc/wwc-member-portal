@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const User = require('./Models/User');
 const RegularEvent = require('./Models/RegularEvent');
 const Application = require('./Models/EventApplication'); 
+const RSVP = require("./Models/RSVP");
 const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
@@ -171,17 +172,6 @@ app.get('/users', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-/* TEST: taking out section for now
-app.get('/admin/users', async (req, res) => {
-  try {
-    const users = await User.find({}, { password: 0 }); // Exclude passwords
-    res.json(users);
-  } catch (error) {
-    console.error('Error fetching users:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
-*/
 
 /* TESTING THIS ROUTE
    PURPOSE: Logs In Existing User */
@@ -322,7 +312,7 @@ app.post('/regularevents', async (req, res) => {
       location,
       appReq: appReq ?? false,
       points: points ?? 0,
-      attendees: [],
+      rsvpLimit: rsvpLimit ?? 30,
       actualAttendees: [],
   });
 
@@ -331,6 +321,80 @@ app.post('/regularevents', async (req, res) => {
   } catch (error) {
     console.error('Error creating event: ', error);
     res.status(500).json({ message: 'Error saving event: ', error: error.message });
+  }
+});
+
+/* TESTING 1: rsvp system 
+// POST /api/rsvp (Create/Update RSVP)
+router.post("/", async (req, res) => {
+  const { eventId, userId, status } = req.body;
+  const rsvp = await RSVP.findOneAndUpdate(
+    { eventId, userId },
+    { status },
+    { upsert: true, new: true } // Create if doesn't exist
+  );
+  res.json(rsvp);
+}); */
+
+/* TESTING 2: rsvp system 
+// GET /api/events/:eventId/rsvps (List Attendees)
+// GET /api/events/:eventId/rsvp-count
+router.get('/:eventId/rsvp-count', async (req, res) => {
+  try {
+    const eventId = req.params.eventId;
+    
+    // Count all "Going" RSVPs (including guests)
+    const rsvps = await RSVP.find({ 
+      eventId: eventId, 
+      status: "Going" 
+    });
+    
+    // Calculate total attendees (users + guests)
+    let totalAttending = 0;
+    rsvps.forEach(rsvp => {
+      totalAttending += 1 + rsvp.guests; // User + their guests
+    });
+    
+    // Get the event's RSVP limit
+    const event = await RegularEvent.findById(eventId);
+    const rsvpLimit = event.rsvpLimit;
+    
+    res.json({
+      totalAttending,
+      rsvpLimit,
+      isFull: rsvpLimit > 0 && totalAttending >= rsvpLimit // Boolean for UI
+    });
+    
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
+  }
+}); */
+
+/* TESTING: rsvp system */
+app.get('/rsvps', async (req, res) => {
+  try {
+    const events = await RegularEvent.find().lean();
+    
+    const eventsWithRsvps = await Promise.all(
+      events.map(async (event) => {
+        const rsvps = await RSVP.find({ eventId: event._id, status: "Going" })
+          .populate('userId', 'name _id'); // Include user name and ID
+        
+        return {
+          ...event,
+            rsvps: rsvps.map(rsvp => ({
+              userId: rsvp.userId._id,
+              name: rsvp.userId.name,
+              guests: rsvp.guests
+            }))
+        };
+      })
+    );
+    console.log(events);
+    console.log(eventsWithRsvps);
+    res.json(eventsWithRsvps);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
