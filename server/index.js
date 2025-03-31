@@ -9,7 +9,7 @@ const fs = require('fs');
 const cors = require('cors');
 
 const jwt = require('jsonwebtoken'); // TESTING RQQQ: i dont like u jwt
-// const bcrypt = require('bcryptjs'); // TESTING RQQQ: being difficult boohoo
+const bcrypt = require('bcryptjs'); // TESTING RQQQ: being difficult boohoo
 
 require('./db/connection');
 
@@ -88,7 +88,7 @@ app.post('/register', async (req, res) => {
 });
 
 /* PURPOSE: General User Creation */
-app.post('/', upload.single('resume'), async (req, res) => {
+app.post('/users', upload.single('resume'), async (req, res) => {
   try {
     const { 
       name = '', 

@@ -16,7 +16,7 @@ function Information() {
   const [resumeUrl, setResumeUrl] = useState(""); // State to store the resume URL
   const [greeting, setGreeting] = useState(""); // State to store the greeting message
   const [userInfo, setUserInfo] = useState({}); // State to store user information
-  const [UserID, setUserID] = useState(null); 
+  const [userID, setUserID] = useState(null); 
   
   const collectData = async (e) => {
     e.preventDefault();
@@ -27,69 +27,78 @@ function Information() {
     return;
   }
   
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('email', email);
-    formData.append('gmail', gmail); 
-    formData.append('password', password);
-    formData.append('pronouns', pronouns); 
-    formData.append('major', major); 
-    formData.append('year', year); 
-    formData.append('JPMorgan', JPMorgan ? 'true' : 'false');
-    if (resume) formData.append('resume', resume);
+  const formData = new FormData();
+  formData.append('name', name);
+  formData.append('email', email);
+  formData.append('gmail', gmail); 
+  formData.append('password', password);
+  formData.append('pronouns', pronouns); 
+  formData.append('major', major); 
+  formData.append('year', year); 
+  formData.append('JPMorgan', JPMorgan ? 'true' : 'false');
+  if (resume) formData.append('resume', resume);
   
-    try {
-      // FETCH (POST/): Sends user data to backend + stores user ID
-      let result = await fetch('http://localhost:4000/', {
-        method: 'POST',
-        body: formData,
-      });
+  try {
+    // FETCH (POST/): Sends user data to backend + stores user ID
+    let result = await fetch('http://localhost:4000/users', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
   
-      if (!result.ok) {
-        throw new Error(`HTTP error1! status: ${result.status}`);
-      }
+    if (!result.ok) {
+      const errorData = await result.json();
+      alert(errorData.message || `Error: ${result.status}`);
+      return;
+    }      
   
-      const contentType = result.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        throw new TypeError("Received non-JSON response");
-      }
-  
-      result = await result.json();
-      localStorage.setItem("user", JSON.stringify(result));
-      setUserID(result._id); // Updates state with user's ID
-        console.log(UserID); 
-  
-      // FETCH (GET/): Retrieves the user's uploaded resume
-      const resumeResponse = await fetch(`http://localhost:4000/user/${result._id}/resume`);
-      if (!resumeResponse.ok) {
-        throw new Error(`HTTP error2! status: ${resumeResponse.status}`);
-      }
-  
-      const resumeBlob = await resumeResponse.blob();
-      const resumeUrl = URL.createObjectURL(resumeBlob); // Creates downloadable URL for file
-      setResumeUrl(resumeUrl); // Makes resume available for viewing
-  
-      // FETCH (GET/): Retrieves user details to display 
-      const userResponse = await fetch(`http://localhost:4000/user/${result._id}`);
-      if (!userResponse.ok) {
-        throw new Error(`HTTP error3! status: ${userResponse.status}`);
-      }
-  
-      const userData = await userResponse.json();
-      setUserInfo(userData); // Updates state with user's info
-      setGreeting(`Hello ${userData.name} (${userData.email})`); // Set greeting with name and email
-    } catch (error) {
-      console.error('Error:', error);
+    const contentType = result.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      throw new TypeError("Received non-JSON response");
     }
-  };
+  
+    result = await result.json();
+    localStorage.setItem("users", JSON.stringify(result));
+    setUserID(result._id); // Updates state with user's ID
+    console.log(userID); 
+  
+    // FETCH (GET/): Retrieves the user's uploaded resume
+    const resumeResponse = await fetch(`http://localhost:4000/users/${result._id}/resume`);
+    if (!resumeResponse.ok) {
+      throw new Error(`HTTP error2! status: ${resumeResponse.status}`);
+    }
+  
+    const resumeBlob = await resumeResponse.blob();
+    const resumeUrl = URL.createObjectURL(resumeBlob); // Creates downloadable URL for file
+    setResumeUrl(resumeUrl); // Makes resume available for viewing
+  
+    // FETCH (GET/): Retrieves user details to display 
+    const userResponse = await fetch(`http://localhost:4000/users/${result._id}`);
+    if (!userResponse.ok) {
+      throw new Error(`HTTP error3! status: ${userResponse.status}`);
+    }
+  
+    const userData = await userResponse.json();
+    setUserInfo(userData); // Updates state with user's info
+    setGreeting(`Hello ${userData.name} (${userData.email})`); // Set greeting with name and email
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
 
-  const viewResume = () => {
-    if (resumeUrl) {
-      window.open(resumeUrl, '_blank'); // Open the resume URL in a new tab/window
-    } else {
-      alert('No resume available to view.');
-    }
-  };
+useEffect(() => {
+  console.log(userID);
+}, [userID]); 
+
+const viewResume = () => {
+  if (resumeUrl) {
+    window.open(resumeUrl, '_blank'); // Open the resume URL in a new tab/window
+  } else {
+    alert('No resume available to view.');
+  }
+};
   
   return (
     <div style={styles.container}>
@@ -171,7 +180,7 @@ function Information() {
           >
             View Resume
           </button>
-          <button style={styles.button} onClick={() => navigate('/regularEvents', { state: {UserID, name, gmail} })}>
+          <button style={styles.button} onClick={() => navigate('/regularEvents', { state: {userID, name, gmail} })}>
           Events Page
           </button>
           <div>
