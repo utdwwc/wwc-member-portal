@@ -40,12 +40,9 @@ function Information() {
   
   try {
     // FETCH (POST/): Sends user data to backend + stores user ID
-    let result = await fetch('http://localhost:4000/users', {
+    let result = await fetch('http://localhost:4000/', {
       method: 'POST',
       body: formData,
-      headers: {
-        'Content-Type': 'application/json',
-      },
     });
   
     if (!result.ok) {
@@ -60,12 +57,14 @@ function Information() {
     }
   
     result = await result.json();
-    localStorage.setItem("users", JSON.stringify(result));
+    localStorage.setItem("user", JSON.stringify(result));
     setUserID(result._id); // Updates state with user's ID
     console.log(userID); 
+
+    navigate('/regularEvents');
   
     // FETCH (GET/): Retrieves the user's uploaded resume
-    const resumeResponse = await fetch(`http://localhost:4000/users/${result._id}/resume`);
+    const resumeResponse = await fetch(`http://localhost:4000/user/${result._id}/resume`);
     if (!resumeResponse.ok) {
       throw new Error(`HTTP error2! status: ${resumeResponse.status}`);
     }
@@ -75,7 +74,7 @@ function Information() {
     setResumeUrl(resumeUrl); // Makes resume available for viewing
   
     // FETCH (GET/): Retrieves user details to display 
-    const userResponse = await fetch(`http://localhost:4000/users/${result._id}`);
+    const userResponse = await fetch(`http://localhost:4000/user/${result._id}`);
     if (!userResponse.ok) {
       throw new Error(`HTTP error3! status: ${userResponse.status}`);
     }
