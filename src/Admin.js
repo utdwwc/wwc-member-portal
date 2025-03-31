@@ -188,13 +188,15 @@ const Admin = () => {
             <form onSubmit={(e) => {
                 e.preventDefault();
                 createEvent(eventData);
-            }}>
+            }}
+            style={{ display: "flex", flexDirection: "column", gap: "10px", maxWidth: "400px" }}
+            >
                 <input type="text" name="title" placeholder="Event Title" value={eventData.title} onChange={handleEventChange} required />
                 <input type="text" name="description" placeholder="Event Description" value={eventData.description} onChange={handleEventChange} required />
                 <input type="date" name="date" value={eventData.date} onChange={handleEventChange} required />
                 <input type="text" name="location" placeholder="Event Location" value={eventData.location} onChange={handleEventChange} required />
                 <input type="number" name="points" placeholder="Points Value" value={eventData.points || ''} onChange={handleEventChange} min="0" step="1" required />
-                <label>
+                <label style={{ display: "flex", alignItems: "center", gap: "5px" }}>
                   <input type="checkbox" checked={eventData.appReq} onChange={(e) => setEventData({...eventData, appReq: e.target.checked})}/>
                   App Requirement 
                 </label>
@@ -218,12 +220,12 @@ const Admin = () => {
                 <tbody>
                  {events.map(event => (
                   <tr key={event._id} style={{ borderBottom: '1px solid #ddd' }}>
-                    <td>{<td>{new Date(event.date).toLocaleDateString()}</td>}</td>
-                    <td>{event.title || '—'}</td>
-                    <td>{event.description || '—'}</td>
-                    <td>{event.location || '—'}</td>
-                    <td>{event.appReq ? 'Y' : 'N'}</td>
-                    <td>{event.points}</td>
+                    <td style={{ padding: '10px' }}>{<td>{new Date(event.date).toLocaleDateString()}</td>}</td>
+                    <td style={{ padding: '10px' }}>{event.title || '—'}</td>
+                    <td style={{ padding: '10px' }}>{event.description || '—'}</td>
+                    <td style={{ padding: '10px' }}>{event.location || '—'}</td>
+                    <td style={{ padding: '10px' }}>{event.appReq ? 'Y' : 'N'}</td>
+                    <td style={{ padding: '10px' }}>{event.points}</td>
                     <td>{}</td>
                   </tr>
                 ))}
@@ -320,11 +322,11 @@ const Admin = () => {
                 <tbody>
                  {users.map(user => (
                   <tr key={user._id} style={{ borderBottom: '1px solid #ddd' }}>
-                    <td>{user.name}</td>
-                    <td>{user.email}</td>
-                    <td>{user.major || '—'}</td>
-                    <td>{user.year || '—'}</td>
-                    <td>{user.JPMorgan ? 'Y' : 'N'}</td>
+                    <td style={{ padding: '10px' }}>{user.name}</td>
+                    <td style={{ padding: '10px' }}>{user.email}</td>
+                    <td style={{ padding: '10px' }}>{user.major || '—'}</td>
+                    <td style={{ padding: '10px' }}>{user.year || '—'}</td>
+                    <td style={{ padding: '10px' }}>{user.JPMorgan ? 'Y' : 'N'}</td>
                   </tr>
                 ))}
             </tbody>
