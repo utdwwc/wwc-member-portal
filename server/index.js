@@ -334,52 +334,6 @@ app.post('/regularevents', async (req, res) => {
   }
 });
 
-/* TESTING 1: rsvp system 
-// POST /api/rsvp (Create/Update RSVP)
-router.post("/", async (req, res) => {
-  const { eventId, userId, status } = req.body;
-  const rsvp = await RSVP.findOneAndUpdate(
-    { eventId, userId },
-    { status },
-    { upsert: true, new: true } // Create if doesn't exist
-  );
-  res.json(rsvp);
-}); */
-
-/* TESTING 2: rsvp system 
-// GET /api/events/:eventId/rsvps (List Attendees)
-// GET /api/events/:eventId/rsvp-count
-router.get('/:eventId/rsvp-count', async (req, res) => {
-  try {
-    const eventId = req.params.eventId;
-    
-    // Count all "Going" RSVPs (including guests)
-    const rsvps = await RSVP.find({ 
-      eventId: eventId, 
-      status: "Going" 
-    });
-    
-    // Calculate total attendees (users + guests)
-    let totalAttending = 0;
-    rsvps.forEach(rsvp => {
-      totalAttending += 1 + rsvp.guests; // User + their guests
-    });
-    
-    // Get the event's RSVP limit
-    const event = await RegularEvent.findById(eventId);
-    const rsvpLimit = event.rsvpLimit;
-    
-    res.json({
-      totalAttending,
-      rsvpLimit,
-      isFull: rsvpLimit > 0 && totalAttending >= rsvpLimit // Boolean for UI
-    });
-    
-  } catch (err) {
-    res.status(500).json({ error: "Server error" });
-  }
-}); */
-
 /* TESTING: rsvp system */
 app.get('/rsvps', async (req, res) => {
   try {
@@ -480,32 +434,38 @@ app.post('/eventapplications/', async (req, res) => {
       });
   }
 });
-/*app.post('/eventapplications/', async (req, res) => {
-  const { userId, eventId, name, email, year, reason } = req.body;
 
-  console.log('Incoming request data:', req.body);
-
-  if (!userId || !eventId || !name || !email || !year || !reason) {
-      return res.status(400).json({ message: 'All fields are required' });
-  } //validate incoming data
-
+/* PURPOSE: Fetches Event Applications with Event Details */
+app.get('/eventapplications/with-events', async (req, res) => {
   try {
-      const newApplication = new EventApplication({
-          userId,
-          eventId,
-          name,
-          email,
-          year,
-          reason,
-      });
-
-      const savedApplication = await newApplication.save();
-      res.status(201).json({ message: 'Application submitted successfully', application: savedApplication });
+      const applications = await EventApplication.aggregate([
+          {
+              $lookup: {
+                  from: "regularevents", // Your events collection name
+                  localField: "eventId",
+                  foreignField: "_id",
+                  as: "event"
+              }
+          },
+          { $unwind: "$event" },
+          {
+              $group: {
+                  _id: "$eventId",
+                  eventName: { $first: "$event.title" },
+                  eventDate: { $first: "$event.date" },
+                  applicationCount: { $sum: 1 },
+                  applications: { $push: "$$ROOT" }
+              }
+          },
+          { $sort: { eventDate: 1 } }
+      ]);
+      
+      res.json(applications);
   } catch (error) {
-      console.error('Error saving application:', error);
-      res.status(500).json({ message: 'Error submitting application', error: error.message });
+      console.error('Error fetching applications:', error);
+      res.status(500).json({ message: 'Error fetching applications' });
   }
-});*/
+});
 
 /* PURPOSE: Adds User to Attendee List + Adds Points to User Profile */
 app.post('/users', async (req, res) => {
@@ -607,33 +567,6 @@ const isAdmin = async (req, res, next) => {
 /* TESTINGGGG RQQQQQ: token and auth middleware
 app.get('/admin/test', isAdmin, (req, res) => {
   res.json({ message: 'Admin access granted' });
-}); */
-
-// TESTINGGGGGG RQQQQQQQQ: Create event (admin only)
-/*
-app.post('/admin/events', isAdmin, async (req, res) => {
-  try {
-    const { title, description, date, location } = req.body;
-    
-    // Validate required fields
-    if (!title || !description || !date || !location) {
-      return res.status(400).json({ message: 'All fields are required' });
-    }
-
-    const newEvent = new Event({ 
-      title, 
-      description, 
-      date: new Date(date), 
-      location 
-    });
-
-    const savedEvent = await newEvent.save();
-    
-    res.status(201).json(savedEvent);
-  } catch (error) {
-    console.error('Error creating event:', error);
-    res.status(500).json({ error: 'Error creating event' });
-  }
 }); */
 
 app.listen(4000, () => {

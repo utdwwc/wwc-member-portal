@@ -67,19 +67,13 @@ const RegularEventsPage = () => {
             }));
     
             if (newStatus) {
-                const event = events.find(e => e._id === eventId); //TESTING: event app
-                setCurrentEvent(event); //TESTING: event app
+                const event = events.find(e => e._id === eventId);
+                setCurrentEvent(event);
                 setIsModalOpen(true);
             }
         } catch (error) {
             console.error('Error updating RSVP:', error);
         }
-
-        /* TESTING: event apps
-        if (newStatus) {
-            const event = events.find(e => e._id === eventId); //find event obj that matches ID
-            setCurrentEvent(event);
-            setIsModalOpen(true);*/
     };
 
     /* PURPOSE: Generates a Google Calendar Event link */

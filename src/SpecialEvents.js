@@ -99,55 +99,6 @@ const EventApplicationForm = () => {
             setIsSubmitting(false);
         }
     };
-    /*const handleSubmit = async (e) => {
-        e.preventDefault();
-        const validationErrors = validateForm();
-        if (Object.keys(validationErrors).length > 0) {
-            setErrors(validationErrors);
-        } else {
-            try {
-                const payload = {
-                    userId: userId,
-                    eventId: eventID,
-                    name: formData.name,
-                    email: formData.email,
-                    year: formData.year,
-                    reason: formData.reason,
-                };
-                console.log('Sending data to the server:', payload);
-                
-                // FETCH (POST/): Sends data (userId, eventId, and form data) to backend
-                const response = await fetch(`http://localhost:4000/eventapplications/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload),
-                });
-
-                const data = await response.json();
-                console.log(data.message); // Log server response
-
-                if (response.ok) {
-                    setShowSuccessMessage(true); // If data successfully sends to backend, success message displayed
-                    setSubmissionMessage('Application submitted successfully!');
-
-                    // Reset form
-                    setFormData({
-                        email: '',
-                        name: '',
-                        year: '',
-                        reason: '',
-                    });
-                    setErrors({});
-                } else {
-                    console.error('Failed to submit:', data.message);
-                }
-            } catch (error) {
-                console.error('Error submitting application:', error);
-            }
-        }
-    };*/
 
     return (
         <div style={styles.container}>

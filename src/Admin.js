@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Table, Button } from 'react-bootstrap';
 
 const Admin = () => {
     /* PURPOSE: State Initialization */
@@ -15,8 +17,10 @@ const Admin = () => {
         actualAttendees: 0,
     });
     const [errorMessage, setErrorMessage] = useState('');
-    const [expandedEvent, setExpandedEvent] = useState(null);
-    const [eventsWithRsvps, setEventsWithRsvps] = useState([]);
+    const [rsvpEvents, setRsvpEvents] = useState([]);
+    const [appEvents, setAppEvents] = useState([]);
+    const [expandedRsvpEvent, setExpandedRsvpEvent] = useState(null);
+    const [expandedAppEvent, setExpandedAppEvent] = useState(null);
 
     /* PURPOSE: Retrieves List of Registered Users from Backend */
     const fetchUsers = async () => {
@@ -74,15 +78,25 @@ const Admin = () => {
     };
 
     /* PURPOSE: Retrieves Events with RSVPs from Backend */
-    const fetchEventsWithRsvps = async () => {
+    const fetchRsvpEvents = async () => {
       try {
           const response = await fetch('http://localhost:4000/rsvps');
           const data = await response.json();
-          setEventsWithRsvps(data);
+          setRsvpEvents(data);
       } catch (err) {
-          setEventsWithRsvps([]);
+          setRsvpEvents([]);
       }
     };
+
+    const fetchAppEvents = async () => {
+      try {
+          const response = await fetch('http://localhost:4000/eventapplications/with-events');
+          const data = await response.json();
+          setAppEvents(data);
+      } catch (error) {
+          console.error('Error fetching applications:', error);
+      }
+  };
 
     /* PURPOSE: Retrieves List of Existing Events from Backend */
     const fetchEvents = async () => {
@@ -124,12 +138,16 @@ const Admin = () => {
     useEffect(() => {
         fetchUsers();
         fetchEvents();
-        fetchEventsWithRsvps(); // TESTING: rsvp system
+        fetchRsvpEvents();
+        fetchAppEvents();
     }, []);
 
-    /* PURPOSE: Allows Admin to View Users Who RSVP'd */
-    const toggleExpand = (eventId) => {
-      setExpandedEvent(expandedEvent === eventId ? null : eventId);
+    const toggleRsvpUsers = (eventId) => {
+      setExpandedRsvpEvent(expandedRsvpEvent === eventId ? null : eventId);
+    };
+
+    const toggleAppUsers = (eventId) => {
+      setExpandedAppEvent(expandedAppEvent === eventId ? null : eventId);
     };
 
     /* PURPOSE: Updates Form with 'eventData' State */
@@ -226,7 +244,7 @@ const Admin = () => {
                 <button type="submit">Create Event</button>
             </form>
 
-            <h2>Existing Events</h2>
+            <h2>Event Information</h2>
             {events.length > 0 ? (
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                  <thead>
@@ -261,78 +279,94 @@ const Admin = () => {
             <p>No events found.</p>
             )}
 
-          <h2>Event RSVPs</h2>
-            {eventsWithRsvps.length > 0 ? (
-              <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
+          <h2>RSVPs</h2>
+            <Table striped bordered hover>
                 <thead>
-                  <tr style={{ backgroundColor: '#f2f2f2' }}>
-                    <th style={{ padding: '10px' }}>Event</th>
-                    <th style={{ padding: '10px' }}>Date</th>
-                    <th style={{ padding: '10px' }}>Total RSVPs</th>
-                    <th style={{ padding: '10px' }}>Actions</th>
-                  </tr>
+                    <tr>
+                        <th>Event Name</th>
+                        <th>Date</th>
+                        <th>RSVP Count</th>
+                        <th>Actions</th>
+                    </tr>
                 </thead>
                 <tbody>
-                  {eventsWithRsvps.map(event => (
-                    <React.Fragment key={event._id}>
-                      <tr style={{ borderBottom: '1px solid #ddd' }}>
-                        <td style={{ padding: '10px' }}>{event.title}</td>
-                        <td style={{ padding: '10px' }}>{new Date(event.date).toLocaleDateString()}</td>
-                        <td style={{ padding: '10px' }}>{event.rsvps.length}</td>
-                        <td style={{ padding: '10px' }}>
-                          <button 
-                            onClick={() => toggleExpand(event._id)}
-                            style={{
-                              padding: '5px 10px',
-                              backgroundColor: expandedEvent === event._id ? '#f44336' : '#4CAF50',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '4px',
-                              cursor: 'pointer'
-                            }}
-                          >
-                            {expandedEvent === event._id ? 'Hide Users' : 'Show Users'}
-                          </button>
-                        </td>
-                      </tr>
-                      {expandedEvent === event._id && (
-                        <tr>
-                          <td colSpan="4" style={{ padding: '10px', backgroundColor: '#f9f9f9' }}>
-                            <h4 style={{ margin: '0 0 10px 0' }}>Show Users</h4>
-                            {event.rsvps.length > 0 ? (
-                              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                  <tr>
-                                    <th style={{ padding: '8px', textAlign: 'left' }}>User ID</th>
-                                    <th style={{ padding: '8px', textAlign: 'left' }}>Name</th>
-                                    <th style={{ padding: '8px', textAlign: 'left' }}>+ Guests</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {event.rsvps.map(rsvp => (
-                                    <tr key={rsvp.userId}>
-                                      <td style={{ padding: '8px' }}>{rsvp.userId}</td>
-                                      <td style={{ padding: '8px' }}>{rsvp.name}</td>
-                                      <td style={{ padding: '8px' }}>{rsvp.guests}</td>
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
-                            ) : (
-                              <p>No RSVPs yet</p>
+                    {rsvpEvents.map(event => (
+                        <React.Fragment key={event._id}>
+                            <tr>
+                                <td>{event.title}</td>
+                                <td>{new Date(event.date).toLocaleDateString()}</td>
+                                <td>{event.actualAttendees?.length || 0}</td>
+                                <td>
+                                    <Button 
+                                        variant="info"
+                                        onClick={() => toggleRsvpUsers(event._id)}
+                                    >
+                                        {expandedRsvpEvent === event._id ? 'Hide Users' : 'Show Users'}
+                                    </Button>
+                                </td>
+                            </tr>
+                            {expandedRsvpEvent === event._id && (
+                                <tr>
+                                    <td colSpan="4">
+                                        <ul>
+                                            {event.actualAttendees?.map(user => (
+                                                <li key={user._id}>{user.name} ({user.email})</li>
+                                            ))}
+                                        </ul>
+                                    </td>
+                                </tr>
                             )}
-                          </td>
-                        </tr>
-                      )}
-                    </React.Fragment>
-                  ))}
+                        </React.Fragment>
+                    ))}
                 </tbody>
-              </table>
-            ) : (
-                <p>No RSVP data available</p>
-            )}
-            
+            </Table>
 
+            <h2>Applications</h2>
+            <Table striped bordered hover>
+                <thead>
+                    <tr>
+                        <th>Event Name</th>
+                        <th>Date</th>
+                        <th>Application Count</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {appEvents.map(event => (
+                        <React.Fragment key={event._id}>
+                            <tr>
+                                <td>{event.eventName}</td>
+                                <td>{new Date(event.eventDate).toLocaleDateString()}</td>
+                                <td>{event.applicationCount}</td>
+                                <td>
+                                    <Button 
+                                        variant="info"
+                                        onClick={() => toggleAppUsers(event._id)}
+                                    >
+                                        {expandedAppEvent === event._id ? 'Hide Applicants' : 'Show Applicants'}
+                                    </Button>
+                                </td>
+                            </tr>
+                            {expandedAppEvent === event._id && (
+                                <tr>
+                                    <td colSpan="4">
+                                        <ul>
+                                            {event.applications.map(application => (
+                                                <li key={application._id}>
+                                                    {application.name} ({application.email}) - 
+                                                    Year: {application.year}, 
+                                                    Reason: {application.reason}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </td>
+                                </tr>
+                            )}
+                        </React.Fragment>
+                    ))}
+                </tbody>
+            </Table>
+            
             <h2>Registered Users</h2>
             {users.length > 0 ? (
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>

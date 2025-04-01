@@ -10,26 +10,5 @@ const applicationSchema = new mongoose.Schema({
 });
 
 const EventApplication = mongoose.model('eventapplications', applicationSchema);
-const insertEvent = async () => {
-
-    // New special event
-    const newSpecialApplicationEvent = new EventApplication({ // Assuming EventApplication extends RegularEvent
-        userId: '6701d63c84d1943a2dac42dd', 
-        eventId : '6701cc315e02bdc39d7666ae', 
-        name: "aaryaa", 
-        email: "aaryaamoharir@gmail.com", 
-        year: "Freshman", 
-        reason: "I want to learn programming", 
-    });
-
-    try {
-        const savedSpecialEvent = await newSpecialApplicationEvent.save(); // Save the special event to MongoDB
-        console.log('Special Application Event saved:', savedSpecialEvent);
-    } catch (error) {
-        console.error('Error saving event:', error);
-    }
-};
-
-insertEvent(); 
 
 module.exports = EventApplication;
