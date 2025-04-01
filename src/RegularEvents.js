@@ -38,7 +38,6 @@ const RegularEventsPage = () => {
         console.log("UserID:", userId); //debugging
         console.log("Gmail:", gmail); //debugging
         console.log("Name:", name); //debugging
-
         fetchEvents(); //loads events from backend
     }, []);
     
@@ -68,17 +67,19 @@ const RegularEventsPage = () => {
             }));
     
             if (newStatus) {
+                const event = events.find(e => e._id === eventId); //TESTING: event app
+                setCurrentEvent(event); //TESTING: event app
                 setIsModalOpen(true);
             }
         } catch (error) {
             console.error('Error updating RSVP:', error);
         }
 
+        /* TESTING: event apps
         if (newStatus) {
             const event = events.find(e => e._id === eventId); //find event obj that matches ID
             setCurrentEvent(event);
-            setIsModalOpen(true);
-        }
+            setIsModalOpen(true);*/
     };
 
     /* PURPOSE: Generates a Google Calendar Event link */
@@ -86,10 +87,10 @@ const RegularEventsPage = () => {
         if (!currentEvent) return;
         
         const formatDate = (dateString, hours, minutes) => { //formats date in googcal's required format
-        const date = new Date(dateString);
-        date.setHours(hours, minutes, 0, 0);
-        return date.toISOString().replace(/-|:|\.\d+/g, '').slice(0, 15) + 'Z';
-    };
+            const date = new Date(dateString);
+            date.setHours(hours, minutes, 0, 0);
+            return date.toISOString().replace(/-|:|\.\d+/g, '').slice(0, 15) + 'Z';
+        };
 
         const eventStartDate = formatDate(currentEvent.date, 19, 0); //automatically is 7:00 PM
         const eventEndDate = formatDate(currentEvent.date, 20, 0);   //automatically is 8:00 PM
@@ -124,16 +125,35 @@ const RegularEventsPage = () => {
                     <p><strong>Date:</strong> {new Date(event.date).toLocaleDateString()}</p>
                     <p><strong>Location:</strong> {event.location}</p>
                     
-                <label style={styles.label}>
-                    <input 
-                        type="checkbox" 
-                        checked={rsvpStatus[event._id] || false} 
-                        onChange={() => handleCheckboxChange(event._id)} 
-                        style={styles.checkbox} 
-                    />
-                    RSVP
-                    </label>
-                    {rsvpStatus[event._id] && <p style={styles.confirmation}>You have RSVPed!</p>}
+                    {event.appReq ? (
+                        <button 
+                            onClick={() => navigate('/eventapplications', { 
+                                state: { 
+                                    eventId: event._id,
+                                    eventTitle: event.title,
+                                    userId: userId,
+                                    name: name,
+                                    gmail: gmail
+                                }
+                            })}
+                        style={styles.applyButton}
+                      >
+                        Apply for Event
+                      </button>
+                    ) : (
+                        <>
+                            <label style={styles.label}>
+                                <input 
+                                    type="checkbox" 
+                                    checked={rsvpStatus[event._id] || false} 
+                                    onChange={() => handleCheckboxChange(event._id)} 
+                                    style={styles.checkbox} 
+                                />
+                                RSVP
+                            </label>
+                            {rsvpStatus[event._id] && <p style={styles.confirmation}>You have RSVPed!</p>}
+                        </>
+                    )}
                     
                     <Modal 
                         isOpen={isModalOpen} 
@@ -176,7 +196,27 @@ const styles = {
     confirmation: {
         color: 'green',
         marginTop: '10px',
-    }
+    },  
+    button: {
+        padding: '10px 15px',
+        margin: '0 10px',
+        //backgroundColor: '#3498db',
+        //color: 'white',
+        //border: 'none',
+        borderRadius: '4px',
+        cursor: 'pointer',
+        marginTop: '10px',
+    },
+    applyButton: {
+        display: 'inline-block',
+        padding: '10px 15px',
+        //backgroundColor: '#27ae60',
+        //color: 'white',
+        textDecoration: 'none',
+        borderRadius: '4px',
+        marginTop: '10px',
+        cursor: 'pointer',
+    },
 };
 
 export default RegularEventsPage;

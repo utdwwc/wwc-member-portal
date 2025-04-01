@@ -146,9 +146,18 @@ const EventApplicationForm = () => {
                 <button type="submit" style={styles.button}>
                     Submit Application
                 </button>
-                <button style={styles.button} onClick={() => navigate('/regularEvents', { state: {userId} })}>
-    Back to Events
-</button>
+                <button
+                    style={styles.button}
+                    onClick={() => navigate('/regularEvents', {
+                        state: {
+                            UserID: userId,
+                            gmail: formData.email,
+                            name: formData.name
+                        }
+                    })}
+                >
+                    Back to Events
+                </button>
             </form>
         </div>
     );
@@ -190,6 +199,7 @@ const styles = {
         borderRadius: '5px',
         cursor: 'pointer',
         fontSize: '16px',
+        margin: '0 10px',
     },
     successMessage: {
         backgroundColor: '#d4edda',

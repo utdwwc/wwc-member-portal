@@ -7,7 +7,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Information from './Infomation';
 import RegularEventsPage from './RegularEvents';
-import SpecialEvents from './SpecialEvents';
+import EventApplicationForm from './SpecialEvents';
 import SignIn from './SignIn';
 import Admin from './Admin'; 
 import Profile from './Profile'; 
@@ -21,7 +21,7 @@ root.render(
           <Route path="/" element={<App />} />
           <Route path="/information" element={<Information />} />
           <Route path="/regularEvents" element={<RegularEventsPage />} />
-          <Route path="/specialEvents" element={<SpecialEvents />} />
+          <Route path="/eventapplications" element={<EventApplicationForm />} />
           <Route path="/signIn" element = {<SignIn/>} />
           <Route path="/admin" element = {<Admin/>} />
           <Route path="/profile" element = {<Profile/>} />
