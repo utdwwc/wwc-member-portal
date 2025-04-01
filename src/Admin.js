@@ -33,48 +33,6 @@ const Admin = () => {
           } catch (err) {
             setUsers([]); //ensure state is always an array
           }
-
-        /* TESTINGGGG RQQQQ: with tokens
-        try {
-          // Get the token from localStorage or user object
-        let token = localStorage.getItem('token');
-    
-        // If no token, try to get it from the user object
-        if (!token) {
-            const userData = localStorage.getItem('user');
-            if (userData) {
-                const user = JSON.parse(userData);
-                token = user.token;
-                console.log('Retrieved token from user object:', token);
-            }
-        }
-          
-          const response = await fetch('http://localhost:4000/admin/users', {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            }
-          });
-      
-          console.log('Response status:', response.status); // Log status (200, 403, etc.)
-          
-          if (!response.ok) {
-            const errorData = await response.json();
-            console.error('Backend error:', errorData); // Detailed error
-            setErrorMessage(errorData.message || 'Failed to fetch users');
-            return;
-          }
-      
-          const data = await response.json();
-          console.log('Fetched users:', data); // Log actual data
-          setUsers(data);
-
-        } catch (error) {
-          console.error('Network/parsing error:', error);
-          setErrorMessage('Network error - check console');
-        } */
-
     };
 
     /* PURPOSE: Retrieves Events with RSVPs from Backend */
@@ -107,31 +65,6 @@ const Admin = () => {
           } catch (err) {
             setEvents([]); //ensure state is always an array
           }
-
-        /* TESTINGGG RQQQQ: with tokens
-        try {
-            const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:4000/admin/events', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            setErrorMessage('');
-    
-            if (!response.ok) {
-                const errorData = await response.json();
-                setErrorMessage(errorData.message);
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-    
-            const data = await response.json();
-            setEvents(data);
-        } catch (error) {
-            console.error('Error fetching events:', error);
-        }*/
     };
 
     /* PURPOSE: Render User and Event List when Component Mounts */
@@ -181,20 +114,6 @@ const Admin = () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
           });
-            /*
-            const response = await fetch('http://localhost:4000/regularevents', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    //'Authorization': `Bearer ${localStorage.getItem('token')}` //Authorization Token used again
-                },
-                body: JSON.stringify({
-                  ...eventData,
-                  appReq: eventData.appReq ?? false,
-                  points: eventData.points ?? 0,
-                  rsvpLimit: eventData.rsvpLimit ?? 0,
-                })
-            });*/
 
             if (!response.ok) {
                 const errorData = await response.json();
@@ -258,8 +177,8 @@ const Admin = () => {
                     <th style={{ padding: '10px' }}>RSVP Limit</th>
                     <th style={{ padding: '10px' }}>Attended</th>
                   </tr>
-                </thead>
-                <tbody>
+                 </thead>
+                 <tbody>
                  {events.map(event => (
                   <tr key={event._id} style={{ borderBottom: '1px solid #ddd' }}>
                     <td style={{ padding: '10px' }}>{<td>{new Date(event.date).toLocaleDateString()}</td>}</td>
@@ -272,54 +191,79 @@ const Admin = () => {
                     <td style={{ padding: '10px' }}>{event.actualAttendees}</td>
                     <td>{}</td>
                   </tr>
-                ))}
-            </tbody>
-        </table>
+                 ))}
+                 </tbody>
+                </table>
             ) : (
             <p>No events found.</p>
             )}
 
-          <h2>RSVPs</h2>
+            <h2>RSVPs</h2>
             <Table striped bordered hover>
                 <thead>
                     <tr>
                         <th>Event Name</th>
                         <th>Date</th>
                         <th>RSVP Count</th>
+                        <th>Total Guests</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {rsvpEvents.map(event => (
                         <React.Fragment key={event._id}>
-                            <tr>
-                                <td>{event.title}</td>
-                                <td>{new Date(event.date).toLocaleDateString()}</td>
-                                <td>{event.actualAttendees?.length || 0}</td>
-                                <td>
-                                    <Button 
-                                        variant="info"
-                                        onClick={() => toggleRsvpUsers(event._id)}
-                                    >
-                                        {expandedRsvpEvent === event._id ? 'Hide Users' : 'Show Users'}
-                                    </Button>
-                                </td>
-                            </tr>
-                            {expandedRsvpEvent === event._id && (
-                                <tr>
-                                    <td colSpan="4">
-                                        <ul>
-                                            {event.actualAttendees?.map(user => (
-                                                <li key={user._id}>{user.name} ({user.email})</li>
-                                            ))}
-                                        </ul>
-                                    </td>
-                                </tr>
-                            )}
-                        </React.Fragment>
-                    ))}
-                </tbody>
-            </Table>
+                        <tr>
+                            <td>{event.title}</td>
+                            <td>{new Date(event.date).toLocaleDateString()}</td>
+                            <td>{event.rsvpCount}</td>
+                            <td>
+                                {event.rsvps.reduce((sum, rsvp) => sum + rsvp.guests, 0)}
+                            </td>
+                            <td>
+                                <Button 
+                                    variant="info"
+                                    onClick={() => toggleRsvpUsers(event._id)}
+                                    disabled={event.rsvpCount === 0}
+                                >
+                                    {expandedRsvpEvent === event._id ? 'Hide Attendees' : 'Show Attendees'}
+                                </Button>
+                            </td>
+                        </tr>
+                {expandedRsvpEvent === event._id && event.rsvpCount > 0 && (
+                    <tr>
+                        <td colSpan="5">
+                            <div className="attendee-details">
+                                <h5>Attendees ({event.rsvpCount})</h5>
+                                <Table size="sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Guests</th>
+                                            <th>Total Party Size</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {event.rsvps.map(rsvp => (
+                                            <tr key={rsvp.userId}>
+                                                <td>{rsvp.userName}</td>
+                                                <td>{rsvp.guests}</td>
+                                                <td>{rsvp.guests + 1}</td> {/* +1 for the user themselves */}
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </Table>
+                                <div className="total-guests">
+                                    <strong>Total Guests (excluding attendees): </strong>
+                                    {event.rsvps.reduce((sum, rsvp) => sum + rsvp.guests, 0)}
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                )}
+            </React.Fragment>
+        ))}
+    </tbody>
+</Table>
 
             <h2>Applications</h2>
             <Table striped bordered hover>

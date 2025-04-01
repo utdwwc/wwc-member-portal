@@ -337,6 +337,67 @@ app.post('/regularevents', async (req, res) => {
 /* TESTING: rsvp system */
 app.get('/rsvps', async (req, res) => {
   try {
+    // 1. Fetch all events with their RSVPs in a single query using aggregation
+    const eventsWithRsvps = await RegularEvent.aggregate([
+      {
+        $lookup: {
+          from: "rsvps", // Collection name (case-sensitive)
+          let: { eventId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ["$eventId", "$$eventId"] },
+                status: "Going" // Only include "Going" RSVPs
+              }
+            },
+            {
+              $lookup: {
+                from: "users", // User collection name
+                localField: "userId",
+                foreignField: "_id",
+                as: "user"
+              }
+            },
+            { $unwind: "$user" }, // Convert user array to object
+            {
+              $project: {
+                _id: 0, // Exclude RSVP _id
+                userId: "$user._id",
+                userName: "$user.name",
+                guests: 1
+              }
+            }
+          ],
+          as: "rsvps"
+        }
+      },
+      {
+        $project: {
+          title: 1,
+          date: 1,
+          location: 1,
+          description: 1,
+          rsvps: 1,
+          rsvpCount: { $size: "$rsvps" } // Add count of RSVPs
+        }
+      }
+    ]);
+
+    // 2. Logging for debugging (optional)
+    console.log(`Fetched ${eventsWithRsvps.length} events with RSVPs`);
+
+    // 3. Send response
+    res.json(eventsWithRsvps);
+  } catch (err) {
+    console.error('Error fetching RSVPs:', err);
+    res.status(500).json({ 
+      error: "Failed to fetch RSVP data",
+      details: err.message 
+    });
+  }
+});
+/*app.get('/rsvps', async (req, res) => {
+  try {
     const events = await RegularEvent.find().lean();
     
     const eventsWithRsvps = await Promise.all(
@@ -360,7 +421,7 @@ app.get('/rsvps', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-});
+});*/
 
 /* PURPOSE: Updates who RSVP'd -> Added to Attendees List */
 app.post('/regularevents/:eventId/rsvp', async (req, res) => {
