@@ -8,8 +8,9 @@ const EventApplicationForm = () => {
     const userId = location.state?.userId;
     const eventID = location.state?.eventId;
     const [submissionMessage, setSubmissionMessage] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // useState stores user input for the application form
+    /* PURPOSE: Displays Empty Application Form */
     const [formData, setFormData] = useState({
         email: '',
         name: '',
@@ -19,7 +20,7 @@ const EventApplicationForm = () => {
     const [errors, setErrors] = useState({});
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
-    // Function: updates 'formData' whenever the user types in the input fields
+    /* PURPOSE: Updates Data Form with User Input */
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -28,7 +29,7 @@ const EventApplicationForm = () => {
         });
     };
 
-    // Function: Ensures textboxes are not left blank
+    /* PURPOSE: Ensures Form is Not Left Blank */
     const validateForm = () => {
         const newErrors = {};
         if (!formData.email) newErrors.email = 'Email is required';
@@ -38,8 +39,67 @@ const EventApplicationForm = () => {
         return newErrors;
     };
 
-    // Function: 
+    /* PURPOSE: Sends Form Data to Backend */
     const handleSubmit = async (e) => {
+        e.preventDefault();
+        const validationErrors = validateForm();
+        
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
+        
+        setIsSubmitting(true);
+        try {
+            const payload = {
+                userId: userId,
+                eventId: eventID,
+                name: formData.name,
+                email: formData.email,
+                year: formData.year,
+                reason: formData.reason,
+            };
+            
+            console.log('Submitting application:', payload);
+            
+            const response = await fetch('http://localhost:4000/eventapplications/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Add authorization header if needed
+                    // 'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(payload)
+            });
+    
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Server error:', errorData);
+                throw new Error(errorData.message || 'Failed to submit application');
+            }
+    
+            const data = await response.json();
+            console.log('Server response:', data);
+            
+            setShowSuccessMessage(true);
+            setSubmissionMessage('Application submitted successfully!');
+            
+            // Reset form (optional - you might want to keep the data)
+            setFormData(prev => ({
+                ...prev,
+                year: '',
+                reason: ''
+            }));
+            setErrors({});
+    
+        } catch (error) {
+            console.error('Submission error:', error);
+            setSubmissionMessage(`Error: ${error.message}`);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+    /*const handleSubmit = async (e) => {
         e.preventDefault();
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length > 0) {
@@ -87,7 +147,7 @@ const EventApplicationForm = () => {
                 console.error('Error submitting application:', error);
             }
         }
-    };
+    };*/
 
     return (
         <div style={styles.container}>
@@ -143,8 +203,12 @@ const EventApplicationForm = () => {
                     {errors.reason && <p style={styles.error}>{errors.reason}</p>}
                 </div>
 
-                <button type="submit" style={styles.button}>
-                    Submit Application
+                <button
+                    type="submit"
+                    style={styles.button}
+                    disabled={isSubmitting}
+                >
+                    {isSubmitting ? 'Submitting...' : 'Submit Application'}
                 </button>
                 <button
                     style={styles.button}

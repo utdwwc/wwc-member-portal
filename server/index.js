@@ -3,7 +3,7 @@ const multer = require('multer');
 const mongoose = require('mongoose');
 const User = require('./Models/User');
 const RegularEvent = require('./Models/RegularEvent');
-const Application = require('./Models/EventApplication'); 
+const EventApplication = require('./Models/EventApplication'); 
 const RSVP = require("./Models/RSVP");
 const path = require('path');
 const fs = require('fs');
@@ -441,6 +441,46 @@ app.post('/regularevents/:eventId/rsvp', async (req, res) => {
 
 /* PURPOSE: Applications for Special Events saved to Database*/
 app.post('/eventapplications/', async (req, res) => {
+  const {
+    userId,
+    eventId,
+    name,
+    email,
+    year,
+    reason
+  } = req.body;
+
+  console.log('Incoming application data:', req.body);
+
+  // Validation
+  if (!name || !email || !year || !reason) {
+      return res.status(400).json({ message: 'All fields except userId and eventId are required' });
+  }
+
+  try {
+      const newApplication = new EventApplication({
+          userId: userId || null,  // Handle cases where userId might be undefined
+          eventId: eventId || null,
+          name,
+          email,
+          year,
+          reason
+      });
+
+      const savedApplication = await newApplication.save();
+      res.status(201).json({ 
+          message: 'Application submitted successfully',
+          application: savedApplication
+      });
+  } catch (error) {
+      console.error('Database save error:', error);
+      res.status(500).json({ 
+          message: 'Error submitting application',
+          error: error.message 
+      });
+  }
+});
+/*app.post('/eventapplications/', async (req, res) => {
   const { userId, eventId, name, email, year, reason } = req.body;
 
   console.log('Incoming request data:', req.body);
@@ -450,7 +490,7 @@ app.post('/eventapplications/', async (req, res) => {
   } //validate incoming data
 
   try {
-      const newApplication = new Application({
+      const newApplication = new EventApplication({
           userId,
           eventId,
           name,
@@ -465,7 +505,7 @@ app.post('/eventapplications/', async (req, res) => {
       console.error('Error saving application:', error);
       res.status(500).json({ message: 'Error submitting application', error: error.message });
   }
-});
+});*/
 
 /* PURPOSE: Adds User to Attendee List + Adds Points to User Profile */
 app.post('/users', async (req, res) => {
