@@ -294,7 +294,16 @@ app.post('/regularevents', async (req, res) => {
   
   try {
     console.log("Received request:", req.body); //debugging
-    const { title, description, date, location, appReq = false, points = 0 } = req.body;
+    const {
+      title,
+      description,
+      date,
+      location,
+      appReq = false,
+      points = 0,
+      rsvpLimit = 0,
+      actualAttendees = []
+    } = req.body;
 
     if (!title || !description || !date || !location) {
       return res.status(400).json({ message: 'Missing required fields' });
@@ -310,14 +319,15 @@ app.post('/regularevents', async (req, res) => {
       description,
       date: new Date(date),
       location,
-      appReq: appReq ?? false,
-      points: points ?? 0,
-      rsvpLimit: rsvpLimit ?? 30,
-      actualAttendees: [],
+      appReq,
+      points: Number(points),
+      rsvpLimit: Number(rsvpLimit),
+      actualAttendees
   });
 
     const savedEvent = await newEvent.save();
     res.status(201).json(savedEvent); //returns saved event as json
+    
   } catch (error) {
     console.error('Error creating event: ', error);
     res.status(500).json({ message: 'Error saving event: ', error: error.message });

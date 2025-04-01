@@ -11,6 +11,8 @@ const Admin = () => {
         location: '',
         appReq: false, //changed from isSpecial
         points: 0,
+        rsvpLimit: 0,
+        actualAttendees: 0,
     });
     const [errorMessage, setErrorMessage] = useState('');
     const [expandedEvent, setExpandedEvent] = useState(null);
@@ -144,6 +146,24 @@ const Admin = () => {
         setErrorMessage('');
         
         try {
+          const payload = {
+            title: eventData.title,
+            description: eventData.description,
+            date: eventData.date,
+            location: eventData.location,
+            appReq: Boolean(eventData.appReq),
+            points: Number(eventData.points) || 0,
+            rsvpLimit: Number(eventData.rsvpLimit) || 0
+          };
+
+          console.log('Sending:', payload); //debugging
+
+          const response = await fetch('http://localhost:4000/regularevents', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+            /*
             const response = await fetch('http://localhost:4000/regularevents', {
                 method: 'POST',
                 headers: {
@@ -154,8 +174,9 @@ const Admin = () => {
                   ...eventData,
                   appReq: eventData.appReq ?? false,
                   points: eventData.points ?? 0,
+                  rsvpLimit: eventData.rsvpLimit ?? 0,
                 })
-            });
+            });*/
 
             if (!response.ok) {
                 const errorData = await response.json();
@@ -172,6 +193,7 @@ const Admin = () => {
                 location: '',
                 appReq: false,
                 points: 0,
+                rsvpLimit: 0,
             }); //clear form
             console.log('Event created:', data);
         } catch (error) {
@@ -196,6 +218,7 @@ const Admin = () => {
                 <input type="date" name="date" value={eventData.date} onChange={handleEventChange} required />
                 <input type="text" name="location" placeholder="Event Location" value={eventData.location} onChange={handleEventChange} required />
                 <input type="number" name="points" placeholder="Points Value" value={eventData.points || ''} onChange={handleEventChange} min="0" step="1" required />
+                <input type="number" name="rsvpLimit" placeholder="RSVP Limit" value={eventData.rsvpLimit || ''} onChange={handleEventChange} min="0" step="1" required />
                 <label style={{ display: "flex", alignItems: "center", gap: "5px" }}>
                   <input type="checkbox" checked={eventData.appReq} onChange={(e) => setEventData({...eventData, appReq: e.target.checked})}/>
                   App Requirement 
@@ -214,6 +237,7 @@ const Admin = () => {
                     <th style={{ padding: '10px' }}>Location</th>
                     <th style={{ padding: '10px' }}>App Req</th>
                     <th style={{ padding: '10px' }}>Points</th>
+                    <th style={{ padding: '10px' }}>RSVP Limit</th>
                     <th style={{ padding: '10px' }}>Attended</th>
                   </tr>
                 </thead>
@@ -225,7 +249,9 @@ const Admin = () => {
                     <td style={{ padding: '10px' }}>{event.description || '—'}</td>
                     <td style={{ padding: '10px' }}>{event.location || '—'}</td>
                     <td style={{ padding: '10px' }}>{event.appReq ? 'Y' : 'N'}</td>
+                    <td style={{ padding: '10px' }}>{event.rsvpLimit}</td>
                     <td style={{ padding: '10px' }}>{event.points}</td>
+                    <td style={{ padding: '10px' }}>{event.actualAttendees}</td>
                     <td>{}</td>
                   </tr>
                 ))}
