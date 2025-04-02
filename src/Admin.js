@@ -229,7 +229,7 @@ const Admin = () => {
                     <tr>
                         <td colSpan="5">
                             <div className="attendee-details">
-                                <h5>Attendees ({event.rsvpCount})</h5>
+                                <h5>Users ({event.rsvpCount})</h5>
                                 <Table size="sm">
                                     <thead>
                                         <tr>
