@@ -263,7 +263,7 @@ const Admin = () => {
                     <tr>
                         <th>Event Name</th>
                         <th>Date</th>
-                        <th>Application Count</th>
+                        <th>App Count</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -283,18 +283,32 @@ const Admin = () => {
                                     </Button>
                                 </td>
                             </tr>
-                            {expandedAppEvent === event._id && (
+                            {expandedAppEvent === event._id && event.applications.length > 0 && (
                                 <tr>
-                                    <td colSpan="4">
-                                        <ul>
-                                            {event.applications.map(application => (
-                                                <li key={application._id}>
-                                                    {application.name} ({application.email}) - 
-                                                    Year: {application.year}, 
-                                                    Reason: {application.reason}
-                                                </li>
-                                            ))}
-                                        </ul>
+                                    <td colSpan="5">
+                                        <div className="applicant-details">
+                                            <h5>Applications ({event.applications.length})</h5>
+                                                <Table size="sm">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Email</th>
+                                                            <th>Year</th>
+                                                            <th>Reason</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {event.applications.map(application => (
+                                                            <tr key={application._id}>
+                                                                <td>{application.name}</td>
+                                                                <td>{application.email}</td>
+                                                                <td>{application.year}</td>
+                                                                <td>{application.reason}</td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </Table>
+                                        </div>
                                     </td>
                                 </tr>
                             )}
