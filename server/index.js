@@ -364,7 +364,6 @@ app.get('/rsvps', async (req, res) => {
                 _id: 0, // Exclude RSVP _id
                 userId: "$user._id",
                 userName: "$user.name",
-                guests: 1
               }
             }
           ],
@@ -410,7 +409,6 @@ app.get('/rsvps', async (req, res) => {
             rsvps: rsvps.map(rsvp => ({
               userId: rsvp.userId._id,
               name: rsvp.userId.name,
-              guests: rsvp.guests
             }))
         };
       })

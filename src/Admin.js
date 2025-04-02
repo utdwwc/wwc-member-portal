@@ -205,7 +205,6 @@ const Admin = () => {
                         <th>Event Name</th>
                         <th>Date</th>
                         <th>RSVP Count</th>
-                        <th>Total Guests</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -217,15 +216,12 @@ const Admin = () => {
                             <td>{new Date(event.date).toLocaleDateString()}</td>
                             <td>{event.rsvpCount}</td>
                             <td>
-                                {event.rsvps.reduce((sum, rsvp) => sum + rsvp.guests, 0)}
-                            </td>
-                            <td>
                                 <Button 
                                     variant="info"
                                     onClick={() => toggleRsvpUsers(event._id)}
                                     disabled={event.rsvpCount === 0}
                                 >
-                                    {expandedRsvpEvent === event._id ? 'Hide Attendees' : 'Show Attendees'}
+                                    {expandedRsvpEvent === event._id ? 'Hide RSVPs' : 'Show RSVPs'}
                                 </Button>
                             </td>
                         </tr>
@@ -238,24 +234,20 @@ const Admin = () => {
                                     <thead>
                                         <tr>
                                             <th>Name</th>
-                                            <th>Guests</th>
-                                            <th>Total Party Size</th>
+                                            <th>User ID</th>
+                                            <th>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {event.rsvps.map(rsvp => (
                                             <tr key={rsvp.userId}>
                                                 <td>{rsvp.userName}</td>
-                                                <td>{rsvp.guests}</td>
-                                                <td>{rsvp.guests + 1}</td> {/* +1 for the user themselves */}
+                                                <td>{rsvp.userId}</td>
+                                                <td>Going!</td>
                                             </tr>
                                         ))}
                                     </tbody>
                                 </Table>
-                                <div className="total-guests">
-                                    <strong>Total Guests (excluding attendees): </strong>
-                                    {event.rsvps.reduce((sum, rsvp) => sum + rsvp.guests, 0)}
-                                </div>
                             </div>
                         </td>
                     </tr>
