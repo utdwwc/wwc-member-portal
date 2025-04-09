@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Modal from './Modal'; //adjust the path to your modal component
 import './App.css';
+import SignIn from './SignIn';
 
 const RegularEventsPage = () => {
     const navigate = useNavigate(); //helps move between pages dynamically
@@ -38,6 +39,7 @@ const RegularEventsPage = () => {
         console.log("UserID:", userId); //debugging
         console.log("Gmail:", gmail); //debugging
         console.log("Name:", name); //debugging
+        console.log("EMAIL FETCHED: ", gmail);
         fetchEvents(); //loads events from backend
     }, []);
     
@@ -101,12 +103,21 @@ const RegularEventsPage = () => {
             
             {/* Navigation buttons (moved outside event mapping) */}
             <div style={styles.container}>
-                <button style={styles.button} onClick={() => navigate('/admin')}>
+                <button
+                    style={styles.button}
+                    onClick={() => {
+                        if (gmail === 'utdwwc@gmail.com') {
+                            navigate('/admin', { state: {userId, name, gmail} });
+                        } else {
+                            console.log("STOP TRESPASSING!");
+                        }
+                    }}
+                    >
                     Go to Admin
                 </button>
                 <button style={styles.button} onClick={() => {
                     console.log("Navigating to Profile with gmail:", gmail);
-                    navigate('/profile', { state: { gmail } })
+                    navigate('/profile', { state: { gmail } });
                 }}>
                     Go to Profile
                 </button>
@@ -127,7 +138,7 @@ const RegularEventsPage = () => {
                                     eventTitle: event.title,
                                     userId: userId,
                                     name: name,
-                                    gmail: gmail
+                                    gmail: userId.gmail,
                                 }
                             })}
                         style={styles.applyButton}
