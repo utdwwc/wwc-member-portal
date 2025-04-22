@@ -423,24 +423,37 @@ app.get('/rsvps', async (req, res) => {
 
 /* PURPOSE: Updates who RSVP'd -> Added to Attendees List */
 app.post('/regularevents/:eventId/rsvp', async (req, res) => {
+  console.log('Received RSVP request:', req.params, req.body); //debugging
+  
   const eventId = req.params.eventId;
-  const { userId, isChecked } = req.body; //now receiving isChecked from frontend
+  const { userId, isChecked, userName } = req.body; //now receiving isChecked from frontend
+
+    // Add validation
+    if (!userId || isChecked === undefined) {
+      console.log('u are missing required fields!');
+      return res.status(400).json({
+        message: 'Missing required fields: userId and isChecked are required'
+      });
+    }
 
   try {
-      const event = await Event.findById(eventId); //find the event by ID
+    console.log('Finding event:', eventId);  
+    const event = await RegularEvent.findById(eventId); //find the event by ID
 
       if (!event) {
-          return res.status(404).json({ message: 'Event not found' });
+        console.log('Event not found');  
+        return res.status(404).json({ message: 'Event not found' });
       }
 
+      console.log('Current attendees:', event.actualAttendees);
       if (isChecked) { //adds user to attendees list IF they checked the box
-          if (!event.attendees.includes(userId)) {
-              event.attendees.push(userId);
+          if (!event.actualAttendees.includes(userId)) {
+              event.actualAttendees.push(userId);
           } else {
               return res.status(400).json({ message: 'User has already RSVPed' });
           }
       } else { //removes user from attendees list if they unchecked the box
-          event.attendees = event.attendees.filter(id => id.toString() !== userId);
+          event.actualAttendees = event.actualAttendees.filter(id => id.toString() !== userId);
       }
 
       await event.save(); //save the updated event
@@ -448,7 +461,10 @@ app.post('/regularevents/:eventId/rsvp', async (req, res) => {
       res.status(200).json({ message: 'RSVP updated successfully', event });
   } catch (error) {
       console.error('Error RSVPing for event:', error);
-      res.status(500).json({ error: 'Error RSVPing for event' });
+      res.status(500).json({
+        error: 'Error RSVPing for event',
+        details: error.message //send error message to frontend
+      });
   }
 });
 

@@ -3,15 +3,26 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Modal from './Modal'; //adjust the path to your modal component
 import './App.css';
 import SignIn from './SignIn';
+import { jwtDecode } from 'jwt-decode';
 
 const RegularEventsPage = () => {
     const navigate = useNavigate(); //helps move between pages dynamically
     const location = useLocation(); //extracts user data (ID, GMail, Name) passed from previous page
-    const userId = location.state?.UserID;
-    const gmail = location.state?.gmail; 
-    const name = location.state?.name; 
-    const [isModalOpen, setIsModalOpen] = useState(false); // State to control the modal
+    
+    const [userId, setUserId] = useState(null);
+    const [gmail, setGmail] = useState(null);
+    const [name, setName] = useState(null);
 
+    //const userId = location.state?.userId;
+    /*
+    const token = localStorage.getItem("token");
+    const decoded = jwtDecode(token); // Using 'jwt-decode'
+    const userId = decoded.userId;
+    */
+    //const gmail = location.state?.gmail; 
+    //const name = location.state?.name; 
+    
+    const [isModalOpen, setIsModalOpen] = useState(false); // State to control the modal
     const [events, setEvents] = useState([]); //connecting to database
     const [rsvpStatus, setRsvpStatus] = useState({}); // { eventId1: true, eventId2: false }
     const [currentEvent, setCurrentEvent] = useState(null);
@@ -36,17 +47,43 @@ const RegularEventsPage = () => {
 
     /* PURPOSE: Runs Once Component Mounts */
     useEffect(() => {
-        console.log("UserID:", userId); //debugging
+        const token = localStorage.getItem("token");
+        if (token) {
+            try {
+                const decoded = jwtDecode(token);
+                setUserId(decoded.userId);
+                setGmail(decoded.email || decoded.gmail); // depends on your token structure
+                setName(decoded.name || decoded.fullName); // same here
+
+                console.log("UserID fetched:", decoded.userId);
+                console.log("Gmail fetched:", decoded.email || decoded.gmail);
+                console.log("Name fetched:", decoded.name || decoded.fullName);
+        
+        /*console.log("UserID:", userId); //debugging
         console.log("Gmail:", gmail); //debugging
         console.log("Name:", name); //debugging
         console.log("EMAIL FETCHED: ", gmail);
-        fetchEvents(); //loads events from backend
+        fetchEvents(); //loads events from backend*/
+    } catch (error) {
+        console.error("Invalid or expired token:", error);
+      }
+    } else {
+      console.warn("No token found in localStorage.");
+    }
+        fetchEvents(); // move this here if it doesn’t depend on token info
     }, []);
     
     /* PURPOSE: Sends an RSVP Request to Backend When Checked */
     const handleCheckboxChange = async (eventId) => {
         const currentStatus = rsvpStatus[eventId] || false;
         const newStatus = !currentStatus;
+
+        console.log("Current userId:", userId); //debugging: check if userId exists
+        if (!userId) {
+            console.error("Error: userId is undefined!");
+            return;
+        }
+
         try {
             const response = await fetch(`http://localhost:4000/regularevents/${eventId}/rsvp`, {
                 method: 'POST',
@@ -59,6 +96,10 @@ const RegularEventsPage = () => {
                     isChecked: newStatus,
                 }),
             });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
     
             const data = await response.json();
             console.log(data.message);
