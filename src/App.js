@@ -9,11 +9,13 @@ function App() {
 
   const handleSuccess = (credentialResponse) => {
     console.log('Credential Response:', credentialResponse);
-    const decodedToken = jwtDecode(credentialResponse.credential); // Use jwtDecode
-    console.log('Decoded Token:', decodedToken);
-    setUser(decodedToken);
 
-  
+    const token = credentialResponse.credential;
+    const decodedToken = jwtDecode(token);// use jwtDecode
+    
+    console.log('Decoded Token:', decodedToken);
+    localStorage.setItem("token", token); //save raw token for future use
+    setUser(decodedToken); //store user info in state if needed
   };
 
   const handleLogout = () => {

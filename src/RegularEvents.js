@@ -11,7 +11,7 @@ const RegularEventsPage = () => {
     
     const [userId, setUserId] = useState(null);
     const [gmail, setGmail] = useState(null);
-    const [name, setName] = useState(null);
+    const [name, setName] = useState('');
 
     //const userId = location.state?.userId;
     /*
@@ -51,11 +51,11 @@ const RegularEventsPage = () => {
         if (token) {
             try {
                 const decoded = jwtDecode(token);
-                setUserId(decoded.userId);
+                setUserId(decoded.sub); //google userId
                 setGmail(decoded.email || decoded.gmail); // depends on your token structure
                 setName(decoded.name || decoded.fullName); // same here
 
-                console.log("UserID fetched:", decoded.userId);
+                console.log("UserID fetched:", decoded.sub);
                 console.log("Gmail fetched:", decoded.email || decoded.gmail);
                 console.log("Name fetched:", decoded.name || decoded.fullName);
         
