@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-
-// TESTING RQQQQQ: setting up token generation and verification
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -9,29 +7,31 @@ const userSchema = new mongoose.Schema({
     pronouns: String,
     major: String,
     year: String,
-    email: {  type: String, required: true, unique: true },
-    gmail: { type: String, required: true, unique: true },
-    password: { type: String, required: true }, //add passwords if necessary
+    email: {  type: String, unique: true, sparse: true, required: false },//not required
+    gmail: { type: String, unique: true, sparse: true },
+    googleId: { type: String, unique: true, sparse: true }, //stores googleId for OAuth users
+    password: { type: String, required: false }, //not required
     JPMorgan: { type: Boolean, default: false}, //note consistent capitalization
     points: { type: Number, default: 0 }, 
     resume: { path: String, contentType: String }, 
     isAdmin: { type: Boolean, default: false }
 }, { timestamps: true }); // Add timestamps for debugging
 
-// TESTING RQQQQ: Hash password before saving
+//only hash password if it's modified (and exists)
 userSchema.pre('save', async function(next) {
-    if (!this.isModified('password')) return next();
-    
-    try {
+  if (!this.isModified('password')) return next();
+  if (!this.password) return next(); // Skip if no password (Google OAuth users)
+
+  try {
       const salt = await bcrypt.genSalt(10);
       this.password = await bcrypt.hash(this.password, salt);
       next();
-    } catch (err) {
+  } catch (err) {
       next(err);
-    }
-  });
+  }
+});
 
-// TESTINGGG RQQQQQ: Generate JWT token
+//generate JWT token
 userSchema.methods.generateAuthToken = function() {
     const token = jwt.sign(
       {
@@ -42,7 +42,7 @@ userSchema.methods.generateAuthToken = function() {
       process.env.JWT_SECRET || 'your-secret-key',
       { expiresIn: '1h' }
     );
-    console.log('Token generated for user:', this.email, token); // Debug log
+    console.log('Token generated for user:', this.email, token); //debug log
     return token;
   };
 

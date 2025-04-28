@@ -8,21 +8,24 @@ const RSVP = require("./Models/RSVP");
 const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
-
-const jwt = require('jsonwebtoken'); // TESTING RQQQ: i dont like u jwt
-const bcrypt = require('bcrypt'); // TESTING RQQQ: being difficult boohoo
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const authRoutes = require('./auth');
 
 require('./db/connection');
 
+//middleware routes
 const app = express();
 app.use(express.json()); //middleware to parse JSON requests
 app.use(express.urlencoded({ extended: true }));
+app.use('/api', authRoutes); //mount auth routes
 
 //app.use(cors());
 app.use(cors({
   origin: 'http://localhost:3000',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
 }));
 
 /* PURPOSE: Set up Multer for File Uploads */
@@ -395,33 +398,83 @@ app.get('/rsvps', async (req, res) => {
     });
   }
 });
-/*app.get('/rsvps', async (req, res) => {
-  try {
-    const events = await RegularEvent.find().lean();
-    
-    const eventsWithRsvps = await Promise.all(
-      events.map(async (event) => {
-        const rsvps = await RSVP.find({ eventId: event._id, status: "Going" })
-          .populate('userId', 'name _id'); // Include user name and ID
-        
-        return {
-          ...event,
-            rsvps: rsvps.map(rsvp => ({
-              userId: rsvp.userId._id,
-              name: rsvp.userId.name,
-            }))
-        };
-      })
-    );
-    console.log(events);
-    console.log(eventsWithRsvps);
-    res.json(eventsWithRsvps);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});*/
 
 /* PURPOSE: Updates who RSVP'd -> Added to Attendees List */
+app.post('/regularevents/:eventId/rsvp', async (req, res) => {
+  console.log('Received RSVP request:', req.params, req.body);
+  
+  const eventId = req.params.eventId;
+  const { userId, isChecked, userName } = req.body;
+
+  // Enhanced validation
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(400).json({ message: 'Invalid user ID format' });
+  }
+
+  if (!userId || isChecked === undefined) {
+    return res.status(400).json({
+      message: 'Missing required fields: userId and isChecked are required'
+    });
+  }
+
+  try {
+    // Verify user exists
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const event = await RegularEvent.findById(eventId);
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    // Convert both IDs to string for consistent comparison
+    const userIdStr = userId.toString();
+    
+    if (isChecked) {
+      if (!event.actualAttendees.some(id => id.toString() === userIdStr)) {
+        event.actualAttendees.push(userId);
+        // Add user name if you want to track names
+        event.attendeeNames = event.attendeeNames || [];
+        if (!event.attendeeNames.includes(userName)) {
+          event.attendeeNames.push(userName);
+        }
+      }
+    } else {
+      event.actualAttendees = event.actualAttendees.filter(
+        id => id.toString() !== userIdStr
+      );
+      // Remove name if tracking names
+      if (event.attendeeNames) {
+        event.attendeeNames = event.attendeeNames.filter(
+          name => name !== userName
+        );
+      }
+    }
+
+    await event.save();
+    
+    res.status(200).json({ 
+      message: 'RSVP updated successfully',
+      event: {
+        _id: event._id,
+        actualAttendees: event.actualAttendees,
+        attendeeCount: event.actualAttendees.length
+      }
+    });
+    
+  } catch (error) {
+    console.error('Error RSVPing for event:', error);
+    res.status(500).json({
+      error: 'Internal server error',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+/* TESTING RSVP CONNECTION TO DB 04/26/25
+
+PURPOSE: Updates who RSVP'd -> Added to Attendees List
 app.post('/regularevents/:eventId/rsvp', async (req, res) => {
   console.log('Received RSVP request:', req.params, req.body); //debugging
   
@@ -466,7 +519,9 @@ app.post('/regularevents/:eventId/rsvp', async (req, res) => {
         details: error.message //send error message to frontend
       });
   }
-});
+});*/
+
+
 
 /* PURPOSE: Applications for Special Events saved to Database*/
 app.post('/eventapplications/', async (req, res) => {
@@ -576,49 +631,6 @@ app.post('/users', async (req, res) => {
 
 /*  <------------  EVENTS TABLE  ------------>  */
 
-/* TESTINGGGG RQQQQQQQ: isAdmin middleware
-const isAdmin = async (req, res, next) => {
-  try {
-    // Get token from header
-    const authHeader = req.header('Authorization');
-    if (!authHeader) {
-      return res.status(401).json({ message: 'No token provided' });
-    }
-
-    const token = authHeader.replace('Bearer ', '');
-    
-    // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-    
-    // Find user
-    const user = await User.findById(decoded._id);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    // Check admin status
-    if (!user.isAdmin) {
-      return res.status(403).json({ message: 'Admin access required' });
-    }
-
-    // Attach user to request
-    req.user = user;
-    req.token = token;
-    next();
-  } catch (error) {
-    console.error('Authentication error:', error);
-    
-    if (error.name === 'JsonWebTokenError') {
-      return res.status(401).json({ message: 'Invalid token' });
-    }
-    
-    if (error.name === 'TokenExpiredError') {
-      return res.status(401).json({ message: 'Token expired' });
-    }
-    
-    res.status(500).json({ message: 'Authentication failed', error: error.message });
-  }
-}; */
 const isAdmin = async (req, res, next) => {
   const userId = req.body.userId; // Assume userId is sent in the request body
   const user = await User.findById(userId);

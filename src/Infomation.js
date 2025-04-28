@@ -108,7 +108,7 @@ const viewResume = () => {
         <form onSubmit={collectData}>
           <h2>Enter Your Details!</h2>
           <div>
-            <label className='form-label'>Username</label>
+            <label className='form-label'>Preferred Name</label>
             <input
               type='text'
               value={name}
@@ -117,7 +117,7 @@ const viewResume = () => {
             />
           </div>
           <div>
-            <label className='form-label'>Email Address</label>
+            <label className='form-label'>UTD Student Email</label>
             <input
               type='email'
               value={email}
@@ -158,7 +158,7 @@ const viewResume = () => {
               onChange={(e) => setYear(e.target.value)}
             />
           </div>
-          <div>
+          {/*<div>
             <label className='form-label'>JPMorgan</label>
             <input
               type='checkbox'
@@ -166,7 +166,7 @@ const viewResume = () => {
               onChange={(e) => { setJPMorgan(e.target.checked) }} // This should set the value to true/false
               checked={JPMorgan}
             />
-          </div>
+          </div>*/}
           <div>
             <label className='form-label'>Resume</label>
             <input
@@ -182,12 +182,10 @@ const viewResume = () => {
           >
             View Resume
           </button>
-          <button style={styles.button} onClick={() => navigate('/regularEvents', { state: {userID, name, gmail} })}>
-          Events Page
-          </button>
           <div>
-          <p><strong>Name:</strong> {userInfo.name}</p>
-          <p><strong>Email:</strong> {userInfo.email}</p> 
+            <button style={styles.button} onClick={() => navigate('/regularEvents', { state: {userID, name, gmail} })}>
+              Events Page
+            </button>
           </div>
         </form>
 

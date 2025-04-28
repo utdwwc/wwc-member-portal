@@ -58,12 +58,6 @@ const RegularEventsPage = () => {
                 console.log("UserID fetched:", decoded.sub);
                 console.log("Gmail fetched:", decoded.email || decoded.gmail);
                 console.log("Name fetched:", decoded.name || decoded.fullName);
-        
-        /*console.log("UserID:", userId); //debugging
-        console.log("Gmail:", gmail); //debugging
-        console.log("Name:", name); //debugging
-        console.log("EMAIL FETCHED: ", gmail);
-        fetchEvents(); //loads events from backend*/
     } catch (error) {
         console.error("Invalid or expired token:", error);
       }
@@ -73,7 +67,74 @@ const RegularEventsPage = () => {
         fetchEvents(); // move this here if it doesn’t depend on token info
     }, []);
     
-    /* PURPOSE: Sends an RSVP Request to Backend When Checked */
+    /* testing 04/26/25 */
+    const handleCheckboxChange = async (eventId) => {
+        const currentStatus = rsvpStatus[eventId] || false;
+        const newStatus = !currentStatus;
+    
+        console.log("RSVP Update:", { eventId, userId, name, newStatus });
+    
+        if (!userId) {
+            console.error("Error: User not authenticated");
+            // Consider redirecting to login here
+            return;
+        }
+    
+        try {
+            const response = await fetch(`http://localhost:4000/regularevents/${eventId}/rsvp`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}` // Added auth
+                },
+                body: JSON.stringify({
+                    userId: userId,
+                    userName: name,   // Now matches backend expectation
+                    isChecked: newStatus // Keep this name to match your existing backend
+                }),
+            });
+    
+            // Enhanced error handling
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Backend error:", errorData);
+                throw new Error(errorData.message || 'RSVP update failed');
+            }
+    
+            const data = await response.json();
+            console.log("RSVP success:", data);
+    
+            // Update local state
+            setRsvpStatus(prev => ({
+                ...prev,
+                [eventId]: newStatus
+            }));
+    
+            // Only show modal if RSVPing (not when un-RSVPing)
+            if (newStatus) {
+                const event = events.find(e => e._id === eventId);
+                setCurrentEvent(event);
+                setIsModalOpen(true);
+            }
+    
+            // Optional: Refresh event data
+            // fetchEvents(); 
+    
+        } catch (error) {
+            console.error('Complete RSVP error:', {
+                message: error.message,
+                stack: error.stack,
+                eventId,
+                userId,
+                statusAttempted: newStatus
+            });
+            
+            // Show user feedback
+            alert(`RSVP failed: ${error.message}`);
+        }
+    };
+    /* TESTING RSVP CONNECTION TO DB 04/26/25
+    PURPOSE: Sends an RSVP Request to Backend When Checked
     const handleCheckboxChange = async (eventId) => {
         const currentStatus = rsvpStatus[eventId] || false;
         const newStatus = !currentStatus;
@@ -117,7 +178,7 @@ const RegularEventsPage = () => {
         } catch (error) {
             console.error('Error updating RSVP:', error);
         }
-    };
+    };*/
 
     /* PURPOSE: Generates a Google Calendar Event link */
     const handleAddToCalendar = () => {

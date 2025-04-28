@@ -6,10 +6,10 @@ import { useNavigate, useLocation } from 'react-router-dom';
 const Admin = () => {
     /* PURPOSE: State Initialization */
     const navigate = useNavigate(); //helps move between pages dynamically
-        const location = useLocation(); //extracts user data (ID, GMail, Name) passed from previous page
-        const userId = location.state?.UserID;
-        const gmail = location.state?.gmail; 
-        const name = location.state?.name; 
+    const location = useLocation(); //extracts user data (ID, GMail, Name) passed from previous page
+    const userId = location.state?.UserID;
+    const gmail = location.state?.gmail; 
+    const name = location.state?.name; 
     const [events, setEvents] = useState([]);
     const [users, setUsers] = useState([]);
     const [eventData, setEventData] = useState({
