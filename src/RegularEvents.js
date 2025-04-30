@@ -9,78 +9,122 @@ const RegularEventsPage = () => {
     const navigate = useNavigate(); //helps move between pages dynamically
     const location = useLocation(); //extracts user data (ID, GMail, Name) passed from previous page
     
-    const [userId, setUserId] = useState(null);
-    const [gmail, setGmail] = useState(null);
-    const [name, setName] = useState('');
-
-    //const userId = location.state?.userId;
-    /*
-    const token = localStorage.getItem("token");
-    const decoded = jwtDecode(token); // Using 'jwt-decode'
-    const userId = decoded.userId;
-    */
-    //const gmail = location.state?.gmail; 
-    //const name = location.state?.name; 
+    const [user, setUser] = useState({
+        id: null,
+        gmail: null,
+        name: '',
+        _id: null //mongoDB ID
+    });
     
-    const [isModalOpen, setIsModalOpen] = useState(false); // State to control the modal
-    const [events, setEvents] = useState([]); //connecting to database
-    const [rsvpStatus, setRsvpStatus] = useState({}); // { eventId1: true, eventId2: false }
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [events, setEvents] = useState([]);
+    const [rsvpStatus, setRsvpStatus] = useState({});
     const [currentEvent, setCurrentEvent] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+
+    /* PURPOSE: Get User Data from location OR localStorage */
+    useEffect(() => {
+        console.groupCollapsed("user data initialization!");
+
+        //FIRST: check location state if coming from navigation
+        if (location.state?.user) {
+            console.log("User from location state:", location.state.user);
+            setUser(location.state.user);
+            localStorage.setItem('user', JSON.stringify(location.state.user));
+        } 
+        //SECOND: fall back to localStorage
+        else {
+            const storedUser = localStorage.getItem('user');
+            if (storedUser) {
+                const parsedUser = JSON.parse(storedUser);
+                console.log("User from localStorage:", parsedUser);
+                setUser(parsedUser);
+            } else {
+                console.warn("No user data found - redirecting to login");
+                navigate('/');
+                return;
+            }
+        }
+
+        //THIRD: verify with token (optional)
+        const token = localStorage.getItem("token");
+        if (token) {
+            try {
+                const decoded = jwtDecode(token);
+                console.log("Token payload:", decoded);
+                
+                // Merge token data with existing user data
+                setUser(prev => ({
+                    ...prev,
+                    id: decoded.sub || prev.id,
+                    gmail: decoded.email || decoded.gmail || prev.gmail,
+                    name: decoded.name || prev.name
+                }));
+            } catch (error) {
+                console.error("Token decode error:", error);
+            }
+        }
+
+        console.groupEnd();
+        fetchEvents();
+    }, [navigate, location.state]);
 
     
     /* PURPOSE: Retrieves list of existing events from backend */
     const fetchEvents = async () => {
         try {
-            const response = await fetch('http://localhost:4000/regularevents');
-            const data = await response.json();
-            setEvents(data);
+            console.log("fetching events for user: ", user);
 
-            const initialRsvpStatus = {}; //initializes rsvp status if backend provides info
+            const response = await fetch('http://localhost:4000/regularevents', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+
+            const data = await response.json();
+            console.log("Events response: ", data);
+            setEvents(data);
+            
+            //initialize RSVP status
+            const initialRsvpStatus = {};
             data.forEach(event => {
-                initialRsvpStatus[event._id] = event.userHasRsvped || false;
+                initialRsvpStatus[event._id] = event.actualAttendees?.includes(user._id) || false;
             });
             setRsvpStatus(initialRsvpStatus);
           } catch (error) {
-            console.error("Error fetching events:", error)
+            console.error("Fetch error:", {
+                message: error.message,
+                userState: user,
+                timestamp: new Date().toISOString()
+            });
+          } finally {
+            setLoading(false);
           }
     };
-
-    /* PURPOSE: Runs Once Component Mounts */
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (token) {
-            try {
-                const decoded = jwtDecode(token);
-                setUserId(decoded.sub); //google userId
-                setGmail(decoded.email || decoded.gmail); // depends on your token structure
-                setName(decoded.name || decoded.fullName); // same here
-
-                console.log("UserID fetched:", decoded.sub);
-                console.log("Gmail fetched:", decoded.email || decoded.gmail);
-                console.log("Name fetched:", decoded.name || decoded.fullName);
-    } catch (error) {
-        console.error("Invalid or expired token:", error);
-      }
-    } else {
-      console.warn("No token found in localStorage.");
-    }
-        fetchEvents(); // move this here if it doesn’t depend on token info
-    }, []);
     
-    /* testing 04/26/25 */
+    /* PURPOSE: RSVP handler with user verification */
     const handleCheckboxChange = async (eventId) => {
+        console.group(`RSVP update for event ${eventId}`);
+        console.log("Current user state:", user);
+
+        if (!user._id) {
+            console.error("Missing user ID - cannot RSVP");
+            alert("Please login again");
+            navigate('/');
+            return;
+        }
+
         const currentStatus = rsvpStatus[eventId] || false;
         const newStatus = !currentStatus;
     
-        console.log("RSVP Update:", { eventId, userId, name, newStatus });
-    
-        if (!userId) {
-            console.error("Error: User not authenticated");
-            // Consider redirecting to login here
-            return;
-        }
-    
         try {
+            console.log("Sending RSVP request with:", {
+                eventId,
+                userId: user._id,
+                newStatus
+            });
+            
             const response = await fetch(`http://localhost:4000/regularevents/${eventId}/rsvp`, {
                 method: 'POST',
                 headers: {
@@ -88,97 +132,59 @@ const RegularEventsPage = () => {
                     'Authorization': `Bearer ${localStorage.getItem('token')}` // Added auth
                 },
                 body: JSON.stringify({
-                    userId: userId,
-                    userName: name,   // Now matches backend expectation
-                    isChecked: newStatus // Keep this name to match your existing backend
+                    userId: user._id, //mongoDB ID
+                    googleId: user.id, //google ID
+                    userName: user.name,
+                    userEmail: user.gmail,  
+                    isChecked: newStatus 
                 }),
             });
-    
-            // Enhanced error handling
+
             if (!response.ok) {
                 const errorData = await response.json();
-                console.error("Backend error:", errorData);
-                throw new Error(errorData.message || 'RSVP update failed');
+                console.error("Backend error response:", errorData);
+                throw new Error(errorData.message || "RSVP update failed");
             }
-    
-            const data = await response.json();
-            console.log("RSVP success:", data);
-    
-            // Update local state
+
+            const result = await response.json();
+            console.log("RSVP successful, server response:", result);
+
+            //update local state
             setRsvpStatus(prev => ({
                 ...prev,
                 [eventId]: newStatus
             }));
-    
-            // Only show modal if RSVPing (not when un-RSVPing)
+            
+            //only show modal if RSVPing
             if (newStatus) {
                 const event = events.find(e => e._id === eventId);
+                if (!event) {
+                    console.warn("Event not found for modal:", eventId);
+                    return;
+                }
                 setCurrentEvent(event);
                 setIsModalOpen(true);
             }
-    
-            // Optional: Refresh event data
-            // fetchEvents(); 
-    
         } catch (error) {
-            console.error('Complete RSVP error:', {
+            console.error('RSVP error:', {
                 message: error.message,
                 stack: error.stack,
                 eventId,
-                userId,
+                userId: user._id,
                 statusAttempted: newStatus
             });
-            
-            // Show user feedback
+
+            //revert UI state on error
+            setRsvpStatus(prev => ({
+                ...prev,
+                [eventId]: currentStatus //revert to previous status
+            }));
+
             alert(`RSVP failed: ${error.message}`);
+        } finally {
+            console.groupEnd();
         }
     };
-    /* TESTING RSVP CONNECTION TO DB 04/26/25
-    PURPOSE: Sends an RSVP Request to Backend When Checked
-    const handleCheckboxChange = async (eventId) => {
-        const currentStatus = rsvpStatus[eventId] || false;
-        const newStatus = !currentStatus;
-
-        console.log("Current userId:", userId); //debugging: check if userId exists
-        if (!userId) {
-            console.error("Error: userId is undefined!");
-            return;
-        }
-
-        try {
-            const response = await fetch(`http://localhost:4000/regularevents/${eventId}/rsvp`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    userId: userId,
-                    userName: name,   
-                    isChecked: newStatus,
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-    
-            const data = await response.json();
-            console.log(data.message);
-    
-            setRsvpStatus(prev => ({ //updates local state
-                ...prev,
-                [eventId]: newStatus
-            }));
-    
-            if (newStatus) {
-                const event = events.find(e => e._id === eventId);
-                setCurrentEvent(event);
-                setIsModalOpen(true);
-            }
-        } catch (error) {
-            console.error('Error updating RSVP:', error);
-        }
-    };*/
 
     /* PURPOSE: Generates a Google Calendar Event link */
     const handleAddToCalendar = () => {
@@ -199,6 +205,8 @@ const RegularEventsPage = () => {
         setIsModalOpen(false);
     };
 
+    if (loading) return <div>Loading user and events...</div>;
+
     return (
         <div>
             <h1 style={styles.pageTitle}>Regular Events Page</h1>
@@ -208,8 +216,8 @@ const RegularEventsPage = () => {
                 <button
                     style={styles.button}
                     onClick={() => {
-                        if (gmail === 'utdwwc@gmail.com') {
-                            navigate('/admin', { state: {userId, name, gmail} });
+                        if (user.gmail === 'utdwwc@gmail.com') {
+                            navigate('/admin', { state: { user } });
                         } else {
                             console.log("STOP TRESPASSING!");
                         }
@@ -218,8 +226,8 @@ const RegularEventsPage = () => {
                     Go to Admin
                 </button>
                 <button style={styles.button} onClick={() => {
-                    console.log("Navigating to Profile with gmail:", gmail);
-                    navigate('/profile', { state: { gmail } });
+                    console.log("Navigating to Profile with gmail:", user.gmail);
+                    navigate('/profile', { state: { user } });
                 }}>
                     Go to Profile
                 </button>
@@ -238,9 +246,9 @@ const RegularEventsPage = () => {
                                 state: { 
                                     eventId: event._id,
                                     eventTitle: event.title,
-                                    userId: userId,
-                                    name: name,
-                                    gmail: userId.gmail,
+                                    userId: user._id,
+                                    name: user.name,
+                                    gmail: user.gmail,
                                 }
                             })}
                         style={styles.applyButton}

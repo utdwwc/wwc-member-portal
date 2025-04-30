@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 function Information() {
   const navigate = useNavigate();
+  const [user, setUser] = useState(null); //testing 04/29/25
+
   const location = useLocation(); // Add this line
   const gmail = location.state?.email; // Now this will work
   const [resume, setFile] = useState(null);
@@ -17,32 +19,46 @@ function Information() {
   const [greeting, setGreeting] = useState(""); // State to store the greeting message
   const [userInfo, setUserInfo] = useState({}); // State to store user information
   const [userID, setUserID] = useState(null); 
+
+  console.log('initial user state: ', user);
   
+  /*PURPOSE: Check for User on Component Mount*/
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (!storedUser) {
+      navigate('/'); //redirect to login if no user data
+      return;
+    }
+    setUser(JSON.parse(storedUser));
+  }, [navigate]);
   
+
+  /* PURPOSE: Collect User Data */
   const collectData = async (e) => {
     e.preventDefault();
+    console.log('Form submission started with user: ', user);
 
-  // TESTING RQ: Validate required fields
-  if (!name || !email || !gmail || !password) {
-    alert('Please fill all required fields');
-    return;
-  }
+    //validate required fields
+    if (!name || !email || !gmail || !password) {
+      alert('Please fill all required fields');
+      return;
+    }
   
-  const formData = new FormData();
-  formData.append('name', name);
-  formData.append('email', email);
-  formData.append('gmail', gmail); 
-  formData.append('password', password);
-  formData.append('pronouns', pronouns); 
-  formData.append('major', major); 
-  formData.append('year', year); 
-  formData.append('JPMorgan', JPMorgan ? 'true' : 'false');
-  if (resume) formData.append('resume', resume);
+   const formData = new FormData();
+   formData.append('name', name);
+   formData.append('email', email);
+   formData.append('gmail', gmail); 
+   formData.append('password', password);
+   formData.append('pronouns', pronouns); 
+   formData.append('major', major); 
+   formData.append('year', year); 
+   formData.append('JPMorgan', JPMorgan ? 'true' : 'false');
+   if (resume) formData.append('resume', resume);
   
-  try {
+   try {
     console.log([...formData.entries()]);//debugging
-
-    // FETCH (POST/): Sends user data to backend + stores user ID
+    
+    // FETCH (POST/): Send User Data to Backend
     let result = await fetch('http://localhost:4000/', {
       method: 'POST',
       body: formData,
@@ -60,47 +76,47 @@ function Information() {
     }
   
     result = await result.json();
+    console.log('Backend response after submission: ', result);
     localStorage.setItem("user", JSON.stringify(result));
+    console.log('Updated user in localStorage: ', JSON.parse(localStorage.getItem('user')));
     setUserID(result._id); // Updates state with user's ID
     console.log(userID); 
 
     navigate('/regularEvents');
   
-    // FETCH (GET/): Retrieves the user's uploaded resume
+    // FETCH (GET/): Retrieves User's Uploaded Resume
     const resumeResponse = await fetch(`http://localhost:4000/user/${result._id}/resume`);
     if (!resumeResponse.ok) {
       throw new Error(`HTTP error2! status: ${resumeResponse.status}`);
     }
   
     const resumeBlob = await resumeResponse.blob();
-    const resumeUrl = URL.createObjectURL(resumeBlob); // Creates downloadable URL for file
-    setResumeUrl(resumeUrl); // Makes resume available for viewing
+    const resumeUrl = URL.createObjectURL(resumeBlob); //creates downloadable URL for file
+    setResumeUrl(resumeUrl); //makes resume available for viewing
   
-    // FETCH (GET/): Retrieves user details to display 
+    // FETCH (GET/): Retrieves User Details to Display 
     const userResponse = await fetch(`http://localhost:4000/user/${result._id}`);
     if (!userResponse.ok) {
       throw new Error(`HTTP error3! status: ${userResponse.status}`);
     }
   
     const userData = await userResponse.json();
-    setUserInfo(userData); // Updates state with user's info
-    setGreeting(`Hello ${userData.name} (${userData.email})`); // Set greeting with name and email
+    setUserInfo(userData); //updates state with user's info
+    setGreeting(`Hello ${userData.name} (${userData.email})`); //set greeting with name and email
   } catch (error) {
     console.error('Error:', error);
   }
 };
 
-useEffect(() => {
-  console.log(userID);
-}, [userID]); 
-
 const viewResume = () => {
   if (resumeUrl) {
-    window.open(resumeUrl, '_blank'); // Open the resume URL in a new tab/window
+    window.open(resumeUrl, '_blank'); //open the resume URL in a new tab/window
   } else {
     alert('No resume available to view.');
   }
 };
+
+if (!user) return <div>Loading...</div>;
   
   return (
     <div style={styles.container}>

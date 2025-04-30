@@ -7,30 +7,30 @@ const Profile = () => {
   const location = useLocation(); // Add this line
   const gmail = location.state?.gmail; // Now this will work
 
-
-  const fetchUser = async () => {
-    try {
-       console.log(gmail); 
-       console.log(`Fetch URL: /user/gmail/${gmail}`);
-      const response = await fetch(`http://localhost:4000/user/gmail/${gmail}`); // issue with the fetch 
-      console.log("In profile, sending to setUser"); 
-      if (response.ok) {
-        const userData = await response.json();
-        console.log("In profile, sending to setUser"); 
-        setUser(userData);
-      } else if (response.status === 404) {
-        setError('User not found');
-      } else {
-        setError('Error fetching user data');
-      }
-    } catch (err) {
-      setError('Server error');
-    }
-  };
-
   // Fetch user data when component loads
   useEffect(() => {
     console.log('Gmail from location.state in profile:', gmail); // Add this to debug
+    
+    const fetchUser = async () => {
+      try {
+         console.log(gmail); 
+         console.log(`Fetch URL: /user/gmail/${gmail}`);
+        const response = await fetch(`http://localhost:4000/user/gmail/${gmail}`); // issue with the fetch 
+        console.log("In profile, sending to setUser"); 
+        if (response.ok) {
+          const userData = await response.json();
+          console.log("In profile, sending to setUser"); 
+          setUser(userData);
+        } else if (response.status === 404) {
+          setError('User not found');
+        } else {
+          setError('Error fetching user data');
+        }
+      } catch (err) {
+        setError('Server error');
+      }
+    };
+    
     if (gmail) {
       fetchUser();
     } else {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode'; // Using jwtDecode
 import { useNavigate } from 'react-router-dom';
@@ -7,14 +7,21 @@ function App() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
+  //check for exsting user on initial load
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser))
+    }
+  }, []);
+
   const handleSuccess = async (credentialResponse) => {
     const token = credentialResponse.credential;
     const decodedToken = jwtDecode(token);// use jwtDecode
     console.log('Google Token:', decodedToken);
-    //console.log('Google Token:', token);//testing
 
     try {
-      // Send token to your backend for verification
+      //send token to your backend for verification
       const response = await fetch('/api/auth/google', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -24,20 +31,28 @@ function App() {
       if (!response.ok) throw new Error('Login failed');
 
       const { _id, name, email, gmail, token: backendToken } = await response.json();
+      console.log('User data received from backend:', {_id, name, email, gmail});
 
-      // Store user data (including MongoDB _id)
+      const userData = {
+        _id,
+        name,
+        email: email || gmail,
+        token: backendToken
+      };
+
+      //store user data
       localStorage.setItem('token', backendToken);
-      localStorage.setItem('user', JSON.stringify({ _id, name, email, gmail }));
-      setUser({ _id, name, email, gmail });
+      localStorage.setItem('user', JSON.stringify(userData));
+      setUser(userData);
 
       console.log('Login successful. MongoDB _id:', _id);
-      navigate('/information'); // Redirect after login
+      navigate('/information'); //redirect after login
     } catch (err) {
-      console.error('Google login error:', {
-        message: err.message,
-        response: await err.response?.json(),
-        token: token.slice(0, 20) + '...'
-      });
+      console.error('Google login error: ', err.message);
+      //clear data on error
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      setUser(null);
     }
   };
 
@@ -55,8 +70,11 @@ function App() {
         {user ? (
           <div style={styles.userInfo}>
             <h2>Welcome, {user.name}</h2>
-            <p>Email: {user.email || user.gmail}</p>
-            <button style={styles.button} onClick={() => navigate('/information')}>
+            <p>Email: {user.email}</p>
+            <button
+              style={styles.button}
+              onClick={() => navigate('/information')}
+            >
               Go to Information Page
             </button>
             <button style={styles.button} onClick={handleLogout}>
