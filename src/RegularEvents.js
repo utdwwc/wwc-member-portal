@@ -11,7 +11,7 @@ const RegularEventsPage = () => {
     
     const [user, setUser] = useState({
         id: null,
-        gmail: null,
+        email: null,
         name: '',
         _id: null //mongoDB ID
     });
@@ -90,7 +90,7 @@ const RegularEventsPage = () => {
                 setUser(prev => ({
                     ...prev,
                     id: decoded.sub || prev.id,
-                    gmail: decoded.email || decoded.gmail || prev.gmail,
+                    email: decoded.email || prev.email,
                     name: decoded.name || prev.name
                 }));
             } catch (error) {
@@ -139,7 +139,7 @@ const RegularEventsPage = () => {
                     userId: user._id, //mongoDB ID
                     googleId: user.id, //google ID
                     userName: user.name,
-                    userEmail: user.gmail,  
+                    userEmail: user.email,  
                     isChecked: newStatus 
                 }),
             });
@@ -220,13 +220,21 @@ const RegularEventsPage = () => {
                 <button
                     style={styles.button}
                     onClick={() => {
-                        if (user.gmail === 'utdwwc@gmail.com') {
-                            navigate('/admin', { state: { user } });
+                        if (user.email === 'utdwwc@gmail.com') {
+                            navigate('/admin',
+                                { state: {
+                                    user: {
+                                        _id: user._id,
+                                        name: user.name,
+                                        email: user.email
+                                    }
+                                }
+                            });
                         } else {
-                            console.log("STOP TRESPASSING!");
+                            console.log("STOP TRESPASSING! UR NOT ADMIN");
                         }
                     }}
-                    >
+                >
                     Go to Admin
                 </button>
                 <button
@@ -236,7 +244,7 @@ const RegularEventsPage = () => {
                             user: { //must match what Profile.js expects
                                 _id: user._id,
                                 name: user.name,
-                                gmail: user.gmail,
+                                email: user.email,
                                 pronouns: user.pronouns,
                                 major: user.major,
                                 year: user.year
@@ -263,7 +271,7 @@ const RegularEventsPage = () => {
                                     eventTitle: event.title,
                                     userId: user._id,
                                     name: user.name,
-                                    gmail: user.gmail,
+                                    email: user.email,
                                 }
                             })}
                         style={styles.applyButton}

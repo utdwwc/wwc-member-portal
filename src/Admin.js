@@ -7,6 +7,9 @@ const Admin = () => {
     /* PURPOSE: State Initialization */
     const navigate = useNavigate(); //helps move between pages dynamically
     const location = useLocation(); //extracts user data (ID, GMail, Name) passed from previous page
+    //TESTING 04/30/25
+    const adminUser = location.state?.user;
+    
     const userId = location.state?.UserID;
     const gmail = location.state?.gmail; 
     const name = location.state?.name; 
@@ -27,6 +30,14 @@ const Admin = () => {
     const [appEvents, setAppEvents] = useState([]);
     const [expandedRsvpEvent, setExpandedRsvpEvent] = useState(null);
     const [expandedAppEvent, setExpandedAppEvent] = useState(null);
+
+    /* PURPOSE: Redirect User if not the Authorized Admin */
+    useEffect(() => {
+        if (!adminUser || adminUser.email !== "utdwwc@gmail.com") {
+            navigate('/'); // Redirect to home or login
+            alert("Unauthorized access");
+          }
+    }, [adminUser, navigate]);
 
     /* PURPOSE: Retrieves List of Registered Users from Backend */
     const fetchUsers = async () => {
@@ -80,6 +91,11 @@ const Admin = () => {
         fetchRsvpEvents();
         fetchAppEvents();
     }, []);
+
+    if (!adminUser || adminUser.email !== "utdwwc@gmail.com") {
+        console.log("absolutely not get out")
+        return null; // Or a loading spinner
+    }
 
     const toggleRsvpUsers = (eventId) => {
       setExpandedRsvpEvent(expandedRsvpEvent === eventId ? null : eventId);
@@ -144,7 +160,6 @@ const Admin = () => {
         }
     };
     
-    if (gmail === "utdwwc@gmail.com") {
     return (
         <div>
             <h1>Admin Dashboard</h1>
@@ -351,13 +366,8 @@ const Admin = () => {
     ) : (
       <p>No users found</p>
     )}
-
-        </div>
+    </div>
     );
-
-    } else {
-        <p>STOP TRESPASSING!</p>
-    }
 };
 
 export default Admin;
