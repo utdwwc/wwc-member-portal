@@ -22,11 +22,43 @@ const RegularEventsPage = () => {
     const [currentEvent, setCurrentEvent] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    
+    /* PURPOSE: Retrieves list of existing events from backend */
+    const fetchEvents = async (targetUser) => {
+        try {
+            console.log("fetching events for user: ", targetUser);
+            const response = await fetch('http://localhost:4000/regularevents', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+
+            const data = await response.json();
+            console.log("events response: ", data);
+            setEvents(data);
+            
+            //initialize RSVP status
+            const initialRsvpStatus = {};
+            data.forEach(event => {
+                initialRsvpStatus[event._id] = event.actualAttendees?.includes(targetUser._id) || false;
+            });
+            setRsvpStatus(initialRsvpStatus);
+          } catch (error) {
+            console.error("Fetch error:", {
+                message: error.message,
+                userState: user,
+                timestamp: new Date().toISOString()
+            });
+          } finally {
+            setLoading(false);
+          }
+    };
+
 
     /* PURPOSE: Get User Data from location OR localStorage */
     useEffect(() => {
         console.groupCollapsed("user data initialization!");
-
+    
         //FIRST: check location state if coming from navigation
         if (location.state?.user) {
             console.log("User from location state:", location.state.user);
@@ -46,14 +78,14 @@ const RegularEventsPage = () => {
                 return;
             }
         }
-
+    
         //THIRD: verify with token (optional)
         const token = localStorage.getItem("token");
         if (token) {
             try {
                 const decoded = jwtDecode(token);
                 console.log("Token payload:", decoded);
-                
+                    
                 // Merge token data with existing user data
                 setUser(prev => ({
                     ...prev,
@@ -65,43 +97,15 @@ const RegularEventsPage = () => {
                 console.error("Token decode error:", error);
             }
         }
-
+    
         console.groupEnd();
-        fetchEvents();
     }, [navigate, location.state]);
 
-    
-    /* PURPOSE: Retrieves list of existing events from backend */
-    const fetchEvents = async () => {
-        try {
-            console.log("fetching events for user: ", user);
-
-            const response = await fetch('http://localhost:4000/regularevents', {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            });
-
-            const data = await response.json();
-            console.log("Events response: ", data);
-            setEvents(data);
-            
-            //initialize RSVP status
-            const initialRsvpStatus = {};
-            data.forEach(event => {
-                initialRsvpStatus[event._id] = event.actualAttendees?.includes(user._id) || false;
-            });
-            setRsvpStatus(initialRsvpStatus);
-          } catch (error) {
-            console.error("Fetch error:", {
-                message: error.message,
-                userState: user,
-                timestamp: new Date().toISOString()
-            });
-          } finally {
-            setLoading(false);
-          }
-    };
+    useEffect(() => {
+        if (user._id) {
+          fetchEvents(user); //pass the current user
+        }
+      }, [user._id]);
     
     /* PURPOSE: RSVP handler with user verification */
     const handleCheckboxChange = async (eventId) => {
@@ -225,10 +229,21 @@ const RegularEventsPage = () => {
                     >
                     Go to Admin
                 </button>
-                <button style={styles.button} onClick={() => {
-                    console.log("Navigating to Profile with gmail:", user.gmail);
-                    navigate('/profile', { state: { user } });
-                }}>
+                <button
+                    style={styles.button}
+                    onClick={() => navigate('/profile', {
+                        state: {
+                            user: { //must match what Profile.js expects
+                                _id: user._id,
+                                name: user.name,
+                                gmail: user.gmail,
+                                pronouns: user.pronouns,
+                                major: user.major,
+                                year: user.year
+                            }
+                        } 
+                    })}
+                >
                     Go to Profile
                 </button>
             </div>

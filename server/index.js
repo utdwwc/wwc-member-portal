@@ -240,19 +240,31 @@ app.get('/user/:id', async (req, res) => {
 app.get('/user/gmail/:gmail', async (req, res) => {
   try {
     const gmailId = req.params.gmail;
-    console.log(`Fetching user with email: ${gmailId}`); //log gmail for debugging
-    const user = await User.findOne({ gmail: gmailId });
+    console.log(`fetching user with email: ${gmailId}`); //debugging
+
+    const user = await User.findOne({ gmail: gmailId }).lean();
     
     if (!user) {
-      console.error(`User with ID ${gmailId} not found`);
-      return res.status(404).send('User not found');
+      console.error(`user not found: ${gmailId}`);
+      return res.status(404).send('user not found');
     } //returns gmail ID without password
 
-    const { name, email, gmail, pronouns, major, year, } = user;
-    res.json({ name, email, gmail, pronouns, major, year});
+    //response object
+    //const { name, email, gmail, pronouns, major, year, } = user;
+    const userProfile = {
+      name: user.name,
+      email: user.email || user.gmail,
+      pronouns: user.pronouns,
+      major: user.major,
+      year: user.year
+    };
+
+    console.log(`returning profile for: ${gmailId}`);
+    res.json(userProfile);
+
   } catch (error) {
-    console.error(`Error fetching user details for user ID: ${req.params.gmail}`, error);
-    res.status(500).send('Server error');
+    console.error(`server error fetching: ${req.params.gmail}:`, error);
+    res.status(500).json({ message: 'server error', error: error.message });
  }
 });
 
@@ -651,11 +663,7 @@ const isAdmin = async (req, res, next) => {
 };
 
 
-/* TESTINGGGG RQQQQQ: token and auth middleware
-app.get('/admin/test', isAdmin, (req, res) => {
-  res.json({ message: 'Admin access granted' });
-}); */
-
+/* GORL idk why but i have to comment these out/back in all the time */
 app.listen(4000, () => {
   console.log('Server is running on port 4000');
 });
