@@ -447,21 +447,21 @@ app.get('/rsvps', async (req, res) => {
             {
               $match: {
                 $expr: { $eq: ["$eventId", "$$eventId"] },
-                status: "Going" // Only include "Going" RSVPs
+                status: "Going" //only include "Going" RSVPs
               }
             },
             {
               $lookup: {
-                from: "users", // User collection name
+                from: "users", //user collection name
                 localField: "userId",
                 foreignField: "_id",
                 as: "user"
               }
             },
-            { $unwind: "$user" }, // Convert user array to object
+            { $unwind: "$user" }, //convert user array to object
             {
               $project: {
-                _id: 0, // Exclude RSVP _id
+                _id: 0, //exclude RSVP _id
                 userId: "$user._id",
                 userName: "$user.name",
               }
@@ -496,16 +496,21 @@ app.get('/rsvps', async (req, res) => {
   }
 });
 
-/* PURPOSE: Updates who RSVP'd -> Added to Attendees List */
+/* PURPOSE: Updates who RSVP'd -> Added to Attendee List */
 app.post('/regularevents/:eventId/rsvp', async (req, res) => {
   console.log('Received RSVP request:', req.params, req.body);
   
   const eventId = req.params.eventId;
   const { userId, isChecked, userName } = req.body;
 
-  // Enhanced validation
+  //userId validation
   if (!mongoose.Types.ObjectId.isValid(userId)) {
     return res.status(400).json({ message: 'Invalid user ID format' });
+  }
+
+  //eventId validation
+  if (!mongoose.Types.ObjectId.isValid(eventId)) {
+    return res.status(400).json({ message: 'Invalid event ID format' });
   }
 
   if (!userId || isChecked === undefined) {
@@ -515,7 +520,7 @@ app.post('/regularevents/:eventId/rsvp', async (req, res) => {
   }
 
   try {
-    // Verify user exists
+    //verify user exists
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -526,24 +531,29 @@ app.post('/regularevents/:eventId/rsvp', async (req, res) => {
       return res.status(404).json({ message: 'Event not found' });
     }
 
-    // Convert both IDs to string for consistent comparison
-    const userIdStr = userId.toString();
+    //convert both IDs to string for consistent comparison
+    const userIdStr = userId?.toString();
     
     if (isChecked) {
-      if (!event.actualAttendees.some(id => id.toString() === userIdStr)) {
+      if (!event.actualAttendees.some(id =>
+          id?.toString() === userIdStr
+      )) {
         event.actualAttendees.push(userId);
-        // Add user name if you want to track names
+        
+        //add user name if you want to track names
         event.attendeeNames = event.attendeeNames || [];
-        if (!event.attendeeNames.includes(userName)) {
+        if (userName && !event.attendeeNames.includes(userName)) {
           event.attendeeNames.push(userName);
         }
       }
     } else {
+      //remove from attendees
       event.actualAttendees = event.actualAttendees.filter(
-        id => id.toString() !== userIdStr
+        id => id?.toString() !== userIdStr
       );
-      // Remove name if tracking names
-      if (event.attendeeNames) {
+
+      //remove name if tracking names
+      if (event.attendeeNames && userName) {
         event.attendeeNames = event.attendeeNames.filter(
           name => name !== userName
         );
