@@ -108,13 +108,14 @@ const EventApplicationForm = () => {
             )}
             <form onSubmit={handleSubmit}>
                 <div style={styles.formGroup}>
-                    <label>Email:</label>
+                    <label>School Email:</label>
                     <input
                         type="email"
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
                         style={styles.input}
+                        placeholder="e.g., abc123456@utdallas.edu"
                     />
                     {errors.email && <p style={styles.error}>{errors.email}</p>}
                 </div>
@@ -127,6 +128,7 @@ const EventApplicationForm = () => {
                         value={formData.name}
                         onChange={handleChange}
                         style={styles.input}
+                        placeholder="Jane Doe"
                     />
                     {errors.name && <p style={styles.error}>{errors.name}</p>}
                 </div>
@@ -139,6 +141,7 @@ const EventApplicationForm = () => {
                         value={formData.year}
                         onChange={handleChange}
                         style={styles.input}
+                        placeholder="e.g., Freshman, Sophomore"
                     />
                     {errors.year && <p style={styles.error}>{errors.year}</p>}
                 </div>
@@ -150,6 +153,7 @@ const EventApplicationForm = () => {
                         value={formData.reason}
                         onChange={handleChange}
                         style={styles.textarea}
+                        placeholder="I want to attend this event because..."
                     />
                     {errors.reason && <p style={styles.error}>{errors.reason}</p>}
                 </div>
