@@ -437,11 +437,64 @@ app.post('/regularevents', async (req, res) => {
 /* TESTING: rsvp system */
 app.get('/rsvps', async (req, res) => {
   try {
-    // 1. Fetch all events with their RSVPs in a single query using aggregation
     const eventsWithRsvps = await RegularEvent.aggregate([
       {
         $lookup: {
-          from: "rsvps", // Collection name (case-sensitive)
+          from: "rsvps",
+          let: { eventId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ["$eventId", "$$eventId"] },
+                status: "Going" // Only include "Going" RSVPs
+              }
+            },
+            {
+              $lookup: {
+                from: "users",
+                localField: "userId",
+                foreignField: "_id",
+                as: "user"
+              }
+            },
+            { $unwind: "$user" },
+            {
+              $project: {
+                userId: 1,
+                userName: "$user.name",
+                _id: 0
+              }
+            }
+          ],
+          as: "rsvps"
+        }
+      },
+      {
+        $project: {
+          title: 1,
+          date: 1,
+          location: 1,
+          description: 1,
+          rsvps: 1,
+          rsvpCount: { $size: "$rsvps" }
+        }
+      },
+      { $match: { rsvpCount: { $gt: 0 } } } // Only return events with RSVPs
+    ]);
+
+    res.json(eventsWithRsvps);
+  } catch (err) {
+    console.error('Error fetching RSVPs:', err);
+    res.status(500).json({ error: "Failed to fetch RSVP data" });
+  }
+});
+/*app.get('/rsvps', async (req, res) => {
+  try {
+    // 1. fetch all events with their RSVPs in a single query using aggregation
+    const eventsWithRsvps = await RegularEvent.aggregate([
+      {
+        $lookup: {
+          from: "rsvps", //collection name (case-sensitive)
           let: { eventId: "$_id" },
           pipeline: [
             {
@@ -477,15 +530,15 @@ app.get('/rsvps', async (req, res) => {
           location: 1,
           description: 1,
           rsvps: 1,
-          rsvpCount: { $size: "$rsvps" } // Add count of RSVPs
+          rsvpCount: { $size: "$rsvps" } //add count of RSVPs
         }
       }
     ]);
 
-    // 2. Logging for debugging (optional)
+    // 2. logging for debugging (optional)
     console.log(`Fetched ${eventsWithRsvps.length} events with RSVPs`);
 
-    // 3. Send response
+    // 3. send response
     res.json(eventsWithRsvps);
   } catch (err) {
     console.error('Error fetching RSVPs:', err);
@@ -494,10 +547,41 @@ app.get('/rsvps', async (req, res) => {
       details: err.message 
     });
   }
-});
+});*/
 
-/* PURPOSE: Updates who RSVP'd -> Added to Attendee List */
+/* PURPOSE: Updates who RSVP'd */
 app.post('/regularevents/:eventId/rsvp', async (req, res) => {
+  try {
+    const { eventId } = req.params;
+    const { userId, userName, isChecked } = req.body;
+
+    //validate the event exists
+    const event = await RegularEvent.findById(eventId);
+    if (!event) throw new Error("Event not found");
+
+    //create or delete the RSVP
+    if (isChecked) {
+      //upsert (create or update) an RSVP with status: "Going"
+      await RSVP.findOneAndUpdate(
+        { eventId, userId },
+        { $set: { status: "Going", userName } }, //include userName for quick lookup
+        { upsert: true, new: true }
+      );
+    } else {
+      //remove the RSVP
+      await RSVP.deleteOne({ eventId, userId });
+    }
+
+    //return success (no need to return the event)
+    res.status(200).json({ 
+      message: `RSVP ${isChecked ? "added" : "removed"}`,
+      status: isChecked ? "Going" : "Not Going"
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+/*app.post('/regularevents/:eventId/rsvp', async (req, res) => {
   console.log('Received RSVP request:', req.params, req.body);
   
   const eventId = req.params.eventId;
@@ -578,57 +662,7 @@ app.post('/regularevents/:eventId/rsvp', async (req, res) => {
       details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
-});
-/* TESTING RSVP CONNECTION TO DB 04/26/25
-
-PURPOSE: Updates who RSVP'd -> Added to Attendees List
-app.post('/regularevents/:eventId/rsvp', async (req, res) => {
-  console.log('Received RSVP request:', req.params, req.body); //debugging
-  
-  const eventId = req.params.eventId;
-  const { userId, isChecked, userName } = req.body; //now receiving isChecked from frontend
-
-    // Add validation
-    if (!userId || isChecked === undefined) {
-      console.log('u are missing required fields!');
-      return res.status(400).json({
-        message: 'Missing required fields: userId and isChecked are required'
-      });
-    }
-
-  try {
-    console.log('Finding event:', eventId);  
-    const event = await RegularEvent.findById(eventId); //find the event by ID
-
-      if (!event) {
-        console.log('Event not found');  
-        return res.status(404).json({ message: 'Event not found' });
-      }
-
-      console.log('Current attendees:', event.actualAttendees);
-      if (isChecked) { //adds user to attendees list IF they checked the box
-          if (!event.actualAttendees.includes(userId)) {
-              event.actualAttendees.push(userId);
-          } else {
-              return res.status(400).json({ message: 'User has already RSVPed' });
-          }
-      } else { //removes user from attendees list if they unchecked the box
-          event.actualAttendees = event.actualAttendees.filter(id => id.toString() !== userId);
-      }
-
-      await event.save(); //save the updated event
-
-      res.status(200).json({ message: 'RSVP updated successfully', event });
-  } catch (error) {
-      console.error('Error RSVPing for event:', error);
-      res.status(500).json({
-        error: 'Error RSVPing for event',
-        details: error.message //send error message to frontend
-      });
-  }
 });*/
-
-
 
 /* PURPOSE: Applications for Special Events saved to Database*/
 app.post('/eventapplications/', async (req, res) => {
