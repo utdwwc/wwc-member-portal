@@ -11,7 +11,8 @@ const Admin = () => {
     const adminUser = location.state?.user;
     
     const userId = location.state?.UserID;
-    const gmail = location.state?.gmail; 
+    const gmail = location.state?.gmail;
+    const utdEmail = location.state?.utdEmail;  
     const name = location.state?.name; 
     const [events, setEvents] = useState([]);
     const [users, setUsers] = useState([]);
@@ -33,10 +34,19 @@ const Admin = () => {
 
     /* PURPOSE: Redirect User if not the Authorized Admin */
     useEffect(() => {
-        if (!adminUser || adminUser.email !== "utdwwc@gmail.com") {
-            navigate('/'); // Redirect to home or login
-            alert("Unauthorized access");
-          }
+        //first check if adminUser exists
+        if (!adminUser) {
+            navigate('/regularevents');
+            alert("unauthorized access so GET OUT");
+            return;
+        }
+        
+        //then check the email condition
+        if (adminUser.email === "utdwwc@gmail.com" &&
+            adminUser.utdEmail === "utdwwc@gmail.com") {
+            navigate('/regularevents');
+            alert("unauthorized access so GOODBYE");
+        }
     }, [adminUser, navigate]);
 
     /* PURPOSE: Retrieves List of Registered Users from Backend */
@@ -91,11 +101,6 @@ const Admin = () => {
         fetchRsvpEvents();
         fetchAppEvents();
     }, []);
-
-    if (!adminUser || adminUser.email !== "utdwwc@gmail.com") {
-        console.log("absolutely not get out")
-        return null; // Or a loading spinner
-    }
 
     const toggleRsvpUsers = (eventId) => {
       setExpandedRsvpEvent(expandedRsvpEvent === eventId ? null : eventId);

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Modal from './Modal'; //adjust the path to your modal component
 import './App.css';
-import SignIn from './SignIn';
 import { jwtDecode } from 'jwt-decode';
 
 const RegularEventsPage = () => {
@@ -196,7 +195,18 @@ const RegularEventsPage = () => {
         setIsModalOpen(false);
     };
 
-    if (loading) return <div>Loading user and events...</div>;
+    const handleClick = () => {
+        if (user?.email === "utdwwc@gmail.com" ||
+            user?.utdEmail === "utdwwc@gmail.com") {
+                navigate('/admin', {
+                    state: {
+                        user: user
+                    }
+                });
+        } else {
+            alert("boohoo u aren't admin");
+        }
+    };
 
     return (
         <div>
@@ -206,21 +216,7 @@ const RegularEventsPage = () => {
             <div style={styles.container}>
                 <button
                     style={styles.button}
-                    onClick={() => {
-                        if (user.email === 'utdwwc@gmail.com') {
-                            navigate('/admin',
-                                { state: {
-                                    user: {
-                                        _id: user._id,
-                                        name: user.name,
-                                        email: user.email
-                                    }
-                                }
-                            });
-                        } else {
-                            console.log("STOP TRESPASSING! UR NOT ADMIN");
-                        }
-                    }}
+                    onClick={handleClick}
                 >
                     Go to Admin
                 </button>
