@@ -68,17 +68,14 @@ const Profile = () => {
   return (
     <div className="profile-details space-y-4">
 
-      {/* Profile Header */}
+      {/* profile header */}
       <div className="profile-header mb-6">
         <h1 className="text-3xl font-bold text-gray-800">{user.name}'s Profile</h1>
-        {user.email || user.gmail ? (
-          <p className="text-gray-600 mt-1">{user.email || user.gmail}</p>
-        ) : null}
       </div>
 
-      {/* Details Grid */}
+      {/* details grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Pronouns */}
+
         {user.pronouns && (
           <div className="detail-card">
             <h3 className="detail-label">Pronouns</h3>
@@ -86,7 +83,6 @@ const Profile = () => {
           </div>
         )}
 
-        {/* Major */}
         {user.major && (
           <div className="detail-card">
             <h3 className="detail-label">Major</h3>
@@ -94,11 +90,24 @@ const Profile = () => {
           </div>
         )}
 
-        {/* Year */}
         {user.year && (
           <div className="detail-card">
             <h3 className="detail-label">Year</h3>
             <p className="detail-value">{user.year}</p>
+          </div>
+        )}
+
+        {user.utdEmail && (
+          <div className="detail-card">
+            <h3 className="detail-label">School Email</h3>
+            <p className="detail-value">{user.utdEmail}</p>
+          </div>
+        )}
+
+        {user.points && (
+          <div className="detail-card">
+            <h3 className="detail-label">Points</h3>
+            <p className="detail-value">{user.points}</p>
           </div>
         )}
   </div>
