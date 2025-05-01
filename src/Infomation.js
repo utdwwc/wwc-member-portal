@@ -121,7 +121,6 @@ function Information() {
     }
     
     console.log('Starting resume upload');
-    setLoading(prev => ({ ...prev, resume: true }));
 
     try {
       const formData = new FormData();
@@ -146,7 +145,6 @@ function Information() {
       setError(err.message);
       throw err;
     } finally {
-      setLoading(prev => ({ ...prev, resume: false }));
       console.log('Resume upload completed');
     }
   };
@@ -182,7 +180,6 @@ function Information() {
     }
 
     console.log('Form submission started');
-    setLoading(prev => ({ ...prev, profile: true }));
     setError(null);
 
     try {
@@ -224,7 +221,6 @@ function Information() {
     }
   };
 
-  if (loading.initialLoad) return <div>Loading user data...</div>;
   if (!user) {
     console.log('User data not loaded yet, showing loading state');
     return <div>Loading...</div>;

@@ -7,13 +7,17 @@ const Admin = () => {
     /* PURPOSE: State Initialization */
     const navigate = useNavigate(); //helps move between pages dynamically
     const location = useLocation(); //extracts user data (ID, GMail, Name) passed from previous page
-    //TESTING 04/30/25
     const adminUser = location.state?.user;
-    
-    const userId = location.state?.UserID;
-    const gmail = location.state?.gmail;
-    const utdEmail = location.state?.utdEmail;  
-    const name = location.state?.name; 
+
+    const [expandedEvent, setExpandedEvent] = useState(null);
+    const toggleEventDetails = (eventId) => {
+        setExpandedEvent(expandedEvent === eventId ? null : eventId);
+    };
+    const [expandedUser, setExpandedUser] = useState(null);
+    const toggleUserDetails = (userId) => {
+        setExpandedUser(expandedUser === userId ? null : userId);
+    };
+ 
     const [events, setEvents] = useState([]);
     const [users, setUsers] = useState([]);
     const [eventData, setEventData] = useState({
@@ -23,7 +27,7 @@ const Admin = () => {
         location: '',
         appReq: false, //changed from isSpecial
         points: 0,
-        rsvpLimit: 0,
+        rsvpGoal: 0,
         actualAttendees: 0,
     });
     const [errorMessage, setErrorMessage] = useState('');
@@ -131,7 +135,7 @@ const Admin = () => {
             location: eventData.location,
             appReq: Boolean(eventData.appReq),
             points: Number(eventData.points) || 0,
-            rsvpLimit: Number(eventData.rsvpLimit) || 0
+            rsvpGoal: Number(eventData.rsvpGoal) || 0
           };
 
           console.log('Sending:', payload); //debugging
@@ -157,7 +161,7 @@ const Admin = () => {
                 location: '',
                 appReq: false,
                 points: 0,
-                rsvpLimit: 0,
+                rsvpGoal: 0,
             }); //clear form
             console.log('Event created:', data);
         } catch (error) {
@@ -182,55 +186,87 @@ const Admin = () => {
                 <input type="date" name="date" value={eventData.date} onChange={handleEventChange} required />
                 <input type="text" name="location" placeholder="Event Location" value={eventData.location} onChange={handleEventChange} required />
                 <input type="number" name="points" placeholder="Points Value" value={eventData.points || ''} onChange={handleEventChange} min="0" step="1" required />
-                <input type="number" name="rsvpLimit" placeholder="RSVP Limit" value={eventData.rsvpLimit || ''} onChange={handleEventChange} min="0" step="1" required />
+                <input type="number" name="rsvpGoal" placeholder="RSVP Goal" value={eventData.rsvpGoal || ''} onChange={handleEventChange} min="0" step="1" required />
                 <label style={{ display: "flex", alignItems: "center", gap: "5px" }}>
                   <input type="checkbox" checked={eventData.appReq} onChange={(e) => setEventData({...eventData, appReq: e.target.checked})}/>
                   App Requirement 
                 </label>
                 <button type="submit">Create Event</button>
             </form>
-
+            
             <h2>Event Information</h2>
-            {events.length > 0 ? (
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                 <thead>
-                  <tr style={{ backgroundColor: '#f2f2f2' }}>
-                    <th style={{ padding: '10px' }}>Date</th>
-                    <th style={{ padding: '10px' }}>Event</th>
-                    <th style={{ padding: '10px' }}>Description</th>
-                    <th style={{ padding: '10px' }}>Location</th>
-                    <th style={{ padding: '10px' }}>App Req</th>
-                    <th style={{ padding: '10px' }}>Points</th>
-                    <th style={{ padding: '10px' }}>RSVP Limit</th>
-                    <th style={{ padding: '10px' }}>Attended</th>
-                  </tr>
-                 </thead>
-                 <tbody>
-                 {events.map(event => (
-                  <tr key={event._id} style={{ borderBottom: '1px solid #ddd' }}>
-                    <td style={{ padding: '10px' }}>{<td>{new Date(event.date).toLocaleDateString()}</td>}</td>
-                    <td style={{ padding: '10px' }}>{event.title || '—'}</td>
-                    <td style={{ padding: '10px' }}>{event.description || '—'}</td>
-                    <td style={{ padding: '10px' }}>{event.location || '—'}</td>
-                    <td style={{ padding: '10px' }}>{event.appReq ? 'Y' : 'N'}</td>
-                    <td style={{ padding: '10px' }}>{event.rsvpLimit}</td>
-                    <td style={{ padding: '10px' }}>{event.points}</td>
-                    <td style={{ padding: '10px' }}>{event.actualAttendees}</td>
-                    <td>{}</td>
-                  </tr>
-                 ))}
-                 </tbody>
-                </table>
-            ) : (
-            <p>No events found.</p>
-            )}
+{events.length > 0 ? (
+    <Table striped bordered hover>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Event</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {events.map(event => (
+                <React.Fragment key={event._id}>
+                    <tr>
+                        <td>{new Date(event.date).toLocaleDateString()}</td>
+                        <td>{event.title || '—'}</td>
+                        <td>{event.description ? `${event.description.substring(0, 50)}${event.description.length > 50 ? '...' : ''}` : '—'}</td>
+                        <td>
+                            <Button 
+                                variant="info"
+                                onClick={() => toggleEventDetails(event._id)}
+                            >
+                                {expandedEvent === event._id ? 'Hide Details' : 'Show Details'}
+                            </Button>
+                        </td>
+                    </tr>
+                    {expandedEvent === event._id && (
+                        <tr>
+                            <td colSpan="4">
+                                <div className="event-details">
+                                    <Table size="sm" borderless>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Location:</strong></td>
+                                                <td>{event.location || '—'}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Application Required:</strong></td>
+                                                <td>{event.appReq ? '✅ Yes' : '❌ No'}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Points:</strong></td>
+                                                <td>{event.points}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>RSVP Goal:</strong></td>
+                                                <td>{event.rsvpGoal}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Attended:</strong></td>
+                                                <td>{event.actualAttendees}</td>
+                                            </tr>
+                                        </tbody>
+                                    </Table>
+                                </div>
+                            </td>
+                        </tr>
+                    )}
+                </React.Fragment>
+            ))}
+        </tbody>
+    </Table>
+) : (
+    <p>No events found.</p>
+)}
 
             <h2>RSVPs</h2>
             <Table striped bordered hover>
                 <thead>
                     <tr>
+                        <th>Event Date</th>
                         <th>Event Name</th>
-                        <th>Date</th>
                         <th>RSVP Count</th>
                         <th>Actions</th>
                     </tr>
@@ -239,8 +275,8 @@ const Admin = () => {
                     {rsvpEvents.map(event => (
                         <React.Fragment key={event._id}>
                         <tr>
-                            <td>{event.title}</td>
                             <td>{new Date(event.date).toLocaleDateString()}</td>
+                            <td>{event.title}</td>
                             <td>{event.rsvpCount}</td>
                             <td>
                                 <Button 
@@ -279,17 +315,17 @@ const Admin = () => {
                         </td>
                     </tr>
                 )}
-            </React.Fragment>
-        ))}
-    </tbody>
-</Table>
+                    </React.Fragment>
+                    ))}
+                </tbody>
+            </Table>
 
             <h2>Applications</h2>
             <Table striped bordered hover>
                 <thead>
                     <tr>
+                        <th>Event Date</th>
                         <th>Event Name</th>
-                        <th>Date</th>
                         <th>App Count</th>
                         <th>Actions</th>
                     </tr>
@@ -298,8 +334,8 @@ const Admin = () => {
                     {appEvents.map(event => (
                         <React.Fragment key={event._id}>
                             <tr>
-                                <td>{event.eventName}</td>
                                 <td>{new Date(event.eventDate).toLocaleDateString()}</td>
+                                <td>{event.eventName}</td>
                                 <td>{event.applicationCount}</td>
                                 <td>
                                     <Button 
@@ -319,7 +355,7 @@ const Admin = () => {
                                                     <thead>
                                                         <tr>
                                                             <th>Name</th>
-                                                            <th>Email</th>
+                                                            <th>School Email</th>
                                                             <th>Year</th>
                                                             <th>Reason</th>
                                                         </tr>
@@ -344,33 +380,71 @@ const Admin = () => {
                 </tbody>
             </Table>
             
-            <h2>Registered Users</h2>
+            <h2>User Information</h2>
             {users.length > 0 ? (
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                 <thead>
-                  <tr style={{ backgroundColor: '#f2f2f2' }}>
-                    <th style={{ padding: '10px' }}>Name</th>
-                    <th style={{ padding: '10px' }}>Email</th>
-                    <th style={{ padding: '10px' }}>Major</th>
-                    <th style={{ padding: '10px' }}>Year</th>
-                    <th style={{ padding: '10px' }}>JPMorgan</th>
-                  </tr>
-                </thead>
-                <tbody>
-                 {users.map(user => (
-                  <tr key={user._id} style={{ borderBottom: '1px solid #ddd' }}>
-                    <td style={{ padding: '10px' }}>{user.name}</td>
-                    <td style={{ padding: '10px' }}>{user.email}</td>
-                    <td style={{ padding: '10px' }}>{user.major || '—'}</td>
-                    <td style={{ padding: '10px' }}>{user.year || '—'}</td>
-                    <td style={{ padding: '10px' }}>{user.JPMorgan ? 'Y' : 'N'}</td>
-                  </tr>
-                ))}
-            </tbody>
-        </table>
-    ) : (
-      <p>No users found</p>
-    )}
+                <Table striped bordered hover>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Student Email</th>
+                            <th>Points</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {users.map(user => (
+                            <React.Fragment key={user._id}>
+                                <tr>
+                                    <td>{user.name || '—'}</td>
+                                    <td>{user.utdEmail || user.email || '—'}</td>
+                                    <td>{user.points || 0}</td>
+                                    <td>
+                                        <Button 
+                                            variant="info"
+                                            onClick={() => toggleUserDetails(user._id)}
+                                        >
+                                            {expandedUser === user._id ? 'Hide Details' : 'Show Details'}
+                                        </Button>
+                                    </td>
+                                </tr>
+                                {expandedUser === user._id && (
+                                <tr>
+                                    <td colSpan="4">
+                                        <div className="user-details">
+                                            <Table size="sm" borderless>
+                                                <tbody>
+                                                    <tr>
+                                                        <td><strong>User ID:</strong></td>
+                                                        <td>{user._id}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>UTD Email:</strong></td>
+                                                        <td>{user.utdEmail || '—'}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Events Attended:</strong></td>
+                                                        <td>{user.eventsAttended?.length || 0}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Admin Status:</strong></td>
+                                                        <td>
+                                                            {(user.email === "utdwwc@gmail.com" || user.utdEmail === "utdwwc@gmail.com") 
+                                                            ? '✅ Admin' : '❌ Regular User'}
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </Table>
+                                        </div>
+                                    </td>
+                                </tr>
+                            )}
+                        </React.Fragment>
+                    ))}
+                </tbody>
+            </Table>
+        ) : (
+            <p>No users found.</p>
+        )}
     </div>
     );
 };

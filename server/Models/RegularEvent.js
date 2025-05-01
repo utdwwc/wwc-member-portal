@@ -7,7 +7,7 @@ const eventSchema = new mongoose.Schema({
     location: { type: String, required: true },
     appReq: {type: Boolean, required: true, default: false},
     points: {type: Number, default: 0, min: 0}, 
-    rsvpLimit: { type: Number, default: 0, min: 0 },
+    rsvpGoal: { type: Number, default: 0, min: 0 },
     actualAttendees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] // Store user IDs of attendees
 }); 
 
