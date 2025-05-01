@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode'; // Using jwtDecode
 import { useNavigate } from 'react-router-dom';
+import './App.css';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -30,13 +31,13 @@ function App() {
 
       if (!response.ok) throw new Error('Login failed');
 
-      const { _id, name, email, gmail, token: backendToken } = await response.json();
-      console.log('User data received from backend:', {_id, name, email, gmail});
+      const { _id, name, email, utdEmail, token: backendToken } = await response.json();
+      console.log('User data received from backend:', {_id, name, email, utdEmail});
 
       const userData = {
         _id,
         name,
-        email: email || gmail,
+        email: email,
         token: backendToken
       };
 
@@ -73,7 +74,17 @@ function App() {
             <p>Email: {user.email}</p>
             <button
               style={styles.button}
-              onClick={() => navigate('/information')}
+              onClick={() => navigate('/information', {
+                state: {
+                  user: {
+                    _id: user._id,
+                    pronouns: user.pronouns,
+                    major: user.major,
+                    year: user.year,
+                    utdEmail: user.utdEmail
+                  }
+                }
+              })}
             >
               Go to Information Page
             </button>
@@ -91,54 +102,6 @@ function App() {
     </div>
   );
 }
-/*
-function App() {
-  const [user, setUser] = useState(null);
-  const navigate = useNavigate(); // Use navigate hook for navigation
-
-  const handleSuccess = (credentialResponse) => {
-    console.log('Credential Response:', credentialResponse);
-
-    const token = credentialResponse.credential;
-    const decodedToken = jwtDecode(token);// use jwtDecode
-    
-    console.log('Decoded Token:', decodedToken);
-    localStorage.setItem("token", token); //save raw token for future use
-    setUser(decodedToken); //store user info in state if needed
-  };
-
-  const handleLogout = () => {
-    setUser(null);
-    navigate('/'); // Redirect to home page after logout
-  };
-
-  return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <h1 style={styles.heading}>Sign Up Here</h1>
-        {user ? (
-          <div style={styles.userInfo}>
-            <h2>Welcome, {user.name}</h2>
-            <p>Email: {user.email}</p>
-            <button style={styles.button} onClick={() => navigate('/information', {state: { email: user.email} })}>
-              Go to Information Page
-            </button>
-            <button style={styles.button} onClick={handleLogout}>
-              Sign Out
-            </button>
-          </div>
-        ) : (
-          <GoogleLogin
-            onSuccess={handleSuccess}
-            onError={() => {
-              console.log('Login Failed');
-            }}
-          />
-        )}
-      </div>
-    </div>
-  );
-} */
 
 const styles = {
   container: {

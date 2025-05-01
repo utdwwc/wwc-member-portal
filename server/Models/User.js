@@ -8,14 +8,14 @@ const userSchema = new mongoose.Schema({
     major: String,
     year: String,
     email: {  type: String, unique: true, sparse: true, required: false },//not required
-    gmail: { type: String, unique: true, sparse: true },
+    utdEmail: { type: String, unique: true, sparse: true },
     googleId: { type: String, unique: true, sparse: true }, //stores googleId for OAuth users
-    password: { type: String, required: false }, //not required
-    JPMorgan: { type: Boolean, default: false}, //note consistent capitalization
+    //password: { type: String, required: false }, //not required
+    //JPMorgan: { type: Boolean, default: false}, //note consistent capitalization
     points: { type: Number, default: 0 }, 
     resume: { path: String, contentType: String }, 
-    isAdmin: { type: Boolean, default: false }
-}, { timestamps: true }); // Add timestamps for debugging
+    //isAdmin: { type: Boolean, default: false }
+}, { timestamps: true }); //add timestamps for debugging
 
 //only hash password if it's modified (and exists)
 userSchema.pre('save', async function(next) {

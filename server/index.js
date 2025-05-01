@@ -1,5 +1,6 @@
 const express = require('express');
 const multer = require('multer');
+const upload = multer({ dest: 'uploads/resumes/' });
 const mongoose = require('mongoose');
 const User = require('./Models/User');
 const RegularEvent = require('./Models/RegularEvent');
@@ -23,7 +24,7 @@ app.use('/api', authRoutes); //mount auth routes
 //app.use(cors());
 app.use(cors({
   origin: 'http://localhost:3000',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 }));
@@ -38,7 +39,6 @@ const storage = multer.diskStorage({
     cb(null, uniqueSuffix + path.extname(file.originalname));
   },
 });
-const upload = multer({ storage: storage });
 
 
 /* PURPOSE: User Registration with Authentication */
@@ -216,7 +216,43 @@ app.post('/login', async (req, res) => {
 /* PURPOSE: Serving Static Files from Files Directory */
 app.use('/files', express.static(path.join(__dirname, 'files')));
 
-/* PURPOSE: Checks if User ID Exists Already in Database */
+/* PURPOSE: Updates Existing User Profile in the Database */
+app.patch('/user/:id', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const updates = req.body; //fields to update (pronouns, major, etc)
+
+    console.log(`updating user ${userId} with:`, updates);
+
+    //validate updates - prevent updating protected fields like googleId
+    const allowedUpdates = ['pronouns', 'major', 'year', 'resume', 'utdEmail'];
+    const isValidUpdate = Object.keys(updates).every(key => allowedUpdates.includes(key));
+
+    if (!isValidUpdate) {
+      return res.status(400).send({ error: 'Invalid updates!' });
+    }
+
+    //find and update the user
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      updates,
+      { new: true, runValidators: true } //return updated user + validate data
+    ).select('-googleId -__v'); //exclude sensitive/uneeded fields
+
+    if (!updatedUser) {
+      console.error(`User ${userId} not found`);
+      return res.status(404).send('User not found');
+    }
+
+    console.log(`Successfully updated user ${userId}`);
+    res.json(updatedUser);
+
+  } catch (error) {
+    console.error(`Update failed for ${req.params.id}:`, error);
+    res.status(500).send({ error: 'Server error during update' });
+  }
+});
+/* PURPOSE: Checks if User ID Exists Already in Database
 app.get('/user/:id', async (req, res) => {
   try {
     const userId = req.params.id;
@@ -234,7 +270,7 @@ app.get('/user/:id', async (req, res) => {
     console.error(`Error fetching user details for user ID: ${req.params.id}`, error);
     res.status(500).send('Server error');
   }
-});
+});*/
 
  /* PURPOSE: Checks if Gmail Exists Already in Database */
 app.get('/user/gmail/:gmail', async (req, res) => {
@@ -269,7 +305,34 @@ app.get('/user/gmail/:gmail', async (req, res) => {
 });
 
 /* PURPOSE: Fetches Uploaded Resume for User from Database */
-app.get('/user/:id/resume', async (req, res) => {
+app.post('/user/:id/resume', upload.single('resume'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).send('No file uploaded');
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      { 
+        resume: {
+          path: req.file.path,
+          contentType: req.file.mimetype,
+          originalName: req.file.originalname
+        }
+      },
+      { new: true }
+    );
+
+    res.json({
+      message: 'Resume uploaded successfully',
+      resumePath: updatedUser.resume.path
+    });
+  } catch (error) {
+    console.error('Resume upload error:', error);
+    res.status(500).send('Server error during upload');
+  }
+});
+/*app.get('/user/:id/resume', async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
 
@@ -290,7 +353,7 @@ app.get('/user/:id/resume', async (req, res) => {
     console.error(`Server error while fetching resume for user ID: ${req.params.id}`, error);
     res.status(500).send('Server error');
   }
-});
+});*/
 
 /*  <------------  EVENTS TABLE  ------------>  */
 

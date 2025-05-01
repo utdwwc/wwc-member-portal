@@ -1,216 +1,331 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import './Information.css';
 
 function Information() {
   const navigate = useNavigate();
+  const { state } = useLocation();
   const [user, setUser] = useState(null); //testing 04/29/25
+  const [formData, setFormData] = useState({
+    pronouns: '',
+    major: '',
+    year: '',
+    utdEmail: ''
+  });
+  const [resumeFile, setResumeFile] = useState(null);
+  const [resumeUrl, setResumeUrl] = useState(null); // For viewing existing resume
+  const [loading, setLoading] = useState({
+    profile: false,
+    resume: false,
+    initialLoad: true
+  });
+  const [error, setError] = useState(null);
 
-  const location = useLocation(); // Add this line
-  const gmail = location.state?.email; // Now this will work
-  const [resume, setFile] = useState(null);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [pronouns, setPronouns] = useState(""); 
-  const [major, setMajor] = useState(""); 
-  const [year, setYear] = useState(""); 
-  const [JPMorgan, setJPMorgan] = useState(false);
-  const [password, setPassword] = useState("");
-  const [resumeUrl, setResumeUrl] = useState(""); // State to store the resume URL
-  const [greeting, setGreeting] = useState(""); // State to store the greeting message
-  const [userInfo, setUserInfo] = useState({}); // State to store user information
-  const [userID, setUserID] = useState(null); 
-
-  console.log('initial user state: ', user);
+  console.log('Current user state:', user);
+  console.log('Location state:', state);
   
+
   /*PURPOSE: Check for User on Component Mount*/
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (!storedUser) {
+      console.warn('No user found in localStorage, redirecting to login');
       navigate('/'); //redirect to login if no user data
       return;
     }
-    setUser(JSON.parse(storedUser));
+
+    const parsedUser = JSON.parse(storedUser);
+    console.log('User from localStorage:', parsedUser);
+    setUser(parsedUser);
+
+    //use localStorage user if state is null
+    if (!state && parsedUser) {
+      console.log('Using user data from localStorage');
+      setFormData({
+        pronouns: parsedUser.pronouns || '',
+        major: parsedUser.major || '',
+        year: parsedUser.year || '',
+        utdEmail: parsedUser.utdEmail || ''
+      });
+
+      if (parsedUser._id) {
+        fetchResume(parsedUser._id).finally(() => {
+          setLoading(prev => ({ ...prev, initialLoad: false }));
+        });
+      } else {
+        setLoading(prev => ({ ...prev, initialLoad: false }));
+      }
+    }
   }, [navigate]);
-  
 
-  /* PURPOSE: Collect User Data */
-  const collectData = async (e) => {
-    e.preventDefault();
-    console.log('Form submission started with user: ', user);
+  /* PURPOSE: Pre-fill Form with Existing User Data if Available */
+  useEffect(() => {
+    if (state?.user) {
+      console.log('Using user data from location state');
+      setFormData({
+        pronouns: state.user.pronouns || '',
+        major: state.user.major || '',
+        year: state.user.year || '',
+        utdEmail: state.user.utdEmail || ''
+      });
 
-    //validate required fields
-    if (!name || !email || !gmail || !password) {
-      alert('Please fill all required fields');
+      //load existing resume if available
+      if (state.user._id) {
+        console.log('Fetching resume for user:', state.user._id);
+        fetchResume(state.user._id);
+      }
+    }
+  }, [state]);
+
+  /* PURPOSE: Fetch Resume if it Exists in the Database */
+  const fetchResume = async (userId) => {
+    try {
+      console.log(`Fetching resume for user ${userId}`);
+      const response = await fetch(`http://localhost:4000/user/${userId}/resume`);
+      
+      if (response.ok) {
+        console.warn(`Resume fetch failed with status: ${response.status}`);
+        return;
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      console.log('Resume URL created:', url);
+      setResumeUrl(url);
+    } catch (err) {
+      console.error('Error fetching resume:', err);
+    }
+  };
+
+  /* PURPOSE: If User Uploads Different Resume */
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file && file.size > 5 * 1024 * 1024) { // 5MB limit
+      const errorMsg = 'File size too large (max 5MB)';
+      console.warn(errorMsg);
+      setError(errorMsg);
       return;
     }
-  
-   const formData = new FormData();
-   formData.append('name', name);
-   formData.append('email', email);
-   formData.append('gmail', gmail); 
-   formData.append('password', password);
-   formData.append('pronouns', pronouns); 
-   formData.append('major', major); 
-   formData.append('year', year); 
-   formData.append('JPMorgan', JPMorgan ? 'true' : 'false');
-   if (resume) formData.append('resume', resume);
-  
-   try {
-    console.log([...formData.entries()]);//debugging
+    console.log('Selected file:', file.name, file.size);
+    setResumeFile(file);
+    setError(null);
+  };
+
+  /* PURPOSE: Updates Backend with New Resume */
+  const uploadResume = async () => {
+    if (!resumeFile || !state?.user?._id) {
+      console.warn('No resume file or user ID for upload');
+      return;
+    }
     
-    // FETCH (POST/): Send User Data to Backend
-    let result = await fetch('http://localhost:4000/', {
-      method: 'POST',
-      body: formData,
-    });
-  
-    if (!result.ok) {
-      const errorData = await result.json();
-      alert(errorData.message || `Error: ${result.status}`);
+    console.log('Starting resume upload');
+    setLoading(prev => ({ ...prev, resume: true }));
+
+    try {
+      const formData = new FormData();
+      formData.append('resume', resumeFile);
+
+      const response = await fetch(
+        `http://localhost:4000/user/${state.user._id}/resume`,
+        { method: 'POST', body: formData }
+      );
+
+      if (!response.ok) {
+        const errorMsg = `Upload failed with status ${response.status}`;
+        console.error(errorMsg);
+        throw new Error(errorMsg);
+      }
+      
+      const result = await response.json();
+      console.log('Resume upload successful:', result);
+      await fetchResume(state.user._id); //refresh resume view
+      return result;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(prev => ({ ...prev, resume: false }));
+      console.log('Resume upload completed');
+    }
+  };
+
+  /* PURPOSE: Updates Backend with New Form Inputs */
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  /* PURPOSE: Updates Profile in Backend with Form Details */
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!user?._id) {
+      console.error('No user ID available');
+      setError('User not properly loaded');
       return;
-    }      
-  
-    const contentType = result.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      throw new TypeError("Received non-JSON response");
     }
-  
-    result = await result.json();
-    console.log('Backend response after submission: ', result);
-    localStorage.setItem("user", JSON.stringify(result));
-    console.log('Updated user in localStorage: ', JSON.parse(localStorage.getItem('user')));
-    setUserID(result._id); // Updates state with user's ID
-    console.log(userID); 
 
-    navigate('/regularEvents');
-  
-    // FETCH (GET/): Retrieves User's Uploaded Resume
-    const resumeResponse = await fetch(`http://localhost:4000/user/${result._id}/resume`);
-    if (!resumeResponse.ok) {
-      throw new Error(`HTTP error2! status: ${resumeResponse.status}`);
+    //add early return if no changes detected
+    const currentUser = JSON.parse(localStorage.getItem('user'));
+    if (JSON.stringify(formData) === JSON.stringify({
+      pronouns: currentUser.pronouns || '',
+      major: currentUser.major || '',
+      year: currentUser.year || '',
+      utdEmail: currentUser.utdEmail || currentUser.email || ''
+    }) && !resumeFile) {
+      console.log('No changes detected');
+      return;
     }
-  
-    const resumeBlob = await resumeResponse.blob();
-    const resumeUrl = URL.createObjectURL(resumeBlob); //creates downloadable URL for file
-    setResumeUrl(resumeUrl); //makes resume available for viewing
-  
-    // FETCH (GET/): Retrieves User Details to Display 
-    const userResponse = await fetch(`http://localhost:4000/user/${result._id}`);
-    if (!userResponse.ok) {
-      throw new Error(`HTTP error3! status: ${userResponse.status}`);
+
+    console.log('Form submission started');
+    setLoading(prev => ({ ...prev, profile: true }));
+    setError(null);
+
+    try {
+      //upload resume first if new file was selected
+      if (resumeFile) {
+        console.log('New resume detected, uploading first');
+        await uploadResume();
+      }
+
+      //update profile data
+      console.log('Updating profile data:', formData);
+      const response = await fetch(
+        `http://localhost:4000/user/${user._id}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify(formData)
+        }
+      );
+
+      if (!response.ok) {
+        const errorMsg = `Profile update failed with status ${response.status}`;
+        console.error(errorMsg);
+        throw new Error(errorMsg);
+      }
+      
+      const updatedUser = await response.json();
+      console.log('Profile update successful:', updatedUser);
+      navigate('/profile', { state: { user: updatedUser } });
+    } catch (err) {
+      console.error('Profile update error:', err);
+      setError(err.message);
+    } finally {
+      setLoading(prev => ({ ...prev, profile: false }));
+      console.log('Form submission completed');
     }
-  
-    const userData = await userResponse.json();
-    setUserInfo(userData); //updates state with user's info
-    setGreeting(`Hello ${userData.name} (${userData.email})`); //set greeting with name and email
-  } catch (error) {
-    console.error('Error:', error);
+  };
+
+  if (loading.initialLoad) return <div>Loading user data...</div>;
+  if (!user) {
+    console.log('User data not loaded yet, showing loading state');
+    return <div>Loading...</div>;
   }
-};
-
-const viewResume = () => {
-  if (resumeUrl) {
-    window.open(resumeUrl, '_blank'); //open the resume URL in a new tab/window
-  } else {
-    alert('No resume available to view.');
-  }
-};
-
-if (!user) return <div>Loading...</div>;
   
   return (
-    <div style={styles.container}>
+    <div className="information-form">
+    {error && <div className="error">{error}</div>}
+      <div style={styles.container}>
       <div style={styles.card}>
-        <form onSubmit={collectData}>
-          <h2>Enter Your Details!</h2>
-          <div>
-            <label className='form-label'>Preferred Name</label>
+
+        <form onSubmit={handleSubmit}>
+          <h2>Update Your Profile!</h2>
+
+          <div className="form-group">
+            <label>Pronouns</label>
             <input
               type='text'
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
+              name="pronouns"
+              value={formData.pronouns}
+              onChange={handleChange}
+              placeholder="e.g., they/them"
             />
           </div>
-          <div>
-            <label className='form-label'>UTD Student Email</label>
+
+          <div className="form-group">
+            <label>Major</label>
+            <input
+              type='text'
+              name="major"
+              value={formData.major}
+              onChange={handleChange}
+              placeholder="Your major"
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Year</label>
+            <input
+              type='text'
+              name="year"
+              value={formData.year}
+              onChange={handleChange}
+              placeholder="e.g., Freshman, Sophomore"
+            />
+          </div>
+
+          <div className="form-group">
+            <label>UTD Email</label>
             <input
               type='email'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
+              name="utdEmail"
+              value={formData.utdEmail}
+              onChange={handleChange}
+              placeholder="abc123456@utdallas.edu"
             />
           </div>
-          <div>
-            <label className='form-label'>Password</label>
-            <input
-              type='password'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label className='form-label'>Pronouns</label>
-            <input
-              type='text'
-              value={pronouns}
-              onChange={(e) => setPronouns(e.target.value)}
-            />
-          </div>
-          <div>
-            <label className='form-label'>Major</label>
-            <input
-              type='text'
-              value={major}
-              onChange={(e) => setMajor(e.target.value)}
-            />
-          </div>
-          <div>
-            <label className='form-label'>Year</label>
-            <input
-              type='text'
-              value={year}
-              onChange={(e) => setYear(e.target.value)}
-            />
-          </div>
-          {/*<div>
-            <label className='form-label'>JPMorgan</label>
-            <input
-              type='checkbox'
-              name='jpmorgan'
-              onChange={(e) => { setJPMorgan(e.target.checked) }} // This should set the value to true/false
-              checked={JPMorgan}
-            />
-          </div>*/}
-          <div>
-            <label className='form-label'>Resume</label>
-            <input
-              type='file'
-              onChange={(e) => setFile(e.target.files[0])}
-            />
-          </div>
-          <button type='submit'>Submit</button>
+
+          <div className="form-group">
+          <label>Resume</label>
+          {resumeUrl && (
+            <div className="resume-actions">
+              <a 
+                href={resumeUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="resume-link"
+              >
+                View Current Resume
+              </a>
+              <span> or replace it </span>
+            </div>
+          )}
+          <input
+            type="file"
+            accept=".pdf,.doc,.docx"
+            onChange={handleFileChange}
+            disabled={loading.resume}
+          />
+          {loading.resume && <small>Uploading resume...</small>}
+          <small>Upload new PDF or Word document</small>
+        </div>
+
           <button
-            type='button'
-            onClick={viewResume}
-            style={{ marginTop: '10px' }}
+            type='submit'
+            disabled={loading.profile || loading.resume}
           >
-            View Resume
+            Save Profile
           </button>
+
           <div>
-            <button style={styles.button} onClick={() => navigate('/regularEvents', { state: {userID, name, gmail} })}>
+            <button
+              style={styles.button}
+              onClick={() => navigate('/regularEvents', { state: { user } })}>
               Events Page
             </button>
           </div>
-        </form>
 
-        {greeting && (
-          <div style={styles.greeting}>
-            <h3>{greeting}</h3>
-          </div>
-        )}
+        </form>
       </div>
+    </div>
     </div>
   );
 }
@@ -229,11 +344,13 @@ const styles = {
     borderRadius: '8px',
     textAlign: 'center',
     boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+    width: '400px',
+    maxWidth: '90%'
   },
-  greeting: {
-    marginTop: '20px',
-    color: '#333',
-  },
+  button: {
+    marginTop: '10px',
+    width: '100%'
+  }
 };
 
 export default Information;
