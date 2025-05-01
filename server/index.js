@@ -24,7 +24,7 @@ app.use('/api', authRoutes); //mount auth routes
 //app.use(cors());
 app.use(cors({
   origin: 'http://localhost:3000',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  methods: ['GET', 'POST', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 }));
@@ -215,6 +215,28 @@ app.post('/login', async (req, res) => {
 
 /* PURPOSE: Serving Static Files from Files Directory */
 app.use('/files', express.static(path.join(__dirname, 'files')));
+
+/* PURPOSE: Fetches Existing User Profile in the Database */
+app.get('/user/:id', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id)
+      .select('-password -googleId -__v'); // Exclude sensitive fields
+    
+    if (!user) return res.status(404).send('User not found');
+    
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      utdEmail: user.utdEmail,
+      pronouns: user.pronouns,
+      major: user.major,
+      year: user.year,
+    });
+  } catch (error) {
+    res.status(500).send('Server error');
+  }
+});
 
 /* PURPOSE: Updates Existing User Profile in the Database */
 app.patch('/user/:id', async (req, res) => {
@@ -726,7 +748,7 @@ const isAdmin = async (req, res, next) => {
 };
 
 
-/* GORL idk why but i have to comment these out/back in all the time */
+/* GORL idk why but i have to comment these out/back in all the time */ 
 app.listen(4000, () => {
   console.log('Server is running on port 4000');
 });

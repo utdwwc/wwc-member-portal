@@ -57,49 +57,36 @@ const RegularEventsPage = () => {
 
     /* PURPOSE: Get User Data from location OR localStorage */
     useEffect(() => {
-        console.groupCollapsed("user data initialization!");
-    
-        //FIRST: check location state if coming from navigation
-        if (location.state?.user) {
-            console.log("User from location state:", location.state.user);
-            setUser(location.state.user);
-            localStorage.setItem('user', JSON.stringify(location.state.user));
-        } 
-        //SECOND: fall back to localStorage
-        else {
-            const storedUser = localStorage.getItem('user');
-            if (storedUser) {
-                const parsedUser = JSON.parse(storedUser);
-                console.log("User from localStorage:", parsedUser);
-                setUser(parsedUser);
-            } else {
-                console.warn("No user data found - redirecting to login");
+        const loadUserData = async () => {
+            try {
+              const storedUser = JSON.parse(localStorage.getItem('user'));
+              if (!storedUser?._id) {
                 navigate('/');
                 return;
-            }
-        }
-    
-        //THIRD: verify with token (optional)
-        const token = localStorage.getItem("token");
-        if (token) {
-            try {
-                const decoded = jwtDecode(token);
-                console.log("Token payload:", decoded);
-                    
-                // Merge token data with existing user data
-                setUser(prev => ({
-                    ...prev,
-                    id: decoded.sub || prev.id,
-                    email: decoded.email || prev.email,
-                    name: decoded.name || prev.name
-                }));
+              }
+        
+              // Fetch COMPLETE user data from backend
+              const response = await fetch(`http://localhost:4000/user/${storedUser._id}`, {
+                headers: {
+                  'Authorization': `Bearer ${storedUser.token}`
+                }
+              });
+        
+              if (!response.ok) throw new Error('Failed to fetch user data');
+              
+              const completeUser = await response.json();
+              console.log('Complete user data:', completeUser); // Verify ALL fields exist
+              setUser(completeUser);
+              localStorage.setItem('user', JSON.stringify(completeUser)); // Update storage
+        
             } catch (error) {
-                console.error("Token decode error:", error);
+              console.error('Error loading user:', error);
+              navigate('/');
             }
-        }
-    
-        console.groupEnd();
-    }, [navigate, location.state]);
+          };
+        
+          loadUserData();
+    }, [navigate]);
 
     useEffect(() => {
         if (user._id) {
@@ -237,20 +224,37 @@ const RegularEventsPage = () => {
                 >
                     Go to Admin
                 </button>
+                
                 <button
                     style={styles.button}
-                    onClick={() => navigate('/profile', {
-                        state: {
-                            user: { //must match what Profile.js expects
+                    onClick={() => {
+                        //ensure we have complete object
+                        if (!user || !user._id) {
+                            alert('User data not loaded yet');
+                            return;
+                        }
+
+                        //verify required fields exist
+                        if (!user.utdEmail) {
+                            console.error('Missing email:', user);
+                            alert('Profile incomplete - please update your email first');
+                            return;
+                        }
+                        
+                        navigate('/profile', {
+                            state: {
+                              user: {
                                 _id: user._id,
                                 name: user.name,
                                 email: user.email,
-                                pronouns: user.pronouns,
-                                major: user.major,
-                                year: user.year
-                            }
-                        } 
-                    })}
+                                utdEmail: user.utdEmail || '',  //fallback if missing
+                                pronouns: user.pronouns || '',  //fallback if missing
+                                major: user.major || '',        //fallback if missing
+                                year: user.year || ''           //fallback if missing
+                              }
+                            } 
+                          });
+                    }}
                 >
                     Go to Profile
                 </button>

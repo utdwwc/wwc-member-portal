@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
     pronouns: String,
     major: String,
     year: String,
-    email: {  type: String, unique: true, sparse: true, required: false },//not required
+    email: {  type: String, unique: true, sparse: true },//not required
     utdEmail: { type: String, unique: true, sparse: true },
     googleId: { type: String, unique: true, sparse: true }, //stores googleId for OAuth users
     //password: { type: String, required: false }, //not required

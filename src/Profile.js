@@ -14,17 +14,20 @@ const Profile = () => {
   const gmail = userFromState?.gmail; //now properly nested
 
   useEffect(() => {
-    console.log('navigation state received:', location.state);
-
     //check if we have user data from state
     if (userFromState) {
+      console.log('Using user data from navigation state');
       const { _id, googleId, ...safeUserData } = userFromState;
       setUser(safeUserData);
       setLoading(false);
       return;
     }
 
-    //fall back toi fetching by gmail if no state
+    setError('No user data received');
+    setLoading(false);
+    console.error('No user data in location state');
+
+    // fall back to fetching if no state
     if (!gmail) {
       setError('no user specified :/');
       setLoading(false);
