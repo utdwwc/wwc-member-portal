@@ -102,6 +102,14 @@ const Profile = () => {
           </div>
         )}
   </div>
+  
+  <div>
+    <button
+      onClick={() => navigate('/regularEvents', { state: { user } })}>
+        Events Page
+    </button>
+  </div>
+
 </div>
   );
 };
