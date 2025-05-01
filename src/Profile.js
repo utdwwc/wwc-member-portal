@@ -78,7 +78,7 @@ const Profile = () => {
       {
           <div className="detail-card">
             <h3 className="detail-label">Points</h3>
-            <p className="detail-value">{user.points}</p>
+            <p className="detail-value">{user.points || '0'}</p>
           </div>
         }
 
