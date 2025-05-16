@@ -137,7 +137,7 @@ const RegularEventsPage = () => {
             }
 
             const result = await response.json();
-            console.log("RSVP successful, server response:", result);
+            console.log("RSVP successful, server response:", result.status);
 
             //update local state
             setRsvpStatus(prev => ({

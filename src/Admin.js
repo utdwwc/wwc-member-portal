@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Table, Button } from 'react-bootstrap';
+import { Table, Button, Badge } from 'react-bootstrap';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const Admin = () => {
@@ -68,13 +68,15 @@ const Admin = () => {
 
     /* PURPOSE: Retrieves Events with RSVPs from Backend */
     const fetchRsvpEvents = async () => {
-      try {
-          const response = await fetch('http://localhost:4000/rsvps');
-          const data = await response.json();
-          setRsvpEvents(data);
-      } catch (err) {
-          setRsvpEvents([]);
-      }
+        try {
+            const response = await fetch('http://localhost:4000/rsvps');
+            if (!response.ok) throw new Error('Failed to fetch RSVPs');
+            const data = await response.json();
+            setRsvpEvents(data);
+          } catch (err) {
+            console.error('Error fetching RSVPs:', err);
+            setRsvpEvents([]);
+          }
     };
 
     const fetchAppEvents = async () => {
@@ -261,7 +263,81 @@ const Admin = () => {
     <p>No events found.</p>
 )}
 
-            <h2>RSVPs</h2>
+<h2>Event RSVPs</h2>
+<Table striped bordered hover responsive>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Event</th>
+      <th>RSVPs</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {rsvpEvents.length > 0 ? (
+      rsvpEvents.map(event => (
+        <React.Fragment key={event._id}>
+          <tr>
+            <td>{new Date(event.date).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric'
+            })}</td>
+            <td>{event.title}</td>
+            <td>{event.rsvpCount}</td>
+            <td>
+              <Button 
+                variant={expandedRsvpEvent === event._id ? 'secondary' : 'info'}
+                onClick={() => toggleRsvpUsers(event._id)}
+                disabled={event.rsvpCount === 0}
+                size="sm"
+              >
+                {expandedRsvpEvent === event._id ? 'Hide' : 'View'}
+              </Button>
+            </td>
+          </tr>
+          
+          {expandedRsvpEvent === event._id && event.rsvpCount > 0 && (
+            <tr>
+              <td colSpan={4} className="p-0">
+                <div className="p-3 bg-light">
+                  <h6 className="mb-3">Attendees ({event.rsvpCount})</h6>
+                  <Table bordered size="sm" className="mb-0">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>User ID</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {event.rsvps.map(rsvp => (
+                        <tr key={`${event._id}-${rsvp.userId}`}>
+                          <td>{rsvp.userName || 'Unknown'}</td>
+                          <td className="text-muted small">{rsvp.userId}</td>
+                          <td>
+                            <Badge bg="success">Going</Badge>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </div>
+              </td>
+            </tr>
+          )}
+        </React.Fragment>
+      ))
+    ) : (
+      <tr>
+        <td colSpan={4} className="text-center py-4 text-muted">
+          No events with RSVPs found
+        </td>
+      </tr>
+    )}
+  </tbody>
+</Table>
+{/*<h2>RSVPs</h2>
             <Table striped bordered hover>
                 <thead>
                     <tr>
@@ -318,7 +394,7 @@ const Admin = () => {
                     </React.Fragment>
                     ))}
                 </tbody>
-            </Table>
+            </Table>*/}
 
             <h2>Applications</h2>
             <Table striped bordered hover>
