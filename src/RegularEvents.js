@@ -208,6 +208,9 @@ const RegularEventsPage = () => {
         }
     };
 
+    // Sort events by date in descending order (newest first)
+    const sortedEvents = [...events].sort((a, b) => new Date(b.date) - new Date(a.date));
+
     return (
         <div>
             <h1 style={styles.pageTitle}>Regular Events Page</h1>
@@ -256,7 +259,7 @@ const RegularEventsPage = () => {
                 </button>
             </div>
 
-            {events.map((event) => (
+            {sortedEvents.map((event) => (
                 <div key={event._id} style={styles.container}>
                     <h1 style={styles.title}>Event: {event.title}</h1>
                     <p><strong>Description:</strong> {event.description}</p>
