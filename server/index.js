@@ -59,12 +59,12 @@ app.post('/register', async (req, res) => {
       isAdmin: email === 'utdwwc@gmail.com'
     }); //creates user object
 
-    if (req.file) {
+    /*if (req.file) {
       user.resume = {
         path: req.file.path,
         contentType: req.file.mimetype
       };
-    }//adds resume IF file exists
+    }*/
 
     await user.save();
     console.log('User created successfully:', user);
@@ -94,7 +94,7 @@ app.post('/register', async (req, res) => {
 });
 
 /* PURPOSE: General User Creation */
-app.post('/', upload.single('resume'), async (req, res) => {
+app.post('/', async (req, res) => {
   try {
     const { 
       name = '', 
@@ -128,12 +128,12 @@ app.post('/', upload.single('resume'), async (req, res) => {
     const newUser = new User(userData);
     const savedUser = await newUser.save();
 
-    if (req.file) {
+    /*if (req.file) {
       userData.resume = {
         path: req.file.path,
         contentType: req.file.mimetype
       };
-    } //adds resume IF file exists
+    } //adds resume IF file exists */
     
     res.status(201).json(savedUser);
   } catch (error) {
@@ -247,7 +247,7 @@ app.patch('/user/:id', async (req, res) => {
     console.log(`updating user ${userId} with:`, updates);
 
     //validate updates - prevent updating protected fields like googleId
-    const allowedUpdates = ['pronouns', 'major', 'year', 'resume', 'utdEmail'];
+    const allowedUpdates = ['pronouns', 'major', 'year', 'utdEmail'];
     const isValidUpdate = Object.keys(updates).every(key => allowedUpdates.includes(key));
 
     if (!isValidUpdate) {
@@ -307,7 +307,7 @@ app.get('/user/gmail/:gmail', async (req, res) => {
  }
 });
 
-/* PURPOSE: Fetches Uploaded Resume for User from Database */
+/* PURPOSE: Fetches Uploaded Resume for User from Database
 app.post('/user/:id/resume', upload.single('resume'), async (req, res) => {
   try {
     if (!req.file) {
@@ -334,7 +334,7 @@ app.post('/user/:id/resume', upload.single('resume'), async (req, res) => {
     console.error('Resume upload error:', error);
     res.status(500).send('Server error during upload');
   }
-});
+});*/
 
 /*  <------------  EVENTS TABLE  ------------>  */
 

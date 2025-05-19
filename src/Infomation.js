@@ -12,8 +12,8 @@ function Information() {
     year: '',
     utdEmail: ''
   });
-  const [resumeFile, setResumeFile] = useState(null);
-  const [resumeUrl, setResumeUrl] = useState(null); // For viewing existing resume
+  //const [resumeFile, setResumeFile] = useState(null);
+  //const [resumeUrl, setResumeUrl] = useState(null); // For viewing existing resume
   const [loading, setLoading] = useState({
     profile: false,
     resume: false,
@@ -48,13 +48,13 @@ function Information() {
         utdEmail: parsedUser.utdEmail || ''
       });
 
-      if (parsedUser._id) {
+      /*if (parsedUser._id) {
         fetchResume(parsedUser._id).finally(() => {
           setLoading(prev => ({ ...prev, initialLoad: false }));
         });
       } else {
         setLoading(prev => ({ ...prev, initialLoad: false }));
-      }
+      }*/
     }
   }, [navigate]);
 
@@ -69,15 +69,15 @@ function Information() {
         utdEmail: state.user.utdEmail || ''
       });
 
-      //load existing resume if available
+      /*load existing resume if available
       if (state.user._id) {
         console.log('Fetching resume for user:', state.user._id);
         fetchResume(state.user._id);
-      }
+      }*/
     }
   }, [state]);
 
-  /* PURPOSE: Fetch Resume if it Exists in the Database */
+  /* PURPOSE: Fetch Resume if it Exists in the Database
   const fetchResume = async (userId) => {
     try {
       console.log(`Fetching resume for user ${userId}`);
@@ -95,9 +95,9 @@ function Information() {
     } catch (err) {
       console.error('Error fetching resume:', err);
     }
-  };
+  };*/
 
-  /* PURPOSE: If User Uploads Different Resume */
+  /* PURPOSE: If User Uploads Different Resume
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -111,9 +111,9 @@ function Information() {
     console.log('Selected file:', file.name, file.size);
     setResumeFile(file);
     setError(null);
-  };
+  }; */
 
-  /* PURPOSE: Updates Backend with New Resume */
+  /* PURPOSE: Updates Backend with New Resume
   const uploadResume = async () => {
     if (!resumeFile || !state?.user?._id) {
       console.warn('No resume file or user ID for upload');
@@ -147,7 +147,7 @@ function Information() {
     } finally {
       console.log('Resume upload completed');
     }
-  };
+  }; */
 
   /* PURPOSE: Updates Backend with New Form Inputs */
   const handleChange = (e) => {
@@ -174,7 +174,7 @@ function Information() {
       major: currentUser.major || '',
       year: currentUser.year || '',
       utdEmail: currentUser.utdEmail || currentUser.email || ''
-    }) && !resumeFile) {
+    })) {
       console.log('No changes detected');
       return;
     }
@@ -183,11 +183,11 @@ function Information() {
     setError(null);
 
     try {
-      //upload resume first if new file was selected
+      /*upload resume first if new file was selected
       if (resumeFile) {
         console.log('New resume detected, uploading first');
         await uploadResume();
-      }
+      }*/
 
       //update profile data
       console.log('Updating profile data:', formData);
@@ -279,7 +279,7 @@ function Information() {
             />
           </div>
 
-          <div className="form-group">
+          {/*<div className="form-group">
           <label>Resume</label>
           {resumeUrl && (
             <div className="resume-actions">
@@ -302,7 +302,7 @@ function Information() {
           />
           {loading.resume && <small>Uploading resume...</small>}
           <small>Upload new PDF or Word document</small>
-        </div>
+        </div>*/}
 
           <button
             type='submit'

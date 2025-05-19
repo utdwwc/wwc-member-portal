@@ -67,11 +67,11 @@ function App() {
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <h1 style={styles.heading}>Sign Up Here</h1>
+        <h1 style={styles.heading}>Women Who Compute Club</h1>
         {user ? (
           <div style={styles.userInfo}>
             <h2>Welcome, {user.name}</h2>
-            <p>Email: {user.email}</p>
+            <p>Email: {user.utdEmail}</p>
             <button
               style={styles.button}
               onClick={() => navigate('/information', {
