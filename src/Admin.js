@@ -307,12 +307,12 @@ const Admin = () => {
                                 <tr>
                                 <td colSpan={4} className="p-0">
                                 <div className="p-3 bg-light">
-                                    <h6 className="mb-3">Attendees ({event.rsvpCount})</h6>
+                                    <h6 className="mb-3">RSVPs ({event.rsvpCount})</h6>
                                 <Table bordered size="sm" className="mb-0">
                                     <thead>
                                         <tr>
                                             <th>Name</th>
-                                            <th>User ID</th>
+                                            <th>UTD Email</th>
                                             <th>Status</th>
                                         </tr>
                                     </thead>
@@ -320,7 +320,7 @@ const Admin = () => {
                                         {event.rsvps.map(rsvp => (
                                             <tr key={`${event._id}-${rsvp.userId}`}>
                                                 <td>{rsvp.userName || 'Unknown'}</td>
-                                                <td className="text-muted small">{rsvp.userId}</td>
+                                                <td className="text-muted small">{rsvp.utdEmail}</td>
                                                 <td>
                                                     <Badge bg="success">Going</Badge>
                                                 </td>

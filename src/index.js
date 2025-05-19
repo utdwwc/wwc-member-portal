@@ -9,6 +9,7 @@ import Information from './Infomation';
 import RegularEventsPage from './RegularEvents';
 import EventApplicationForm from './SpecialEvents';
 import SignIn from './SignIn';
+import EventCheckIn from './EventCheckIn';
 import Admin from './Admin'; 
 import Profile from './Profile'; 
 
@@ -22,7 +23,7 @@ root.render(
           <Route path="/information" element={<Information />} />
           <Route path="/regularEvents" element={<RegularEventsPage />} />
           <Route path="/eventapplications" element={<EventApplicationForm />} />
-          <Route path="/signIn" element = {<SignIn/>} />
+          <Route path="/eventCheckIn" element = {<EventCheckIn/>} />
           <Route path="/admin" element = {<Admin/>} />
           <Route path="/profile" element = {<Profile/>} />
         </Routes>

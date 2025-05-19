@@ -393,7 +393,7 @@ app.post('/regularevents', async (req, res) => {
   }
 });
 
-/* TESTING: rsvp system */
+/* PURPOSE: Retrieves Events with RSVPs */
 app.get('/rsvps', async (req, res) => {
   try {
     const eventsWithRsvps = await RegularEvent.aggregate([
@@ -421,6 +421,7 @@ app.get('/rsvps', async (req, res) => {
               $project: {
                 userId: 1,
                 userName: "$user.name",
+                utdEmail: "$user.utdEmail",
                 _id: 0
               }
             }
@@ -452,29 +453,33 @@ app.get('/rsvps', async (req, res) => {
 app.post('/regularevents/:eventId/rsvp', async (req, res) => {
   try {
     const { eventId } = req.params;
-    const { userId, userName, isChecked } = req.body;
+    const { userName, isChecked } = req.body;
+    const userId = req.user._id; // From auth middleware
 
-    //validate the event exists
-    const event = await RegularEvent.findById(eventId);
+    // Validate event and user
+    const [event, user] = await Promise.all([
+      RegularEvent.findById(eventId),
+      User.findById(userId)
+    ]);
     if (!event) throw new Error("Event not found");
+    if (!user?.utdEmail) throw new Error("User must have a UTD email to RSVP");
 
-    //create or delete the RSVP
+    // Update RSVP
+    let rsvp;
     if (isChecked) {
-      //upsert (create or update) an RSVP with status: "Going"
-      await RSVP.findOneAndUpdate(
+      rsvp = await RSVP.findOneAndUpdate(
         { eventId, userId },
-        { $set: { status: "Going", userName } }, //include userName for quick lookup
+        { $set: { status: "Going", userName, utdEmail: user.utdEmail } },
         { upsert: true, new: true }
       );
     } else {
-      //remove the RSVP
       await RSVP.deleteOne({ eventId, userId });
     }
 
-    //return success (no need to return the event)
     res.status(200).json({ 
       message: `RSVP ${isChecked ? "added" : "removed"}`,
-      status: isChecked ? "Going" : "Not Going"
+      status: isChecked ? "Going" : "Not Going",
+      rsvp: isChecked ? rsvp : null // Optional
     });
   } catch (error) {
     res.status(400).json({ error: error.message });
