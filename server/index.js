@@ -274,25 +274,6 @@ app.patch('/user/:id', async (req, res) => {
     res.status(500).send({ error: 'Server error during update' });
   }
 });
-/* PURPOSE: Checks if User ID Exists Already in Database
-app.get('/user/:id', async (req, res) => {
-  try {
-    const userId = req.params.id;
-    console.log(`Fetching user with ID: ${userId}`); //logs ID for debugging
-    const user = await User.findById(userId);
-
-    if (!user) {
-      console.error(`User with ID ${userId} not found`);
-      return res.status(404).send('User not found');
-    } //returns user ID without password
-
-    const { name, email, pronouns, major, year, JPMorgan, resume } = user;
-    res.json({ name, email, pronouns, major, year, JPMorgan, resume });
-  } catch (error) {
-    console.error(`Error fetching user details for user ID: ${req.params.id}`, error);
-    res.status(500).send('Server error');
-  }
-});*/
 
  /* PURPOSE: Checks if Gmail Exists Already in Database */
 app.get('/user/gmail/:gmail', async (req, res) => {
@@ -354,28 +335,6 @@ app.post('/user/:id/resume', upload.single('resume'), async (req, res) => {
     res.status(500).send('Server error during upload');
   }
 });
-/*app.get('/user/:id/resume', async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-
-    if (user && user.resume) {
-      const filePath = path.join(__dirname, user.resume.path); //build file path
-      if (fs.existsSync(filePath)) { //check if the file exists
-        res.sendFile(filePath); //send the file to the client
-      } else {
-        console.error(`File not found: ${filePath}`);
-        res.status(404).send('File not found');
-      }
-    } else {
-      console.error(`User or resume not found for user ID: ${req.params.id}`);
-      res.status(404).send('User or resume not found');
-    }
-
-  } catch (error) {
-    console.error(`Server error while fetching resume for user ID: ${req.params.id}`, error);
-    res.status(500).send('Server error');
-  }
-});*/
 
 /*  <------------  EVENTS TABLE  ------------>  */
 
@@ -488,66 +447,6 @@ app.get('/rsvps', async (req, res) => {
     res.status(500).json({ error: "Failed to fetch RSVP data" });
   }
 });
-/*app.get('/rsvps', async (req, res) => {
-  try {
-    // 1. fetch all events with their RSVPs in a single query using aggregation
-    const eventsWithRsvps = await RegularEvent.aggregate([
-      {
-        $lookup: {
-          from: "rsvps", //collection name (case-sensitive)
-          let: { eventId: "$_id" },
-          pipeline: [
-            {
-              $match: {
-                $expr: { $eq: ["$eventId", "$$eventId"] },
-                status: "Going" //only include "Going" RSVPs
-              }
-            },
-            {
-              $lookup: {
-                from: "users", //user collection name
-                localField: "userId",
-                foreignField: "_id",
-                as: "user"
-              }
-            },
-            { $unwind: "$user" }, //convert user array to object
-            {
-              $project: {
-                _id: 0, //exclude RSVP _id
-                userId: "$user._id",
-                userName: "$user.name",
-              }
-            }
-          ],
-          as: "rsvps"
-        }
-      },
-      {
-        $project: {
-          title: 1,
-          date: 1,
-          location: 1,
-          description: 1,
-          rsvps: 1,
-          rsvpCount: { $size: "$rsvps" } //add count of RSVPs
-        }
-      }
-    ]);
-
-    // 2. logging for debugging (optional)
-    console.log(`Fetched ${eventsWithRsvps.length} events with RSVPs`);
-
-    // 3. send response
-    res.json(eventsWithRsvps);
-  } catch (err) {
-    console.error('Error fetching RSVPs:', err);
-    res.status(500).json({ 
-      error: "Failed to fetch RSVP data",
-      details: err.message 
-    });
-  }
-});*/
 
 /* PURPOSE: Updates who RSVP'd */
 app.post('/regularevents/:eventId/rsvp', async (req, res) => {
@@ -581,88 +480,6 @@ app.post('/regularevents/:eventId/rsvp', async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
-/*app.post('/regularevents/:eventId/rsvp', async (req, res) => {
-  console.log('Received RSVP request:', req.params, req.body);
-  
-  const eventId = req.params.eventId;
-  const { userId, isChecked, userName } = req.body;
-
-  //userId validation
-  if (!mongoose.Types.ObjectId.isValid(userId)) {
-    return res.status(400).json({ message: 'Invalid user ID format' });
-  }
-
-  //eventId validation
-  if (!mongoose.Types.ObjectId.isValid(eventId)) {
-    return res.status(400).json({ message: 'Invalid event ID format' });
-  }
-
-  if (!userId || isChecked === undefined) {
-    return res.status(400).json({
-      message: 'Missing required fields: userId and isChecked are required'
-    });
-  }
-
-  try {
-    //verify user exists
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    const event = await RegularEvent.findById(eventId);
-    if (!event) {
-      return res.status(404).json({ message: 'Event not found' });
-    }
-
-    //convert both IDs to string for consistent comparison
-    const userIdStr = userId?.toString();
-    
-    if (isChecked) {
-      if (!event.actualAttendees.some(id =>
-          id?.toString() === userIdStr
-      )) {
-        event.actualAttendees.push(userId);
-        
-        //add user name if you want to track names
-        event.attendeeNames = event.attendeeNames || [];
-        if (userName && !event.attendeeNames.includes(userName)) {
-          event.attendeeNames.push(userName);
-        }
-      }
-    } else {
-      //remove from attendees
-      event.actualAttendees = event.actualAttendees.filter(
-        id => id?.toString() !== userIdStr
-      );
-
-      //remove name if tracking names
-      if (event.attendeeNames && userName) {
-        event.attendeeNames = event.attendeeNames.filter(
-          name => name !== userName
-        );
-      }
-    }
-
-    await event.save();
-    
-    res.status(200).json({ 
-      message: 'RSVP updated successfully',
-      event: {
-        _id: event._id,
-        actualAttendees: event.actualAttendees,
-        attendeeCount: event.actualAttendees.length
-      }
-    });
-    
-  } catch (error) {
-    console.error('Error RSVPing for event:', error);
-    res.status(500).json({
-      error: 'Internal server error',
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
-});*/
 
 /* PURPOSE: Applications for Special Events saved to Database*/
 app.post('/eventapplications/', async (req, res) => {
@@ -670,8 +487,11 @@ app.post('/eventapplications/', async (req, res) => {
     userId,
     eventId,
     name,
+    pronouns,
     email,
     year,
+    grad,
+    history,
     reason
   } = req.body;
 
@@ -687,8 +507,11 @@ app.post('/eventapplications/', async (req, res) => {
           userId: userId || null,  // Handle cases where userId might be undefined
           eventId: eventId || null,
           name,
+          pronouns,
           email,
           year,
+          grad,
+          history,
           reason
       });
 

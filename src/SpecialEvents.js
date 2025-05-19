@@ -12,9 +12,12 @@ const EventApplicationForm = () => {
 
     /* PURPOSE: Displays Empty Application Form */
     const [formData, setFormData] = useState({
-        email: '',
         name: '',
+        pronouns: '',
+        email: '',
         year: '',
+        grad: '',
+        history: '',
         reason: '',
     });
     const [errors, setErrors] = useState({});
@@ -32,9 +35,12 @@ const EventApplicationForm = () => {
     /* PURPOSE: Ensures Form is Not Left Blank */
     const validateForm = () => {
         const newErrors = {};
-        if (!formData.email) newErrors.email = 'Email is required';
         if (!formData.name) newErrors.name = 'Name is required';
+        if (!formData.pronouns) newErrors.pronouns = 'Pronouns are required';
+        if (!formData.email) newErrors.email = 'Email is required';
         if (!formData.year) newErrors.year = 'Year is required';
+        if (!formData.grad) newErrors.grad = 'Expected Grad is required';
+        if (!formData.history) newErrors.history = 'Name is required';
         if (!formData.reason) newErrors.reason = 'Reason is required';
         return newErrors;
     };
@@ -55,8 +61,11 @@ const EventApplicationForm = () => {
                 userId: userId,
                 eventId: eventID,
                 name: formData.name,
+                pronouns: formData.pronouns,
                 email: formData.email,
                 year: formData.year,
+                grad: formData.grad,
+                history: formData.history,
                 reason: formData.reason,
             };
             
@@ -102,24 +111,11 @@ const EventApplicationForm = () => {
 
     return (
         <div style={styles.container}>
-            <h2>Event Application Form</h2>
+            <h2>Speed Mentoring Application</h2>
             {showSuccessMessage && (
                 <div style={styles.successMessage}>{submissionMessage}</div>
             )}
             <form onSubmit={handleSubmit}>
-                <div style={styles.formGroup}>
-                    <label>School Email:</label>
-                    <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        style={styles.input}
-                        placeholder="e.g., abc123456@utdallas.edu"
-                    />
-                    {errors.email && <p style={styles.error}>{errors.email}</p>}
-                </div>
-
                 <div style={styles.formGroup}>
                     <label>Name:</label>
                     <input
@@ -131,6 +127,32 @@ const EventApplicationForm = () => {
                         placeholder="Jane Doe"
                     />
                     {errors.name && <p style={styles.error}>{errors.name}</p>}
+                </div>
+
+                <div style={styles.formGroup}>
+                    <label>Pronouns:</label>
+                    <input
+                        type="text"
+                        name="pronouns"
+                        value={formData.pronouns}
+                        onChange={handleChange}
+                        style={styles.input}
+                        placeholder="e.g., she/her, they/them"
+                    />
+                    {errors.pronouns && <p style={styles.error}>{errors.pronouns}</p>}
+                </div>
+
+                <div style={styles.formGroup}>
+                    <label>School Email:</label>
+                    <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        style={styles.input}
+                        placeholder="e.g., xxx123456@utdallas.edu"
+                    />
+                    {errors.email && <p style={styles.error}>{errors.email}</p>}
                 </div>
 
                 <div style={styles.formGroup}>
@@ -147,13 +169,38 @@ const EventApplicationForm = () => {
                 </div>
 
                 <div style={styles.formGroup}>
-                    <label>Why do you want to attend this event?</label>
+                    <label>Expected Graduation:</label>
+                    <input
+                        type="text"
+                        name="grad"
+                        value={formData.grad}
+                        onChange={handleChange}
+                        style={styles.input}
+                        placeholder="e.g., Spring 2026, Fall 2027"
+                    />
+                    {errors.grad && <p style={styles.error}>{errors.grad}</p>}
+                </div>
+
+                <div style={styles.formGroup}>
+                    <label>Have you attended WWC Events before? Which was your favorite and why? If you have not attended any, put "N/A":</label>
+                    <textarea
+                        name="history"
+                        value={formData.history}
+                        onChange={handleChange}
+                        style={styles.textarea}
+                        placeholder="I have attended xyz and I liked..."
+                    />
+                    {errors.history && <p style={styles.error}>{errors.history}</p>}
+                </div>
+
+                <div style={styles.formGroup}>
+                    <label>What do you hope to gain from Speed Mentoring?</label>
                     <textarea
                         name="reason"
                         value={formData.reason}
                         onChange={handleChange}
                         style={styles.textarea}
-                        placeholder="I want to attend this event because..."
+                        placeholder="I hope to gain xyz..."
                     />
                     {errors.reason && <p style={styles.error}>{errors.reason}</p>}
                 </div>
@@ -165,6 +212,7 @@ const EventApplicationForm = () => {
                 >
                     {isSubmitting ? 'Submitting...' : 'Submit Application'}
                 </button>
+
                 <button
                     style={styles.button}
                     onClick={() => navigate('/regularEvents', {

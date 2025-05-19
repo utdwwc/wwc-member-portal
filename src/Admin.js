@@ -197,33 +197,33 @@ const Admin = () => {
             </form>
             
             <h2>Event Information</h2>
-{events.length > 0 ? (
-    <Table striped bordered hover>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Event</th>
-                <th>Description</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {events.map(event => (
-                <React.Fragment key={event._id}>
-                    <tr>
-                        <td>{new Date(event.date).toLocaleDateString()}</td>
-                        <td>{event.title || '—'}</td>
-                        <td>{event.description ? `${event.description.substring(0, 50)}${event.description.length > 50 ? '...' : ''}` : '—'}</td>
-                        <td>
-                            <Button 
-                                variant="info"
-                                onClick={() => toggleEventDetails(event._id)}
-                            >
-                                {expandedEvent === event._id ? 'Hide Details' : 'Show Details'}
-                            </Button>
-                        </td>
-                    </tr>
-                    {expandedEvent === event._id && (
+            {events.length > 0 ? (
+                <Table striped bordered hover>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Event</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {events.map(event => (
+                        <React.Fragment key={event._id}>
+                            <tr>
+                                <td>{new Date(event.date).toLocaleDateString()}</td>
+                                <td>{event.title || '—'}</td>
+                                <td>{event.description ? `${event.description.substring(0, 50)}${event.description.length > 50 ? '...' : ''}` : '—'}</td>
+                                <td>
+                                    <Button 
+                                        variant="info"
+                                        onClick={() => toggleEventDetails(event._id)}
+                                    >
+                                        {expandedEvent === event._id ? 'Hide Details' : 'Show Details'}
+                                    </Button>
+                                </td>
+                            </tr>
+                        {expandedEvent === event._id && (
                         <tr>
                             <td colSpan="4">
                                 <div className="event-details">
@@ -254,122 +254,56 @@ const Admin = () => {
                                 </div>
                             </td>
                         </tr>
-                    )}
-                </React.Fragment>
-            ))}
-        </tbody>
-    </Table>
-) : (
-    <p>No events found.</p>
-)}
-
-<h2>Event RSVPs</h2>
-<Table striped bordered hover responsive>
-  <thead>
-    <tr>
-      <th>Date</th>
-      <th>Event</th>
-      <th>RSVPs</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    {rsvpEvents.length > 0 ? (
-      rsvpEvents.map(event => (
-        <React.Fragment key={event._id}>
-          <tr>
-            <td>{new Date(event.date).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'short',
-              day: 'numeric'
-            })}</td>
-            <td>{event.title}</td>
-            <td>{event.rsvpCount}</td>
-            <td>
-              <Button 
-                variant={expandedRsvpEvent === event._id ? 'secondary' : 'info'}
-                onClick={() => toggleRsvpUsers(event._id)}
-                disabled={event.rsvpCount === 0}
-                size="sm"
-              >
-                {expandedRsvpEvent === event._id ? 'Hide' : 'View'}
-              </Button>
-            </td>
-          </tr>
-          
-          {expandedRsvpEvent === event._id && event.rsvpCount > 0 && (
-            <tr>
-              <td colSpan={4} className="p-0">
-                <div className="p-3 bg-light">
-                  <h6 className="mb-3">Attendees ({event.rsvpCount})</h6>
-                  <Table bordered size="sm" className="mb-0">
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>User ID</th>
-                        <th>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {event.rsvps.map(rsvp => (
-                        <tr key={`${event._id}-${rsvp.userId}`}>
-                          <td>{rsvp.userName || 'Unknown'}</td>
-                          <td className="text-muted small">{rsvp.userId}</td>
-                          <td>
-                            <Badge bg="success">Going</Badge>
-                          </td>
-                        </tr>
-                      ))}
+                        )}
+                        </React.Fragment>
+                        ))}
                     </tbody>
-                  </Table>
-                </div>
-              </td>
-            </tr>
-          )}
-        </React.Fragment>
-      ))
-    ) : (
-      <tr>
-        <td colSpan={4} className="text-center py-4 text-muted">
-          No events with RSVPs found
-        </td>
-      </tr>
-    )}
-  </tbody>
-</Table>
-{/*<h2>RSVPs</h2>
-            <Table striped bordered hover>
+                </Table>
+            ) : (
+                <p>No events found.</p>
+            )}
+
+            <h2>Event RSVPs</h2>
+            <Table striped bordered hover responsive>
                 <thead>
                     <tr>
-                        <th>Event Date</th>
-                        <th>Event Name</th>
-                        <th>RSVP Count</th>
+                        <th>Date</th>
+                        <th>Event</th>
+                        <th>RSVPs</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {rsvpEvents.map(event => (
-                        <React.Fragment key={event._id}>
-                        <tr>
-                            <td>{new Date(event.date).toLocaleDateString()}</td>
-                            <td>{event.title}</td>
-                            <td>{event.rsvpCount}</td>
-                            <td>
-                                <Button 
-                                    variant="info"
-                                    onClick={() => toggleRsvpUsers(event._id)}
-                                    disabled={event.rsvpCount === 0}
-                                >
-                                    {expandedRsvpEvent === event._id ? 'Hide RSVPs' : 'Show RSVPs'}
-                                </Button>
-                            </td>
-                        </tr>
-                {expandedRsvpEvent === event._id && event.rsvpCount > 0 && (
-                    <tr>
-                        <td colSpan="5">
-                            <div className="attendee-details">
-                                <h5>Users ({event.rsvpCount})</h5>
-                                <Table size="sm">
+                    {rsvpEvents.length > 0 ? (
+                        rsvpEvents.map(event => (
+                            <React.Fragment key={event._id}>
+                            <tr>
+                                <td>{new Date(event.date).toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: 'short',
+                                    day: 'numeric'
+                                })}
+                                </td>
+                                <td>{event.title}</td>
+                                <td>{event.rsvpCount}</td>
+                                <td>
+                                    <Button 
+                                        variant={expandedRsvpEvent === event._id ? 'secondary' : 'info'}
+                                        onClick={() => toggleRsvpUsers(event._id)}
+                                        disabled={event.rsvpCount === 0}
+                                        size="sm"
+                                    >
+                                    {expandedRsvpEvent === event._id ? 'Hide' : 'View'}
+                                    </Button>
+                                </td>
+                            </tr>
+          
+                            {expandedRsvpEvent === event._id && event.rsvpCount > 0 && (
+                                <tr>
+                                <td colSpan={4} className="p-0">
+                                <div className="p-3 bg-light">
+                                    <h6 className="mb-3">Attendees ({event.rsvpCount})</h6>
+                                <Table bordered size="sm" className="mb-0">
                                     <thead>
                                         <tr>
                                             <th>Name</th>
@@ -379,22 +313,31 @@ const Admin = () => {
                                     </thead>
                                     <tbody>
                                         {event.rsvps.map(rsvp => (
-                                            <tr key={rsvp.userId}>
-                                                <td>{rsvp.userName}</td>
-                                                <td>{rsvp.userId}</td>
-                                                <td>Going!</td>
+                                            <tr key={`${event._id}-${rsvp.userId}`}>
+                                                <td>{rsvp.userName || 'Unknown'}</td>
+                                                <td className="text-muted small">{rsvp.userId}</td>
+                                                <td>
+                                                    <Badge bg="success">Going</Badge>
+                                                </td>
                                             </tr>
                                         ))}
                                     </tbody>
                                 </Table>
-                            </div>
-                        </td>
-                    </tr>
-                )}
-                    </React.Fragment>
-                    ))}
+                                </div>
+                                </td>
+                                </tr>
+                            )}
+                            </React.Fragment>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan={4} className="text-center py-4 text-muted">
+                                No events with RSVPs found
+                            </td>
+                         </tr>
+                    )}
                 </tbody>
-            </Table>*/}
+            </Table>
 
             <h2>Applications</h2>
             <Table striped bordered hover>
@@ -432,7 +375,7 @@ const Admin = () => {
                                                         <tr>
                                                             <th>Name</th>
                                                             <th>School Email</th>
-                                                            <th>Year</th>
+                                                            <th>History</th>
                                                             <th>Reason</th>
                                                         </tr>
                                                     </thead>
@@ -441,7 +384,7 @@ const Admin = () => {
                                                             <tr key={application._id}>
                                                                 <td>{application.name}</td>
                                                                 <td>{application.email}</td>
-                                                                <td>{application.year}</td>
+                                                                <td>{application.history}</td>
                                                                 <td>{application.reason}</td>
                                                             </tr>
                                                         ))}
