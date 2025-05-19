@@ -170,7 +170,12 @@ const Admin = () => {
             console.error('Error creating event:', error);
         }
     };
-    
+
+    // Sort events by date in descending order (newest first)
+    const sortedEvents = [...events].sort((a, b) => new Date(b.date) - new Date(a.date));
+    const sortedRsvpEvents = [...rsvpEvents].sort((a, b) => new Date(b.date) - new Date(a.date));
+    const sortedAppEvents = [...appEvents].sort((a, b) => new Date(b.eventDate) - new Date(a.eventDate));
+
     return (
         <div>
             <h1>Admin Dashboard</h1>
@@ -191,7 +196,7 @@ const Admin = () => {
                 <input type="number" name="rsvpGoal" placeholder="RSVP Goal" value={eventData.rsvpGoal || ''} onChange={handleEventChange} min="0" step="1" required />
                 <label style={{ display: "flex", alignItems: "center", gap: "5px" }}>
                   <input type="checkbox" checked={eventData.appReq} onChange={(e) => setEventData({...eventData, appReq: e.target.checked})}/>
-                  App Requirement 
+                  Speed Mentoring Event 
                 </label>
                 <button type="submit">Create Event</button>
             </form>
@@ -208,7 +213,7 @@ const Admin = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {events.map(event => (
+                        {sortedEvents.map(event => (
                         <React.Fragment key={event._id}>
                             <tr>
                                 <td>{new Date(event.date).toLocaleDateString()}</td>
@@ -275,7 +280,7 @@ const Admin = () => {
                 </thead>
                 <tbody>
                     {rsvpEvents.length > 0 ? (
-                        rsvpEvents.map(event => (
+                        sortedRsvpEvents.map(event => (
                             <React.Fragment key={event._id}>
                             <tr>
                                 <td>{new Date(event.date).toLocaleDateString('en-US', {
@@ -350,7 +355,7 @@ const Admin = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {appEvents.map(event => (
+                    {sortedAppEvents.map(event => (
                         <React.Fragment key={event._id}>
                             <tr>
                                 <td>{new Date(event.eventDate).toLocaleDateString()}</td>
