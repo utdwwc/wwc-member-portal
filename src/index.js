@@ -8,7 +8,6 @@ import reportWebVitals from './reportWebVitals';
 import Information from './Infomation';
 import RegularEventsPage from './RegularEvents';
 import EventApplicationForm from './SpecialEvents';
-import SignIn from './SignIn';
 import EventCheckIn from './EventCheckIn';
 import Admin from './Admin'; 
 import Profile from './Profile'; 

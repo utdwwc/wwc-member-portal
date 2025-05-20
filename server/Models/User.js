@@ -10,11 +10,14 @@ const userSchema = new mongoose.Schema({
     email: {  type: String, unique: true, sparse: true },//not required
     utdEmail: { type: String, unique: true, sparse: true },
     googleId: { type: String, unique: true, sparse: true }, //stores googleId for OAuth users
-    //password: { type: String, required: false }, //not required
-    //JPMorgan: { type: Boolean, default: false}, //note consistent capitalization
     points: { type: Number, default: 0 }, 
-    resume: { path: String, contentType: String }, 
-    //isAdmin: { type: Boolean, default: false }
+    attendedEvents: [{
+      eventId: { type: mongoose.Schema.Types.ObjectId, ref: 'Event' },
+      title: String,                   //denormalized for quick display
+      date: Date,                      //event date
+      pointsEarned: Number,            //points from this event
+      checkInTime: { type: Date, default: Date.now } //when attended
+    }]
 }, { timestamps: true }); //add timestamps for debugging
 
 //only hash password if it's modified (and exists)
