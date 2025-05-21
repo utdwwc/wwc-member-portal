@@ -6,6 +6,7 @@ const User = require('./Models/User');
 const RegularEvent = require('./Models/RegularEvent');
 const EventApplication = require('./Models/EventApplication'); 
 const RSVP = require("./Models/RSVP");
+const Attendance = require("./Models/Attendance");
 const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
@@ -40,129 +41,6 @@ const storage = multer.diskStorage({
   },
 });
 
-
-/* PURPOSE: User Registration with Authentication */
-app.post('/register', async (req, res) => {
-  try {
-    console.log('Received registration data:', req.body);
-    
-    const { name, email, password, pronouns, major, year, JPMorgan } = req.body; //manually extract file if using multipart/form data
-    
-    const user = new User({
-      name,
-      email,
-      password,
-      pronouns,
-      major,
-      year,
-      JPMorgan: JPMorgan === 'true',
-      isAdmin: email === 'utdwwc@gmail.com'
-    }); //creates user object
-
-    /*if (req.file) {
-      user.resume = {
-        path: req.file.path,
-        contentType: req.file.mimetype
-      };
-    }*/
-
-    await user.save();
-    console.log('User created successfully:', user);
-
-    const token = jwt.sign(
-      { userId: user._id, isAdmin: user.isAdmin },
-      'your-secret-key',
-      { expiresIn: '1h' }
-    ); //generates token
-
-    res.status(201).json({ 
-      token,
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        isAdmin: user.isAdmin
-      }
-    });
-  } catch (error) {
-    console.error('Registration error:', error);
-    res.status(400).json({ 
-      error: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-    });
-  }
-});
-
-/* PURPOSE: General User Creation */
-app.post('/', async (req, res) => {
-  try {
-    const { 
-      name = '', 
-      email = '', 
-      gmail = '', 
-      password = '', 
-      pronouns = '', 
-      major = '', 
-      year = '', 
-      JPMorgan = 'false'
-    } = req.body;
-
-    if (!name || !email || !gmail) {
-      return res.status(400).json({ 
-        error: 'Missing required fields (name, email, or gmail)' 
-      });
-    } //validate required fields
-
-    const userData = {
-      name,
-      email,
-      gmail,
-      password,
-      pronouns,
-      major,
-      year,
-      JPMorgan: JPMorgan === 'true',
-      isAdmin: email === 'utdwwc@gmail.com'
-    }; //creates user object
-
-    const newUser = new User(userData);
-    const savedUser = await newUser.save();
-
-    /*if (req.file) {
-      userData.resume = {
-        path: req.file.path,
-        contentType: req.file.mimetype
-      };
-    } //adds resume IF file exists */
-    
-    res.status(201).json(savedUser);
-  } catch (error) {
-    console.error('Detailed save error:', {
-      message: error.message,
-      validationErrors: error.errors,
-      stack: error.stack
-    });
-    
-    if (error.name === 'ValidationError') {
-      return res.status(400).json({ 
-        error: 'Validation failed',
-        details: error.errors 
-      });
-    }
-    
-    if (error.code === 11000) {
-      return res.status(400).json({ 
-        error: 'Email or gmail already exists' 
-      });
-    } //duplicates key error
-    
-    res.status(500).json({ 
-      error: 'Internal server error',
-      details: error.message 
-    });
-  }
-});
-
 /* PURPOSE: Fetches Registered User from Database */
 app.get('/users', async (req, res) => {
   try {
@@ -173,43 +51,6 @@ app.get('/users', async (req, res) => {
     res.json(users);
   } catch (error) {
     res.status(500).json({ error: error.message });
-  }
-});
-
-/* TESTING THIS ROUTE
-   PURPOSE: Logs In Existing User */
-app.post('/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Email and password are required' });
-    } //validates input
-
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    } //finds user
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    } //checks password
-
-    const token = user.generateAuthToken(); //generates token
-
-    res.json({
-      token,
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        isAdmin: user.isAdmin
-      }
-    });
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ message: 'Login failed', error: error.message });
   }
 });
 
@@ -307,34 +148,6 @@ app.get('/user/gmail/:gmail', async (req, res) => {
  }
 });
 
-/* PURPOSE: Fetches Uploaded Resume for User from Database
-app.post('/user/:id/resume', upload.single('resume'), async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).send('No file uploaded');
-    }
-
-    const updatedUser = await User.findByIdAndUpdate(
-      req.params.id,
-      { 
-        resume: {
-          path: req.file.path,
-          contentType: req.file.mimetype,
-          originalName: req.file.originalname
-        }
-      },
-      { new: true }
-    );
-
-    res.json({
-      message: 'Resume uploaded successfully',
-      resumePath: updatedUser.resume.path
-    });
-  } catch (error) {
-    console.error('Resume upload error:', error);
-    res.status(500).send('Server error during upload');
-  }
-});*/
 
 /*  <------------  EVENTS TABLE  ------------>  */
 
@@ -405,6 +218,63 @@ app.get('/rsvps', async (req, res) => {
             {
               $match: {
                 $expr: { $eq: ["$eventId", "$$eventId"] },
+                status: "Going"
+              }
+            },
+            {
+              $lookup: {
+                from: "users",
+                localField: "userId",
+                foreignField: "_id",
+                as: "user"
+              }
+            },
+            { $unwind: "$user" },
+            {
+              $project: {
+                _id: 1, // Keep the RSVP ID
+                userId: 1,
+                userName: "$user.name",
+                utdEmail: "$user.utdEmail",
+                status: 1,
+                createdAt: 1
+              }
+            }
+          ],
+          as: "rsvps"
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          title: 1,
+          date: 1,
+          location: 1,
+          description: 1,
+          rsvps: 1,
+          rsvpCount: { $size: "$rsvps" }
+        }
+      }
+      // Removed the $match filter to include all events, not just those with RSVPs
+    ]);
+
+    res.json(eventsWithRsvps);
+  } catch (err) {
+    console.error('Error fetching RSVPs:', err);
+    res.status(500).json({ error: "Failed to fetch RSVP data" });
+  }
+});
+/*app.get('/rsvps', async (req, res) => {
+  try {
+    const eventsWithRsvps = await RegularEvent.aggregate([
+      {
+        $lookup: {
+          from: "rsvps",
+          let: { eventId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ["$eventId", "$$eventId"] },
                 status: "Going" // Only include "Going" RSVPs
               }
             },
@@ -447,9 +317,9 @@ app.get('/rsvps', async (req, res) => {
     console.error('Error fetching RSVPs:', err);
     res.status(500).json({ error: "Failed to fetch RSVP data" });
   }
-});
+});*/
 
-/* PURPOSE: Updates who RSVP'd */
+/* PURPOSE: Updates Database with who RSVP'd */
 app.post('/regularevents/:eventId/rsvp', async (req, res) => {
   try {
     const { eventId } = req.params;
@@ -486,7 +356,7 @@ app.post('/regularevents/:eventId/rsvp', async (req, res) => {
   }
 });
 
-/* PURPOSE: Applications for Special Events saved to Database*/
+/* PURPOSE: Saves Speed Mentoring Applications to Database*/
 app.post('/eventapplications/', async (req, res) => {
   const {
     userId,
@@ -502,8 +372,8 @@ app.post('/eventapplications/', async (req, res) => {
 
   console.log('Incoming application data:', req.body);
 
-  // Validation
-  if (!name || !email || !year || !reason) {
+  //validation
+  if (!name || !email || !year || !history || !reason) {
       return res.status(400).json({ message: 'All fields except userId and eventId are required' });
   }
 
@@ -534,7 +404,7 @@ app.post('/eventapplications/', async (req, res) => {
   }
 });
 
-/* PURPOSE: Fetches Event Applications with Event Details */
+/* PURPOSE: Fetches Event Applications */
 app.get('/eventapplications/with-events', async (req, res) => {
   try {
       const applications = await EventApplication.aggregate([
@@ -566,61 +436,177 @@ app.get('/eventapplications/with-events', async (req, res) => {
   }
 });
 
-/* PURPOSE: Adds User to Attendee List + Adds Points to User Profile */
-app.post('/users', async (req, res) => {
-  const { email, eventID } = req.body; 
-  
-  try { //checks if user exists
-    let user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: 'User not found. Please register first.' });
+// PURPOSE: Records a User's Attendance + Updates their Profile
+app.post('/api/events/:eventId/check-in', async (req, res) => {
+  try {
+    console.log('Received check-in request:', req.params, req.body);
+
+    const { eventId } = req.params;
+    const { userId } = req.body; //or get userId from auth middleware (recommended)
+
+    //validate event and user
+    console.log('Looking for event:', eventId);
+    const [event, user] = await Promise.all([
+      RegularEvent.findById(eventId),
+      User.findById(userId)
+    ]);
+    if (!event) return res.status(404).json({ error: "Event not found" });
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    //prevent duplicate check-ins
+    console.log('Looking for user:', userId);
+    const existingAttendance = await Attendance.findOne({ eventId, userId });
+    if (existingAttendance) {
+      return res.status(400).json({ error: "User already checked in" });
     }
 
-    user.points += 1; //adds points to user profile
-    await user.save();
+    //create attendance record
+    const attendance = new Attendance({
+      eventId,
+      userId,
+      userName: user.name,
+      utdEmail: user.utdEmail,
+      eventTitle: event.title,
+      pointsAwarded: event.points
+    });
+    await attendance.save();
 
-    let event = await RegularEvent.findOne({ eventID });
-    const userID = user._id; //finds existing event
+    //update user's profile (denormalize)
+    await User.findByIdAndUpdate(userId, {
+      $inc: { points: event.points },
+      $push: {
+        attendedEvents: {
+          eventId,
+          title: event.title,
+          date: event.date,
+          pointsEarned: event.points,
+          checkInTime: new Date()
+        }
+      }
+    });
 
-    if (!event) {
-      return res.status(404).json({ message: 'Event not found.' });
-    }
-
-    if (!event.attendees.includes(userID.toString())) {
-      event.attendees.push(userID.toString());
-      await event.save();
-    } //adds user to attendee list
-
-    res.json({ message: `Check-in successful! Your points are now ${user.points}.`, userID });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error during check-in.' });
+    res.status(201).json({ success: true, attendance });
+  } catch (err) {
+    console.error('Full error:', err);
+    console.error('Error stack:', err.stack);
+    res.status(500).json({ error: err.message });
   }
 });
 
+// PURPOSE: Fetches All Attendees for a Specific Event
+app.get('/api/events/:eventId/attendees', async (req, res) => {
+  try {
+    const { eventId } = req.params;
+
+    const attendees = await Attendance.find({ eventId })
+      .sort({ checkInTime: -1 }) //newest first
+      .select('userId userName utdEmail checkInTime pointsAwarded');
+
+    res.status(200).json(attendees);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PURPOSE: Fetches a User's Attendance History
+app.get('/api/events/users/:userId/attendance', async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const userAttendance = await Attendance.find({ userId })
+      .sort({ checkInTime: -1 }) //newest first
+      .populate('eventId', 'title date location');
+
+    res.status(200).json(userAttendance);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PURPOSE: Retrieves Attendance
+app.get('/api/events/attendance', async (req, res) => {
+  try {
+    const eventsWithAttendance = await RegularEvent.aggregate([
+      {
+        $lookup: {
+          from: 'attendances',
+          let: { eventId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ["$eventId", "$$eventId"] }
+              }
+            },
+            {
+              $lookup: {
+                from: "users",
+                localField: "userId",
+                foreignField: "_id",
+                as: "user"
+              }
+            },
+            { $unwind: "$user" },
+            {
+              $project: {
+                _id: 1,
+                userId: 1,
+                userName: "$user.name",
+                utdEmail: "$user.utdEmail",
+                checkInTime: 1,
+                pointsAwarded: 1
+              }
+            }
+          ],
+          as: 'attendees'
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          title: 1,
+          date: 1,
+          location: 1,
+          description: 1,
+          attendees: 1,
+          attendanceCount: { $size: "$attendees" }
+        }
+      },
+      { $sort: { date: -1 } }
+    ]);
+    
+    res.json(eventsWithAttendance);
+  } catch (err) {
+    console.error('Error fetching attendance:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+/*app.get('/api/events/attendance', async (req, res) => {
+  try {
+    const events = await RegularEvent.aggregate([
+      {
+        $lookup: {
+          from: 'attendances',
+          localField: '_id',
+          foreignField: 'eventId',
+          as: 'attendees'
+        }
+      },
+      {
+        $addFields: {
+          attendanceCount: { $size: '$attendees' }
+        }
+      },
+      { $sort: { date: -1 } }
+    ]);
+    res.json(events);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});*/
+
 /*  <------------  EVENTS TABLE  ------------>  */
 
-const isAdmin = async (req, res, next) => {
-  const userId = req.body.userId; // Assume userId is sent in the request body
-  const user = await User.findById(userId);
-  
-  if (!user) {
-    return res.status(404).json({ message: 'User not found' });
-  }
-
-  if (user.email !== 'utdwwc@gmail.com') {
-    return res.status(403).json({ message: 'No admin privileges granted' });
-  }
-
-  if (user && user.isAdmin) {
-    next();
-  } else {
-    res.status(403).json({ message: 'Access denied' });
-  }
-};
-
-
-/* GORL idk why but i have to comment these out/back in all the time */ 
+/* GORL idk why but i have to comment these out/back in all the time */
 app.listen(4000, () => {
   console.log('Server is running on port 4000');
 });

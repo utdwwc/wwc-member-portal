@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Table, Button, Badge } from 'react-bootstrap';
+import { Table, Button, Badge, ButtonGroup } from 'react-bootstrap';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const Admin = () => {
@@ -8,6 +8,15 @@ const Admin = () => {
     const navigate = useNavigate(); //helps move between pages dynamically
     const location = useLocation(); //extracts user data (ID, GMail, Name) passed from previous page
     const adminUser = location.state?.user;
+    const [events, setEvents] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [rsvpEvents, setRsvpEvents] = useState([]);
+    const [appEvents, setAppEvents] = useState([]);
+    const [expandedAppEvent, setExpandedAppEvent] = useState(null);
+    const [eventsWithAttendance, setEventsWithAttendance] = useState([]);
+    const [expandedRsvpEvent, setExpandedRsvpEvent] = useState(null);
+    const [expandedAttendanceEvent, setExpandedAttendanceEvent] = useState(null);
 
     const [expandedEvent, setExpandedEvent] = useState(null);
     const toggleEventDetails = (eventId) => {
@@ -17,9 +26,13 @@ const Admin = () => {
     const toggleUserDetails = (userId) => {
         setExpandedUser(expandedUser === userId ? null : userId);
     };
- 
-    const [events, setEvents] = useState([]);
-    const [users, setUsers] = useState([]);
+    const [expandedView, setExpandedView] = useState(null);
+    const toggleExpandedView = (view) => {
+        setExpandedView(expandedView === view ? null : view);
+    };
+    const toggleAppUsers = (eventId) => {
+        setExpandedAppEvent(expandedAppEvent === eventId ? null : eventId);
+    };
     const [eventData, setEventData] = useState({
         title: '',
         description: '',
@@ -30,11 +43,15 @@ const Admin = () => {
         rsvpGoal: 0,
         actualAttendees: 0,
     });
-    const [errorMessage, setErrorMessage] = useState('');
-    const [rsvpEvents, setRsvpEvents] = useState([]);
-    const [appEvents, setAppEvents] = useState([]);
-    const [expandedRsvpEvent, setExpandedRsvpEvent] = useState(null);
-    const [expandedAppEvent, setExpandedAppEvent] = useState(null);
+
+    const toggleRsvpUsers = (eventId) => {
+      setExpandedRsvpEvent(expandedRsvpEvent === eventId ? null : eventId);
+    };
+
+    const toggleAttendanceDetails = (eventId) => {
+        setExpandedAttendanceEvent(prev => prev === eventId ? null : eventId);
+    };
+
 
     /* PURPOSE: Redirect User if not the Authorized Admin */
     useEffect(() => {
@@ -66,7 +83,28 @@ const Admin = () => {
           }
     };
 
-    /* PURPOSE: Retrieves Events with RSVPs from Backend */
+    /* PURPOSE: Retrieves List of Existing Events from Backend 
+    const fetchEvents = async () => {
+        try {
+            const response = await fetch('http://localhost:4000/regularevents');
+            const data = await response.json();
+            setEvents(data);
+          } catch (err) {
+            setEvents([]); //ensure state is always an array
+          }
+    };*/
+
+    const fetchAppEvents = async () => {
+      try {
+          const response = await fetch('http://localhost:4000/eventapplications/with-events');
+          const data = await response.json();
+          setAppEvents(data);
+      } catch (error) {
+          console.error('Error fetching applications:', error);
+      }
+    };
+
+    /* PURPOSE: Retrieves Events with RSVPs from Backend 
     const fetchRsvpEvents = async () => {
         try {
             const response = await fetch('http://localhost:4000/rsvps');
@@ -77,44 +115,70 @@ const Admin = () => {
             console.error('Error fetching RSVPs:', err);
             setRsvpEvents([]);
           }
-    };
+    };*/
 
-    const fetchAppEvents = async () => {
-      try {
-          const response = await fetch('http://localhost:4000/eventapplications/with-events');
-          const data = await response.json();
-          setAppEvents(data);
-      } catch (error) {
-          console.error('Error fetching applications:', error);
-      }
-  };
-
-    /* PURPOSE: Retrieves List of Existing Events from Backend */
-    const fetchEvents = async () => {
+    /* PURPOSE: Retrieves Events with Attendances from Backend 
+    const fetchEventsWithAttendance = async () => {
         try {
-            const response = await fetch('http://localhost:4000/regularevents');
+          const response = await fetch('/api/events/attendance');
+          if (response.ok) {
             const data = await response.json();
-            setEvents(data);
-          } catch (err) {
-            setEvents([]); //ensure state is always an array
+            setEventsWithAttendance(data);
           }
-    };
+        } catch (error) {
+          console.error('Error fetching attendance data:', error);
+        }
+    };*/
 
     /* PURPOSE: Render User and Event List when Component Mounts */
     useEffect(() => {
         fetchUsers();
-        fetchEvents();
-        fetchRsvpEvents();
+        //fetchEvents();
         fetchAppEvents();
+        //fetchRsvpEvents();
+        //fetchEventsWithAttendance();
+        fetchCombinedEventData();
     }, []);
 
-    const toggleRsvpUsers = (eventId) => {
-      setExpandedRsvpEvent(expandedRsvpEvent === eventId ? null : eventId);
-    };
+    useEffect(() => {
+        console.log('Combined events data:', events);
+    }, [events]);
 
-    const toggleAppUsers = (eventId) => {
-      setExpandedAppEvent(expandedAppEvent === eventId ? null : eventId);
-    };
+    /* PURPOSE: Retrieves and combines all event data */
+const fetchCombinedEventData = async () => {
+    try {
+      // Fetch all data in parallel
+      const [eventsRes, rsvpsRes, attendancesRes] = await Promise.all([
+        fetch('http://localhost:4000/regularevents'),
+        fetch('http://localhost:4000/rsvps'),
+        fetch('/api/events/attendance')
+      ]);
+  
+      const [events, rsvps, attendances] = await Promise.all([
+        eventsRes.json(),
+        rsvpsRes.json(),
+        attendancesRes.ok ? attendancesRes.json() : []
+      ]);
+  
+      // Combine the data
+      const combinedEvents = events.map(event => {
+        const eventRsvps = rsvps.filter(rsvp => rsvp.eventId === event._id);
+        const eventAttendances = attendances.filter(att => att.eventId === event._id);
+        
+        return {
+          ...event,
+          rsvps: eventRsvps,
+          rsvpCount: eventRsvps.length,
+          attendees: eventAttendances,
+          attendanceCount: eventAttendances.length
+        };
+      });
+  
+      setEvents(combinedEvents);
+    } catch (error) {
+      console.error('Error fetching combined event data:', error);
+    }
+  };
 
     /* PURPOSE: Updates Form with 'eventData' State */
     const handleEventChange = (e) => {
@@ -173,8 +237,9 @@ const Admin = () => {
 
     // Sort events by date in descending order (newest first)
     const sortedEvents = [...events].sort((a, b) => new Date(b.date) - new Date(a.date));
-    const sortedRsvpEvents = [...rsvpEvents].sort((a, b) => new Date(b.date) - new Date(a.date));
     const sortedAppEvents = [...appEvents].sort((a, b) => new Date(b.eventDate) - new Date(a.eventDate));
+    const sortedRsvpEvents = [...rsvpEvents].sort((a, b) => new Date(b.date) - new Date(a.date));
+    const sortedEventsWithAttendance = [...eventsWithAttendance].sort((a, b) => new Date(b.date) - new Date(a.date));
 
     return (
         <div>
@@ -214,23 +279,23 @@ const Admin = () => {
                     </thead>
                     <tbody>
                         {sortedEvents.map(event => (
-                        <React.Fragment key={event._id}>
-                            <tr>
-                                <td>{new Date(event.date).toLocaleDateString()}</td>
-                                <td>{event.title || '—'}</td>
-                                <td>{event.description ? `${event.description.substring(0, 50)}${event.description.length > 50 ? '...' : ''}` : '—'}</td>
-                                <td>
-                                    <Button 
-                                        variant="info"
-                                        onClick={() => toggleEventDetails(event._id)}
-                                    >
-                                        {expandedEvent === event._id ? 'Hide Details' : 'Show Details'}
-                                    </Button>
-                                </td>
-                            </tr>
+                            <React.Fragment key={event._id}>
+                                <tr>
+                                    <td>{new Date(event.date).toLocaleDateString()}</td>
+                                    <td>{event.title || '—'}</td>
+                                    <td>{event.description ? `${event.description.substring(0, 50)}${event.description.length > 50 ? '...' : ''}` : '—'}</td>
+                                    <td>
+                                        <Button 
+                                            variant="info"
+                                            onClick={() => toggleEventDetails(event._id)}
+                                        >
+                                            {expandedEvent === event._id ? 'Hide Details' : 'Show Details'}
+                                        </Button>
+                                    </td>
+                                </tr>
                         {expandedEvent === event._id && (
-                        <tr>
-                            <td colSpan="4">
+                            <tr>
+                                <td colSpan="4">
                                 <div className="event-details">
                                     <Table size="sm" borderless>
                                         <tbody>
@@ -257,10 +322,10 @@ const Admin = () => {
                                         </tbody>
                                     </Table>
                                 </div>
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
                         )}
-                        </React.Fragment>
+                            </React.Fragment>
                         ))}
                     </tbody>
                 </Table>
@@ -268,81 +333,277 @@ const Admin = () => {
                 <p>No events found.</p>
             )}
 
-            <h2>Event RSVPs</h2>
-            <Table striped bordered hover responsive>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Event</th>
-                        <th>RSVPs</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {rsvpEvents.length > 0 ? (
-                        sortedRsvpEvents.map(event => (
-                            <React.Fragment key={event._id}>
-                            <tr>
-                                <td>{new Date(event.date).toLocaleDateString('en-US', {
-                                    year: 'numeric',
-                                    month: 'short',
-                                    day: 'numeric'
-                                })}
-                                </td>
-                                <td>{event.title}</td>
-                                <td>{event.rsvpCount}</td>
+<h2>Event Participation</h2>
+<Table striped bordered hover responsive>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Event</th>
+      <th>RSVPs</th>
+      <th>Attendance</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {events.length > 0 ? (
+      sortedEvents.map(event => (
+        <React.Fragment key={event._id}>
+          <tr>
+            <td>
+              {new Date(event.date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+              })}
+            </td>
+            <td>{event.title}</td>
+            <td>{event.rsvpCount || 0}</td>
+            <td>{event.attendanceCount || 0}</td>
+            <td>
+              <ButtonGroup>
+                <Button 
+                  variant={expandedView === `${event._id}-rsvp` ? 'secondary' : 'info'}
+                  onClick={() => toggleExpandedView(`${event._id}-rsvp`)}
+                  disabled={!event.rsvpCount}
+                  size="sm"
+                >
+                  RSVPs
+                </Button>
+                <Button 
+                  variant={expandedView === `${event._id}-attendance` ? 'secondary' : 'info'}
+                  onClick={() => toggleExpandedView(`${event._id}-attendance`)}
+                  disabled={!event.attendanceCount}
+                  size="sm"
+                >
+                  Attendance
+                </Button>
+              </ButtonGroup>
+            </td>
+          </tr>
+
+          {/* RSVP Details */}
+          {expandedView === `${event._id}-rsvp` && event.rsvpCount > 0 && (
+            <tr>
+              <td colSpan={5} className="p-0">
+                <div className="p-3 bg-light">
+                  <h6 className="mb-3">RSVPs ({event.rsvpCount})</h6>
+                  <Table bordered size="sm" className="mb-0">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>UTD Email</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {event.rsvps.map(rsvp => (
+                        <tr key={`${event._id}-rsvp-${rsvp.userId}`}>
+                          <td>{rsvp.userName || 'Unknown'}</td>
+                          <td className="text-muted small">{rsvp.utdEmail}</td>
+                          <td>
+                            <Badge bg="success">Going</Badge>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </div>
+              </td>
+            </tr>
+          )}
+
+          {/* Attendance Details */}
+          {expandedView === `${event._id}-attendance` && event.attendanceCount > 0 && (
+            <tr>
+              <td colSpan={5} className="p-0">
+                <div className="p-3 bg-light">
+                  <h6 className="mb-3">Attendees ({event.attendanceCount})</h6>
+                  <Table bordered size="sm" className="mb-0">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>UTD Email</th>
+                        <th>Check-In Time</th>
+                        <th>Points Awarded</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {event.attendees.map(attendee => (
+                        <tr key={`${event._id}-att-${attendee.userId}`}>
+                          <td>{attendee.userName || 'Unknown'}</td>
+                          <td className="text-muted small">{attendee.utdEmail}</td>
+                          <td>{new Date(attendee.checkInTime).toLocaleString()}</td>
+                          <td>{attendee.pointsAwarded}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </div>
+              </td>
+            </tr>
+          )}
+        </React.Fragment>
+      ))
+    ) : (
+      <tr>
+        <td colSpan={5} className="text-center py-4 text-muted">
+          No events found
+        </td>
+      </tr>
+    )}
+  </tbody>
+</Table>
+
+            {/*<h2>Event RSVPs</h2>
+                <Table striped bordered hover responsive>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Event</th>
+                            <th>RSVPs</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {rsvpEvents.length > 0 ? (
+                            sortedRsvpEvents.map(event => (
+                <React.Fragment key={event._id}>
+                        <tr>
+                            <td>{new Date(event.date).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric'
+                            })}
+                            </td>
+                            <td>{event.title}</td>
+                            <td>{event.rsvpCount}</td>
                                 <td>
-                                    <Button 
-                                        variant={expandedRsvpEvent === event._id ? 'secondary' : 'info'}
-                                        onClick={() => toggleRsvpUsers(event._id)}
-                                        disabled={event.rsvpCount === 0}
-                                        size="sm"
-                                    >
-                                    {expandedRsvpEvent === event._id ? 'Hide' : 'View'}
-                                    </Button>
-                                </td>
-                            </tr>
+                            <Button 
+                                variant={expandedRsvpEvent === event._id ? 'secondary' : 'info'}
+                                onClick={() => toggleRsvpUsers(event._id)}
+                                disabled={event.rsvpCount === 0}
+                                size="sm"
+                            >
+                                {expandedRsvpEvent === event._id ? 'Hide' : 'View'}
+                            </Button>
+                            </td>
+                        </tr>
           
-                            {expandedRsvpEvent === event._id && event.rsvpCount > 0 && (
-                                <tr>
-                                <td colSpan={4} className="p-0">
+                        {expandedRsvpEvent === event._id && event.rsvpCount > 0 && (
+                        <tr>
+                            <td colSpan={4} className="p-0">
                                 <div className="p-3 bg-light">
                                     <h6 className="mb-3">RSVPs ({event.rsvpCount})</h6>
-                                <Table bordered size="sm" className="mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>UTD Email</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {event.rsvps.map(rsvp => (
-                                            <tr key={`${event._id}-${rsvp.userId}`}>
-                                                <td>{rsvp.userName || 'Unknown'}</td>
-                                                <td className="text-muted small">{rsvp.utdEmail}</td>
-                                                <td>
-                                                    <Badge bg="success">Going</Badge>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </Table>
+                                        <Table bordered size="sm" className="mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>UTD Email</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {event.rsvps.map(rsvp => (
+                                                    <tr key={`${event._id}-${rsvp.userId}`}>
+                                                        <td>{rsvp.userName || 'Unknown'}</td>
+                                                        <td className="text-muted small">{rsvp.utdEmail}</td>
+                                                        <td>
+                                                            <Badge bg="success">Going</Badge>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </Table>
                                 </div>
-                                </td>
-                                </tr>
-                            )}
-                            </React.Fragment>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan={4} className="text-center py-4 text-muted">
-                                No events with RSVPs found
                             </td>
-                         </tr>
-                    )}
-                </tbody>
-            </Table>
+                        </tr>
+                        )}
+                </React.Fragment>
+            ))
+        ) : (
+            <tr>
+                <td colSpan={4} className="text-center py-4 text-muted">
+                    No events with RSVPs found
+                </td>
+            </tr>
+        )}
+        </tbody>
+        </Table>
+
+        <h2>Event Attendance</h2>
+    <Table striped bordered hover responsive>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Event</th>
+          <th>Attendees</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {eventsWithAttendance.length > 0 ? (
+          sortedEventsWithAttendance.map(event => (
+            <React.Fragment key={event._id}>
+              <tr>
+                <td>{new Date(event.date).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric'
+                })}</td>
+                <td>{event.title}</td>
+                <td>{event.attendanceCount || 0}</td>
+                <td>
+                  <Button 
+                    variant={expandedAttendanceEvent === event._id ? 'secondary' : 'info'}
+                    onClick={() => toggleAttendanceDetails(event._id)}
+                    disabled={!event.attendanceCount}
+                    size="sm"
+                  >
+                    {expandedAttendanceEvent === event._id ? 'Hide' : 'View'}
+                  </Button>
+                </td>
+              </tr>
+              
+              {expandedAttendanceEvent === event._id && event.attendanceCount > 0 && (
+                <tr>
+                  <td colSpan={4} className="p-0">
+                    <div className="p-3 bg-light">
+                      <h6 className="mb-3">Attendees ({event.attendanceCount})</h6>
+                      <Table bordered size="sm" className="mb-0">
+                        <thead>
+                          <tr>
+                            <th>Name</th>
+                            <th>UTD Email</th>
+                            <th>Check-In Time</th>
+                            <th>Points Awarded</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {event.attendees.map(attendee => (
+                            <tr key={`${event._id}-${attendee.userId}`}>
+                              <td>{attendee.userName || 'Unknown'}</td>
+                              <td className="text-muted small">{attendee.utdEmail}</td>
+                              <td>{new Date(attendee.checkInTime).toLocaleString()}</td>
+                              <td>{attendee.pointsAwarded}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </Table>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </React.Fragment>
+          ))
+        ) : (
+          <tr>
+            <td colSpan={4} className="text-center py-4 text-muted">
+              No attendance records found
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </Table> */}
 
             <h2>Applications</h2>
             <Table striped bordered hover>
