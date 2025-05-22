@@ -130,55 +130,55 @@ const Admin = () => {
         }
     };*/
 
+    /* PURPOSE: Retrieves and combines all event data */
+const fetchCombinedEventData = async () => {
+  try {
+    // Fetch all data in parallel
+    const [eventsRes, rsvpsRes, attendancesRes] = await Promise.all([
+      fetch('http://localhost:4000/regularevents'),
+      fetch('http://localhost:4000/rsvps'),
+      fetch('/api/events/attendance')
+    ]);
+
+    const [events, rsvps, attendances] = await Promise.all([
+      eventsRes.json(),
+      rsvpsRes.json(),
+      attendancesRes.ok ? attendancesRes.json() : []
+    ]);
+
+    // Combine the data
+    const combinedEvents = events.map(event => {
+      const eventRsvps = rsvps.filter(rsvp => rsvp.eventId === event._id);
+      const eventAttendanceData = attendances.find(att => att._id === event._id);
+      
+      return {
+        ...event,
+        rsvps: eventRsvps,
+        rsvpCount: eventRsvps.length,
+        attendees: eventAttendanceData?.attendees || [],
+        attendanceCount: eventAttendanceData?.attendanceCount || 0
+      };
+    });
+
+    setEvents(combinedEvents);
+  } catch (error) {
+    console.error('Error fetching combined event data:', error);
+  }
+};
+
     /* PURPOSE: Render User and Event List when Component Mounts */
     useEffect(() => {
         fetchUsers();
-        //fetchEvents();
         fetchAppEvents();
+        fetchCombinedEventData();
+        //fetchEvents();
         //fetchRsvpEvents();
         //fetchEventsWithAttendance();
-        fetchCombinedEventData();
     }, []);
 
     useEffect(() => {
         console.log('Combined events data:', events);
     }, [events]);
-
-    /* PURPOSE: Retrieves and combines all event data */
-const fetchCombinedEventData = async () => {
-    try {
-      // Fetch all data in parallel
-      const [eventsRes, rsvpsRes, attendancesRes] = await Promise.all([
-        fetch('http://localhost:4000/regularevents'),
-        fetch('http://localhost:4000/rsvps'),
-        fetch('/api/events/attendance')
-      ]);
-  
-      const [events, rsvps, attendances] = await Promise.all([
-        eventsRes.json(),
-        rsvpsRes.json(),
-        attendancesRes.ok ? attendancesRes.json() : []
-      ]);
-  
-      // Combine the data
-      const combinedEvents = events.map(event => {
-        const eventRsvps = rsvps.filter(rsvp => rsvp.eventId === event._id);
-        const eventAttendances = attendances.filter(att => att.eventId === event._id);
-        
-        return {
-          ...event,
-          rsvps: eventRsvps,
-          rsvpCount: eventRsvps.length,
-          attendees: eventAttendances,
-          attendanceCount: eventAttendances.length
-        };
-      });
-  
-      setEvents(combinedEvents);
-    } catch (error) {
-      console.error('Error fetching combined event data:', error);
-    }
-  };
 
     /* PURPOSE: Updates Form with 'eventData' State */
     const handleEventChange = (e) => {
@@ -238,8 +238,8 @@ const fetchCombinedEventData = async () => {
     // Sort events by date in descending order (newest first)
     const sortedEvents = [...events].sort((a, b) => new Date(b.date) - new Date(a.date));
     const sortedAppEvents = [...appEvents].sort((a, b) => new Date(b.eventDate) - new Date(a.eventDate));
-    const sortedRsvpEvents = [...rsvpEvents].sort((a, b) => new Date(b.date) - new Date(a.date));
-    const sortedEventsWithAttendance = [...eventsWithAttendance].sort((a, b) => new Date(b.date) - new Date(a.date));
+    //const sortedRsvpEvents = [...rsvpEvents].sort((a, b) => new Date(b.date) - new Date(a.date));
+    //const sortedEventsWithAttendance = [...eventsWithAttendance].sort((a, b) => new Date(b.date) - new Date(a.date));
 
     return (
         <div>

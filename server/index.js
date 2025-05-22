@@ -264,60 +264,6 @@ app.get('/rsvps', async (req, res) => {
     res.status(500).json({ error: "Failed to fetch RSVP data" });
   }
 });
-/*app.get('/rsvps', async (req, res) => {
-  try {
-    const eventsWithRsvps = await RegularEvent.aggregate([
-      {
-        $lookup: {
-          from: "rsvps",
-          let: { eventId: "$_id" },
-          pipeline: [
-            {
-              $match: {
-                $expr: { $eq: ["$eventId", "$$eventId"] },
-                status: "Going" // Only include "Going" RSVPs
-              }
-            },
-            {
-              $lookup: {
-                from: "users",
-                localField: "userId",
-                foreignField: "_id",
-                as: "user"
-              }
-            },
-            { $unwind: "$user" },
-            {
-              $project: {
-                userId: 1,
-                userName: "$user.name",
-                utdEmail: "$user.utdEmail",
-                _id: 0
-              }
-            }
-          ],
-          as: "rsvps"
-        }
-      },
-      {
-        $project: {
-          title: 1,
-          date: 1,
-          location: 1,
-          description: 1,
-          rsvps: 1,
-          rsvpCount: { $size: "$rsvps" }
-        }
-      },
-      { $match: { rsvpCount: { $gt: 0 } } } // Only return events with RSVPs
-    ]);
-
-    res.json(eventsWithRsvps);
-  } catch (err) {
-    console.error('Error fetching RSVPs:', err);
-    res.status(500).json({ error: "Failed to fetch RSVP data" });
-  }
-});*/
 
 /* PURPOSE: Updates Database with who RSVP'd */
 app.post('/regularevents/:eventId/rsvp', async (req, res) => {
@@ -580,29 +526,6 @@ app.get('/api/events/attendance', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-/*app.get('/api/events/attendance', async (req, res) => {
-  try {
-    const events = await RegularEvent.aggregate([
-      {
-        $lookup: {
-          from: 'attendances',
-          localField: '_id',
-          foreignField: 'eventId',
-          as: 'attendees'
-        }
-      },
-      {
-        $addFields: {
-          attendanceCount: { $size: '$attendees' }
-        }
-      },
-      { $sort: { date: -1 } }
-    ]);
-    res.json(events);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});*/
 
 /*  <------------  EVENTS TABLE  ------------>  */
 
