@@ -229,7 +229,7 @@ const Admin = () => {
                                 <tr>
                                     <td>{new Date(event.date).toLocaleDateString()}</td>
                                     <td>{event.title || '—'}</td>
-                                    <td>{event.description ? `${event.description.substring(0, 50)}${event.description.length > 50 ? '...' : ''}` : '—'}</td>
+                                    <td style={{ whiteSpace: 'pre-wrap' }}>{event.description || '—'}</td>
                                     <td>
                                         <Button 
                                             variant="info"
