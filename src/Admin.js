@@ -15,6 +15,8 @@ const Admin = () => {
     const [expandedEvent, setExpandedEvent] = useState(null);
     const [expandedUser, setExpandedUser] = useState(null);
     const [expandedView, setExpandedView] = useState(null);
+    const [expandedRsvp, setExpandedRsvp] = useState(null);
+    const [expandedAttendance, setExpandedAttendance] = useState(null);
     const [eventData, setEventData] = useState({
         title: '',
         description: '',
@@ -40,6 +42,14 @@ const Admin = () => {
 
     const toggleAppUsers = (eventId) => {
       setExpandedAppEvent(expandedAppEvent === eventId ? null : eventId);
+    };
+
+    const toggleRsvpDetails = (eventId) => {
+      setExpandedRsvp(prev => (prev === eventId ? null : eventId));
+    };
+    
+    const toggleAttendanceDetails = (eventId) => {
+      setExpandedAttendance(prev => (prev === eventId ? null : eventId));
     };
 
 
@@ -196,15 +206,15 @@ const Admin = () => {
             <form onSubmit={(e) => {
                 e.preventDefault();
                 createEvent(eventData);
-            }}
-            style={{ display: "flex", flexDirection: "column", gap: "10px", maxWidth: "400px" }}
+              }}
+              style={{ display: "flex", flexDirection: "column", gap: "10px", maxWidth: "400px" }}
             >
                 <input type="text" name="title" placeholder="Event Title" value={eventData.title} onChange={handleEventChange} required />
                 <input type="text" name="description" placeholder="Event Description" value={eventData.description} onChange={handleEventChange} required />
                 <input type="date" name="date" value={eventData.date} onChange={handleEventChange} required />
                 <input type="text" name="location" placeholder="Event Location" value={eventData.location} onChange={handleEventChange} required />
                 <input type="number" name="points" placeholder="Points Value" value={eventData.points || ''} onChange={handleEventChange} min="0" step="1" required />
-                <input type="number" name="rsvpGoal" placeholder="RSVP Goal" value={eventData.rsvpGoal || ''} onChange={handleEventChange} min="0" step="1" required />
+                {/*<input type="number" name="rsvpGoal" placeholder="RSVP Goal" value={eventData.rsvpGoal || ''} onChange={handleEventChange} min="0" step="1" required />*/}
                 <label style={{ display: "flex", alignItems: "center", gap: "5px" }}>
                   <input type="checkbox" checked={eventData.appReq} onChange={(e) => setEventData({...eventData, appReq: e.target.checked})}/>
                   Speed Mentoring Event 
@@ -220,6 +230,11 @@ const Admin = () => {
                             <th>Date</th>
                             <th>Event</th>
                             <th>Description</th>
+                            <th>Location</th>
+                            <th>Points</th>
+                            <th>Application Required</th>
+                            <th>RSVPs</th>
+                            <th>Attendance</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -230,47 +245,84 @@ const Admin = () => {
                                     <td>{new Date(event.date).toLocaleDateString()}</td>
                                     <td>{event.title || '—'}</td>
                                     <td style={{ whiteSpace: 'pre-wrap' }}>{event.description || '—'}</td>
+                                    <td>{event.location || '—'}</td>
+                                    <td>{event.points || 0}</td>
+                                    <td>{event.appReq ? '✅' : '❌'}</td>
+                                    <td>{event.rsvpCount || 0}</td>
+                                    <td>{event.attendanceCount || 0}</td>
                                     <td>
-                                        <Button 
-                                            variant="info"
-                                            onClick={() => toggleEventDetails(event._id)}
-                                        >
-                                            {expandedEvent === event._id ? 'Hide Details' : 'Show Details'}
-                                        </Button>
+                                      <Button
+                                        variant="primary"
+                                        className="me-2"
+                                        onClick={() => toggleRsvpDetails(event._id)}
+                                      >
+                                        {expandedRsvp === event._id ? 'Hide RSVPs' : 'Show RSVPs'}
+                                      </Button>
+                                      <Button
+                                        variant="success"
+                                        onClick={() => toggleAttendanceDetails(event._id)}
+                                      >
+                                        {expandedAttendance === event._id ? 'Hide Attendance' : 'Show Attendance'}
+                                      </Button>
                                     </td>
                                 </tr>
-                        {expandedEvent === event._id && (
-                            <tr>
-                                <td colSpan="4">
-                                <div className="event-details">
-                                    <Table size="sm" borderless>
+
+                                {expandedRsvp === event._id && (
+                                  <tr>
+                                    <td colSpan="9">
+                                      <h5>RSVP List</h5>
+                                      <Table size="sm" bordered>
+                                        <thead>
+                                          <tr>
+                                            <th>Name</th>
+                                            <th>UTD Email</th>
+                                            <th>Status</th>
+                                            <th>RSVP Time</th>
+                                          </tr>
+                                        </thead>
                                         <tbody>
-                                            <tr>
-                                                <td><strong>Location:</strong></td>
-                                                <td>{event.location || '—'}</td>
+                                          {event.rsvps.map(rsvp => (
+                                            <tr key={rsvp._id}>
+                                              <td>{rsvp.userName}</td>
+                                              <td>{rsvp.utdEmail}</td>
+                                              <td>{rsvp.status}</td>
+                                              <td>{new Date(rsvp.createdAt).toLocaleString()}</td>
                                             </tr>
-                                            <tr>
-                                                <td><strong>Application Required:</strong></td>
-                                                <td>{event.appReq ? '✅ Yes' : '❌ No'}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>Points:</strong></td>
-                                                <td>{event.points}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>RSVP Goal:</strong></td>
-                                                <td>{event.rsvpGoal}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>Attended:</strong></td>
-                                                <td>{event.actualAttendees}</td>
-                                            </tr>
+                                          ))}
                                         </tbody>
-                                    </Table>
-                                </div>
-                                </td>
-                            </tr>
-                        )}
+                                      </Table>
+                                    </td>
+                                  </tr>
+                                )}
+
+                                {expandedAttendance === event._id && (
+                                  <tr>
+                                    <td colSpan="9">
+                                      <h5>Attendance List</h5>
+                                      <Table size="sm" bordered>
+                                        <thead>
+                                          <tr>
+                                            <th>Name</th>
+                                            <th>UTD Email</th>
+                                            <th>Check-In Time</th>
+                                            <th>Points Awarded</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          {event.attendees.map(att => (
+                                            <tr key={att._id}>
+                                              <td>{att.userName}</td>
+                                              <td>{att.utdEmail}</td>
+                                              <td>{new Date(att.checkInTime).toLocaleString()}</td>
+                                              <td>{att.pointsAwarded}</td>
+                                            </tr>
+                                          ))}
+                                        </tbody>
+                                      </Table>
+                                    </td>
+                                  </tr>
+                                )}
+
                             </React.Fragment>
                         ))}
                     </tbody>
@@ -279,129 +331,7 @@ const Admin = () => {
                 <p>No events found.</p>
             )}
 
-            <h2>Event Participation</h2>
-            <Table striped bordered hover responsive>
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Event</th>
-                  <th>RSVPs</th>
-                  <th>Attendance</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {events.length > 0 ? (
-                  sortedEvents.map(event => (
-                    <React.Fragment key={event._id}>
-                      <tr>
-                        <td>
-                          {new Date(event.date).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric'
-                          })}
-                        </td>
-                        <td>{event.title}</td>
-                        <td>{event.rsvpCount || 0}</td>
-                        <td>{event.attendanceCount || 0}</td>
-                        <td>
-                          <ButtonGroup>
-                            <Button 
-                              variant={expandedView === `${event._id}-rsvp` ? 'secondary' : 'info'}
-                              onClick={() => toggleExpandedView(`${event._id}-rsvp`)}
-                              disabled={!event.rsvpCount}
-                              size="sm"
-                            >
-                              RSVPs
-                            </Button>
-                            <Button 
-                              variant={expandedView === `${event._id}-attendance` ? 'secondary' : 'info'}
-                              onClick={() => toggleExpandedView(`${event._id}-attendance`)}
-                              disabled={!event.attendanceCount}
-                              size="sm"
-                            >
-                              Attendance
-                            </Button>
-                          </ButtonGroup>
-                        </td>
-                      </tr>
-
-          {/* RSVP Details */}
-          {expandedView === `${event._id}-rsvp` && event.rsvpCount > 0 && (
-            <tr>
-              <td colSpan={5} className="p-0">
-                <div className="p-3 bg-light">
-                  <h6 className="mb-3">RSVPs ({event.rsvpCount})</h6>
-                  <Table bordered size="sm" className="mb-0">
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>UTD Email</th>
-                        <th>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {event.rsvps.map(rsvp => (
-                        <tr key={`${event._id}-rsvp-${rsvp.userId}`}>
-                          <td>{rsvp.userName || 'Unknown'}</td>
-                          <td className="text-muted small">{rsvp.utdEmail}</td>
-                          <td>
-                            <Badge bg="success">Going</Badge>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </Table>
-                </div>
-              </td>
-            </tr>
-          )}
-
-          {/* Attendance Details */}
-          {expandedView === `${event._id}-attendance` && event.attendanceCount > 0 && (
-            <tr>
-              <td colSpan={5} className="p-0">
-                <div className="p-3 bg-light">
-                  <h6 className="mb-3">Attendees ({event.attendanceCount})</h6>
-                  <Table bordered size="sm" className="mb-0">
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>UTD Email</th>
-                        <th>Check-In Time</th>
-                        <th>Points Awarded</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {event.attendees.map(attendee => (
-                        <tr key={`${event._id}-att-${attendee.userId}`}>
-                          <td>{attendee.userName || 'Unknown'}</td>
-                          <td className="text-muted small">{attendee.utdEmail}</td>
-                          <td>{new Date(attendee.checkInTime).toLocaleString()}</td>
-                          <td>{attendee.pointsAwarded}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </Table>
-                </div>
-              </td>
-            </tr>
-          )}
-        </React.Fragment>
-      ))
-    ) : (
-      <tr>
-        <td colSpan={5} className="text-center py-4 text-muted">
-          No events found
-        </td>
-      </tr>
-    )}
-  </tbody>
-</Table>
-
-
-            <h2>Applications</h2>
+            <h2>Speed Mentoring Applications</h2>
             <Table striped bordered hover>
                 <thead>
                     <tr>
