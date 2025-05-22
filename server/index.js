@@ -206,7 +206,7 @@ app.post('/regularevents', async (req, res) => {
   }
 });
 
-/* PURPOSE: Retrieves Events with RSVPs */
+/* PURPOSE: Retrieves RSVP Data */
 app.get('/rsvps', async (req, res) => {
   try {
     const eventsWithRsvps = await RegularEvent.aggregate([
