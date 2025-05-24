@@ -1,0 +1,83 @@
+.information-form {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+  
+  .form-group input[type="text"],
+  .form-group input[type="email"] {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+  
+  .checkbox {
+    display: flex;
+    align-items: center;
+  }
+  
+  .checkbox input {
+    margin-right: 0.5rem;
+  }
+  
+  .error-message {
+    color: #d32f2f;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background: #fde0e0;
+    border-radius: 4px;
+  }
+
+  .resume-section {
+    margin-bottom: 10px;
+  }
+  
+  .resume-link {
+    color: #1a73e8;
+    text-decoration: underline;
+    font-weight: 500;
+  }
+
+  .error {
+    color: #d32f2f;
+    padding: 10px;
+    background: #fde0e0;
+    border-radius: 4px;
+    margin-bottom: 15px;
+  }
+  
+  .resume-actions {
+    margin-bottom: 8px;
+  }
+  
+  .resume-link {
+    color: #1a73e8;
+    text-decoration: underline;
+  }
+  
+  input[type="file"] {
+    margin-top: 5px;
+    width: 100%;
+  }
+  
+  small {
+    display: block;
+    margin-top: 4px;
+    color: #666;
+    font-size: 0.8rem;
+  }

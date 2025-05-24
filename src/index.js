@@ -7,11 +7,10 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Information from './Infomation';
 import RegularEventsPage from './RegularEvents';
-import SpecialEvents from './SpecialEvents';
-import SignIn from './SignIn';
+import EventApplicationForm from './SpecialEvents';
+import EventCheckIn from './EventCheckIn';
 import Admin from './Admin'; 
 import Profile from './Profile'; 
-
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -22,8 +21,8 @@ root.render(
           <Route path="/" element={<App />} />
           <Route path="/information" element={<Information />} />
           <Route path="/regularEvents" element={<RegularEventsPage />} />
-          <Route path="/specialEvents" element={<SpecialEvents />} />
-          <Route path="/signIn" element = {<SignIn/>} />
+          <Route path="/eventapplications" element={<EventApplicationForm />} />
+          <Route path="/eventCheckIn" element = {<EventCheckIn/>} />
           <Route path="/admin" element = {<Admin/>} />
           <Route path="/profile" element = {<Profile/>} />
         </Routes>
