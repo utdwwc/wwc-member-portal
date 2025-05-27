@@ -269,8 +269,7 @@ app.get('/rsvps', async (req, res) => {
 app.post('/regularevents/:eventId/rsvp', async (req, res) => {
   try {
     const { eventId } = req.params;
-    const { userName, isChecked } = req.body;
-    const userId = req.user._id; // From auth middleware
+    const { userId, userName, isChecked } = req.body;
 
     // Validate event and user
     const [event, user] = await Promise.all([
