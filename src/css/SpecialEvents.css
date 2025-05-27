@@ -1,0 +1,76 @@
+/* Base Container */
+.form-container {
+    font-family: 'Arial, sans-serif';
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    max-width: 500px;
+}
+
+/* Form Groups */
+.form-group {
+    margin-bottom: 15px;
+}
+
+/* Input Fields */
+.form-input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Textarea Specific */
+.form-textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    height: 100px;
+    resize: vertical; /* Added for better UX */
+}
+
+/* Buttons */
+.form-button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 0 10px;
+    transition: background-color 0.3s ease; /* Added for hover effect */
+}
+
+.form-button:hover {
+    background-color: #218838; /* Darker shade on hover */
+}
+
+/* Messages */
+.form-success-message {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #c3e6cb;
+    border-radius: 4px;
+    text-align: center;
+}
+
+/* Error States */
+.form-error {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+/* Added for better form layout */
+.form-button-group {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}

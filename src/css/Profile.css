@@ -1,0 +1,33 @@
+/* Profile container */
+.profile-details {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  /* Detail cards */
+  .detail-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .detail-label {
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .detail-value {
+    color: #2d3748;
+    font-size: 1.1rem;
+  }
+  
+  /* Spacing utilities */
+  .space-y-4 > * + * {
+    margin-top: 1rem;
+  }

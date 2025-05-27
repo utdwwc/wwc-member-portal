@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Modal from './Modal'; //adjust the path to your modal component
-import './App.css';
 import { jwtDecode } from 'jwt-decode';
+import './css/RegularEvents.css';
 
 const RegularEventsPage = () => {
     const navigate = useNavigate(); //helps move between pages dynamically
@@ -212,20 +212,20 @@ const RegularEventsPage = () => {
     const sortedEvents = [...events].sort((a, b) => new Date(b.date) - new Date(a.date));
 
     return (
-        <div>
-            <h1 style={styles.pageTitle}>Regular Events Page</h1>
+        <div className="regular-events">
+            <h1 className="page-title">Events Page</h1>
             
             {/* Navigation buttons (moved outside event mapping) */}
-            <div style={styles.container}>
+            <div className="event-container">
                 <button
-                    style={styles.button}
-                    onClick={handleClick}
+                    className="event-button event-button--primary"
+                    onClick={() => navigate('/')}
                 >
-                    Go to Admin
+                    Homepage
                 </button>
                 
                 <button
-                    style={styles.button}
+                    className="event-button event-button--primary"
                     onClick={() => {
                         //ensure we have complete object
                         if (!user || !user._id) {
@@ -255,13 +255,20 @@ const RegularEventsPage = () => {
                           });
                     }}
                 >
-                    Go to Profile
+                    User Profile
+                </button>
+
+                <button
+                    className="event-button event-button--primary"
+                    onClick={handleClick}
+                >
+                    Admin Dashboard
                 </button>
             </div>
 
             {sortedEvents.map((event) => (
-                <div key={event._id} style={styles.container}>
-                    <h1 style={styles.title}>Event: {event.title}</h1>
+                <div key={event._id} className="event-container">
+                    <h1 className="event-title">Event: {event.title}</h1>
                     <p><strong>Description:</strong> {event.description}</p>
                     <p><strong>Date:</strong> {new Date(event.date).toLocaleDateString()}</p>
                     <p><strong>Location:</strong> {event.location}</p>
@@ -277,22 +284,22 @@ const RegularEventsPage = () => {
                                     email: user.email,
                                 }
                             })}
-                        style={styles.applyButton}
+                        className="event-title"
                       >
                         Apply for Event
                       </button>
                     ) : (
                         <>
-                            <label style={styles.label}>
+                            <label className="event-label">
                                 <input 
                                     type="checkbox" 
                                     checked={rsvpStatus[event._id] || false} 
                                     onChange={() => handleCheckboxChange(event._id)} 
-                                    style={styles.checkbox} 
+                                    className="event-checkbox" 
                                 />
                                 RSVP
                             </label>
-                            {rsvpStatus[event._id] && <p style={styles.confirmation}>You have RSVPed!</p>}
+                            {rsvpStatus[event._id] && <p className="confirmation-message">You have RSVPed!</p>}
                         </>
                     )}
                     
@@ -306,58 +313,6 @@ const RegularEventsPage = () => {
             ))}
         </div>
     );
-};
-
-const styles = {
-    pageTitle: {
-        textAlign: 'center',
-        margin: '20px 0',
-        fontSize: '2rem',
-    },
-    container: {
-        fontFamily: 'Arial, sans-serif',
-        margin: '20px',
-        padding: '20px',
-        border: '1px solid #ccc',
-        borderRadius: '5px',
-        maxWidth: '600px',
-    },
-    title: {
-        color: '#333',
-        marginBottom: '15px',
-    },
-    label: {
-        display: 'flex',
-        alignItems: 'center',
-        cursor: 'pointer',
-    },
-    checkbox: {
-        marginRight: '10px',
-    },
-    confirmation: {
-        color: 'green',
-        marginTop: '10px',
-    },  
-    button: {
-        padding: '10px 15px',
-        margin: '0 10px',
-        //backgroundColor: '#3498db',
-        //color: 'white',
-        //border: 'none',
-        borderRadius: '4px',
-        cursor: 'pointer',
-        marginTop: '10px',
-    },
-    applyButton: {
-        display: 'inline-block',
-        padding: '10px 15px',
-        //backgroundColor: '#27ae60',
-        //color: 'white',
-        textDecoration: 'none',
-        borderRadius: '4px',
-        marginTop: '10px',
-        cursor: 'pointer',
-    },
 };
 
 export default RegularEventsPage;

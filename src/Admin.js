@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Table, Button, Badge, ButtonGroup } from 'react-bootstrap';
 import { useNavigate, useLocation } from 'react-router-dom';
+import './css/Admin.css';
 
 const Admin = () => {
     const navigate = useNavigate(); //helps move between pages dynamically
@@ -198,16 +199,30 @@ const Admin = () => {
 
 
     return (
-        <div>
+        <div className="admin-dashboard">
             <h1>Admin Dashboard</h1>
-            {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+            {errorMessage && <p className="admin-error">{errorMessage}</p>}
+
+                <button
+                    className="event-button event-button--primary"
+                    onClick={() => navigate('/regularEvents')}
+                >
+                    Back to Events
+                </button>
+
+                <button
+                    className="event-button event-button--primary"
+                    onClick={() => navigate('/')}
+                >
+                    Homepage
+                </button>
 
             <h2>Create Event</h2>
             <form onSubmit={(e) => {
                 e.preventDefault();
                 createEvent(eventData);
               }}
-              style={{ display: "flex", flexDirection: "column", gap: "10px", maxWidth: "400px" }}
+              className="event-form"
             >
                 <input type="text" name="title" placeholder="Event Title" value={eventData.title} onChange={handleEventChange} required />
                 <input type="text" name="description" placeholder="Event Description" value={eventData.description} onChange={handleEventChange} required />
@@ -224,7 +239,7 @@ const Admin = () => {
             
             <h2>Event Information</h2>
             {events.length > 0 ? (
-                <Table striped bordered hover>
+                <Table striped bordered hover className="admin-table">
                     <thead>
                         <tr>
                             <th>Date</th>
@@ -271,7 +286,7 @@ const Admin = () => {
                                   <tr>
                                     <td colSpan="9">
                                       <h5>RSVP List</h5>
-                                      <Table size="sm" bordered>
+                                      <Table className="admin-table">
                                         <thead>
                                           <tr>
                                             <th>Name</th>
@@ -299,7 +314,7 @@ const Admin = () => {
                                   <tr>
                                     <td colSpan="9">
                                       <h5>Attendance List</h5>
-                                      <Table size="sm" bordered>
+                                      <Table className="admin-table">
                                         <thead>
                                           <tr>
                                             <th>Name</th>
@@ -332,7 +347,7 @@ const Admin = () => {
             )}
 
             <h2>Speed Mentoring Applications</h2>
-            <Table striped bordered hover>
+            <Table striped bordered hover className="admin-table">
                 <thead>
                     <tr>
                         <th>Event Date</th>
@@ -362,7 +377,7 @@ const Admin = () => {
                                     <td colSpan="5">
                                         <div className="applicant-details">
                                             <h5>Applications ({event.applications.length})</h5>
-                                                <Table size="sm">
+                                                <Table className="admin-table">
                                                     <thead>
                                                         <tr>
                                                             <th>Name</th>
@@ -393,7 +408,7 @@ const Admin = () => {
             
             <h2>User Information</h2>
             {users.length > 0 ? (
-                <Table striped bordered hover>
+                <Table striped bordered hover className="admin-table">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -422,7 +437,7 @@ const Admin = () => {
                                 <tr>
                                     <td colSpan="4">
                                         <div className="user-details">
-                                            <Table size="sm" borderless>
+                                            <Table className="admin-table">
                                                 <tbody>
                                                     <tr>
                                                         <td><strong>User ID:</strong></td>

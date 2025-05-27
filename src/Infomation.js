@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import './Information.css';
+import './css/Information.css';
 
 function Information() {
   const navigate = useNavigate();
@@ -12,8 +12,6 @@ function Information() {
     year: '',
     utdEmail: ''
   });
-  //const [resumeFile, setResumeFile] = useState(null);
-  //const [resumeUrl, setResumeUrl] = useState(null); // For viewing existing resume
   const [loading, setLoading] = useState({
     profile: false,
     resume: false,
@@ -47,14 +45,6 @@ function Information() {
         year: parsedUser.year || '',
         utdEmail: parsedUser.utdEmail || ''
       });
-
-      /*if (parsedUser._id) {
-        fetchResume(parsedUser._id).finally(() => {
-          setLoading(prev => ({ ...prev, initialLoad: false }));
-        });
-      } else {
-        setLoading(prev => ({ ...prev, initialLoad: false }));
-      }*/
     }
   }, [navigate]);
 
@@ -68,86 +58,8 @@ function Information() {
         year: state.user.year || '',
         utdEmail: state.user.utdEmail || ''
       });
-
-      /*load existing resume if available
-      if (state.user._id) {
-        console.log('Fetching resume for user:', state.user._id);
-        fetchResume(state.user._id);
-      }*/
     }
   }, [state]);
-
-  /* PURPOSE: Fetch Resume if it Exists in the Database
-  const fetchResume = async (userId) => {
-    try {
-      console.log(`Fetching resume for user ${userId}`);
-      const response = await fetch(`http://localhost:4000/user/${userId}/resume`);
-      
-      if (response.ok) {
-        console.warn(`Resume fetch failed with status: ${response.status}`);
-        return;
-      }
-
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      console.log('Resume URL created:', url);
-      setResumeUrl(url);
-    } catch (err) {
-      console.error('Error fetching resume:', err);
-    }
-  };*/
-
-  /* PURPOSE: If User Uploads Different Resume
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    if (file && file.size > 5 * 1024 * 1024) { // 5MB limit
-      const errorMsg = 'File size too large (max 5MB)';
-      console.warn(errorMsg);
-      setError(errorMsg);
-      return;
-    }
-    console.log('Selected file:', file.name, file.size);
-    setResumeFile(file);
-    setError(null);
-  }; */
-
-  /* PURPOSE: Updates Backend with New Resume
-  const uploadResume = async () => {
-    if (!resumeFile || !state?.user?._id) {
-      console.warn('No resume file or user ID for upload');
-      return;
-    }
-    
-    console.log('Starting resume upload');
-
-    try {
-      const formData = new FormData();
-      formData.append('resume', resumeFile);
-
-      const response = await fetch(
-        `http://localhost:4000/user/${state.user._id}/resume`,
-        { method: 'POST', body: formData }
-      );
-
-      if (!response.ok) {
-        const errorMsg = `Upload failed with status ${response.status}`;
-        console.error(errorMsg);
-        throw new Error(errorMsg);
-      }
-      
-      const result = await response.json();
-      console.log('Resume upload successful:', result);
-      await fetchResume(state.user._id); //refresh resume view
-      return result;
-    } catch (err) {
-      setError(err.message);
-      throw err;
-    } finally {
-      console.log('Resume upload completed');
-    }
-  }; */
 
   /* PURPOSE: Updates Backend with New Form Inputs */
   const handleChange = (e) => {
@@ -183,12 +95,6 @@ function Information() {
     setError(null);
 
     try {
-      /*upload resume first if new file was selected
-      if (resumeFile) {
-        console.log('New resume detected, uploading first');
-        await uploadResume();
-      }*/
-
       //update profile data
       console.log('Updating profile data:', formData);
       const response = await fetch(
@@ -229,8 +135,8 @@ function Information() {
   return (
     <div className="information-form">
     {error && <div className="error">{error}</div>}
-      <div style={styles.container}>
-      <div style={styles.card}>
+      <div className="information-container">
+      <div className="information-card">
 
         <form onSubmit={handleSubmit}>
           <h2>Update Your Profile!</h2>
@@ -279,31 +185,6 @@ function Information() {
             />
           </div>
 
-          {/*<div className="form-group">
-          <label>Resume</label>
-          {resumeUrl && (
-            <div className="resume-actions">
-              <a 
-                href={resumeUrl} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="resume-link"
-              >
-                View Current Resume
-              </a>
-              <span> or replace it </span>
-            </div>
-          )}
-          <input
-            type="file"
-            accept=".pdf,.doc,.docx"
-            onChange={handleFileChange}
-            disabled={loading.resume}
-          />
-          {loading.resume && <small>Uploading resume...</small>}
-          <small>Upload new PDF or Word document</small>
-        </div>*/}
-
           <button
             type='submit'
             disabled={loading.profile || loading.resume}
@@ -313,9 +194,10 @@ function Information() {
 
           <div>
             <button
-              style={styles.button}
-              onClick={() => navigate('/regularEvents', { state: { user } })}>
-              Events Page
+              className="information-button"
+              onClick={() => navigate('/profile', { state: { user } })}
+            >
+              Back to Profile
             </button>
           </div>
 
@@ -325,28 +207,5 @@ function Information() {
     </div>
   );
 }
-
-const styles = {
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-    background: '#f5f5f5',
-  },
-  card: {
-    background: '#fff',
-    padding: '20px',
-    borderRadius: '8px',
-    textAlign: 'center',
-    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-    width: '400px',
-    maxWidth: '90%'
-  },
-  button: {
-    marginTop: '10px',
-    width: '100%'
-  }
-};
 
 export default Information;

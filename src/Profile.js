@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import './Profile.css';
+import './css/Profile.css';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -115,6 +115,11 @@ const Profile = () => {
     <button
       onClick={() => navigate('/regularEvents', { state: { user } })}>
         Events Page
+    </button>
+
+    <button
+      onClick={() => navigate('/information', { state: { user } })}>
+        Update Your Profile
     </button>
   </div>
 

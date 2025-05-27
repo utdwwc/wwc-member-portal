@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Alert, Card, Spinner } from 'react-bootstrap';
+import './css/EventCheckIn.css';
 
 const EventCheckIn = () => {
   const { eventId } = useParams();
@@ -11,7 +12,7 @@ const EventCheckIn = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Check auth status with fetch
+  //check auth status with fetch
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -27,7 +28,7 @@ const EventCheckIn = () => {
     checkAuth();
   }, []);
 
-  // Load event data with fetch
+  //load event data with fetch
   useEffect(() => {
     const fetchEvent = async () => {
       try {
@@ -85,24 +86,30 @@ const EventCheckIn = () => {
   if (loading) return <Spinner animation="border" />;
 
   return (
-    <div className="container mt-5">
-      <Card className="text-center">
-        <Card.Header as="h2">Event Check-In</Card.Header>
-        <Card.Body>
-          {error && <Alert variant="danger">{error}</Alert>}
-          {success && <Alert variant="success">{success}</Alert>}
+    <div className="event-checkin-container">
+      <Card className="event-checkin-card">
+        <Card.Header className="event-checkin-card-header" as="h2">
+          Event Check-In
+        </Card.Header>
+        <Card.Body className="event-checkin-card-body">
+          {error && <Alert className="event-checkin-alert" variant="danger">{error}</Alert>}
+          {success && <Alert className="event-checkin-alert" variant="success">{success}</Alert>}
           
           {event ? (
             <>
-              <Card.Title>{event.title}</Card.Title>
-              <Card.Text>
-                {new Date(event.date).toLocaleString()}<br />
+              <Card.Title className="event-checkin-title">{event.title}</Card.Title>
+              <Card.Text className="event-checkin-details">
+                <div className="event-checkin-detail">
+                  {new Date(event.date).toLocaleString()}
+                </div>
+                <div className="event-checkin-detail">
                 {event.location}
+                </div>
               </Card.Text>
               
               {currentUser ? (
                 <Button 
-                  variant="primary" 
+                  className="event-checkin-button event-checkin-button-primary"
                   onClick={handleCheckIn}
                   disabled={loading || success}
                 >
@@ -110,7 +117,7 @@ const EventCheckIn = () => {
                 </Button>
               ) : (
                 <Button 
-                  variant="warning"
+                  className="event-checkin-button event-checkin-button-warning"
                   onClick={() => navigate('/login', { 
                     state: { from: `/events/${eventId}/check-in` } 
                   })}
@@ -120,7 +127,9 @@ const EventCheckIn = () => {
               )}
             </>
           ) : (
-            <Alert variant="warning">No event data available</Alert>
+            <Alert className="event-checkin-alert" variant="warning">
+              No event data available
+            </Alert>
           )}
         </Card.Body>
       </Card>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode'; // Using jwtDecode
 import { useNavigate } from 'react-router-dom';
-import './App.css';
+import './css/App.css';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -74,7 +74,7 @@ function App() {
             <p>Email: {user.utdEmail}</p>
             <button
               style={styles.button}
-              onClick={() => navigate('/information', {
+              onClick={() => navigate('/regularevents', {
                 state: {
                   user: {
                     _id: user._id,
@@ -86,7 +86,7 @@ function App() {
                 }
               })}
             >
-              Go to Information Page
+              Events Page
             </button>
             <button style={styles.button} onClick={handleLogout}>
               Sign Out

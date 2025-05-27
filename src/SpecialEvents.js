@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import './App.css';
+import './css/SpecialEvents.css';
 
 const EventApplicationForm = () => {
     const navigate = useNavigate(); // Helps move between pages dynamically
@@ -110,111 +110,111 @@ const EventApplicationForm = () => {
     };
 
     return (
-        <div style={styles.container}>
+        <div className="form-container">
             <h2>Speed Mentoring Application</h2>
             {showSuccessMessage && (
-                <div style={styles.successMessage}>{submissionMessage}</div>
+                <div className="form-success-message">{submissionMessage}</div>
             )}
             <form onSubmit={handleSubmit}>
-                <div style={styles.formGroup}>
+                <div className="form-group">
                     <label>Name:</label>
                     <input
                         type="text"
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
-                        style={styles.input}
+                        className="form-input"
                         placeholder="Jane Doe"
                     />
-                    {errors.name && <p style={styles.error}>{errors.name}</p>}
+                    {errors.name && <p className="form-error">{errors.name}</p>}
                 </div>
 
-                <div style={styles.formGroup}>
+                <div className="form-group">
                     <label>Pronouns:</label>
                     <input
                         type="text"
                         name="pronouns"
                         value={formData.pronouns}
                         onChange={handleChange}
-                        style={styles.input}
+                        className="form-input"
                         placeholder="e.g., she/her, they/them"
                     />
-                    {errors.pronouns && <p style={styles.error}>{errors.pronouns}</p>}
+                    {errors.pronouns && <p className="form-error">{errors.pronouns}</p>}
                 </div>
 
-                <div style={styles.formGroup}>
+                <div className="form-group">
                     <label>School Email:</label>
                     <input
                         type="email"
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                        style={styles.input}
+                        className="form-input"
                         placeholder="e.g., xxx123456@utdallas.edu"
                     />
-                    {errors.email && <p style={styles.error}>{errors.email}</p>}
+                    {errors.email && <p className="form-error">{errors.email}</p>}
                 </div>
 
-                <div style={styles.formGroup}>
+                <div className="form-group">
                     <label>Year:</label>
                     <input
                         type="text"
                         name="year"
                         value={formData.year}
                         onChange={handleChange}
-                        style={styles.input}
+                        className="form-input"
                         placeholder="e.g., Freshman, Sophomore"
                     />
-                    {errors.year && <p style={styles.error}>{errors.year}</p>}
+                    {errors.year && <p className="form-error">{errors.year}</p>}
                 </div>
 
-                <div style={styles.formGroup}>
+                <div className="form-group">
                     <label>Expected Graduation:</label>
                     <input
                         type="text"
                         name="grad"
                         value={formData.grad}
                         onChange={handleChange}
-                        style={styles.input}
+                        className="form-input"
                         placeholder="e.g., Spring 2026, Fall 2027"
                     />
-                    {errors.grad && <p style={styles.error}>{errors.grad}</p>}
+                    {errors.grad && <p className="form-error">{errors.grad}</p>}
                 </div>
 
-                <div style={styles.formGroup}>
+                <div className="form-group">
                     <label>Have you attended WWC Events before? Which was your favorite and why? If you have not attended any, put "N/A":</label>
                     <textarea
                         name="history"
                         value={formData.history}
                         onChange={handleChange}
-                        style={styles.textarea}
+                        className="form-textarea"
                         placeholder="I have attended xyz and I liked..."
                     />
-                    {errors.history && <p style={styles.error}>{errors.history}</p>}
+                    {errors.history && <p className="form-error">{errors.history}</p>}
                 </div>
 
-                <div style={styles.formGroup}>
+                <div className="form-group">
                     <label>What do you hope to gain from Speed Mentoring?</label>
                     <textarea
                         name="reason"
                         value={formData.reason}
                         onChange={handleChange}
-                        style={styles.textarea}
+                        className="form-textarea"
                         placeholder="I hope to gain xyz..."
                     />
-                    {errors.reason && <p style={styles.error}>{errors.reason}</p>}
+                    {errors.reason && <p className="form-error">{errors.reason}</p>}
                 </div>
 
                 <button
                     type="submit"
-                    style={styles.button}
+                    className="form-button"
                     disabled={isSubmitting}
                 >
                     {isSubmitting ? 'Submitting...' : 'Submit Application'}
                 </button>
 
                 <button
-                    style={styles.button}
+                    className="form-button"
                     onClick={() => navigate('/regularEvents', {
                         state: {
                             UserID: userId,
@@ -228,59 +228,6 @@ const EventApplicationForm = () => {
             </form>
         </div>
     );
-};
-
-// Inline styles for basic styling
-const styles = {
-    container: {
-        fontFamily: 'Arial, sans-serif',
-        margin: '20px auto',
-        padding: '20px',
-        border: '1px solid #ccc',
-        borderRadius: '5px',
-        maxWidth: '500px',
-    },
-    formGroup: {
-        marginBottom: '15px',
-    },
-    input: {
-        width: '100%',
-        padding: '10px',
-        marginTop: '5px',
-        border: '1px solid #ccc',
-        borderRadius: '4px',
-    },
-    textarea: {
-        width: '100%',
-        padding: '10px',
-        marginTop: '5px',
-        border: '1px solid #ccc',
-        borderRadius: '4px',
-        height: '100px',
-    },
-    button: {
-        backgroundColor: '#28a745',
-        color: 'white',
-        padding: '10px 20px',
-        border: 'none',
-        borderRadius: '5px',
-        cursor: 'pointer',
-        fontSize: '16px',
-        margin: '0 10px',
-    },
-    successMessage: {
-        backgroundColor: '#d4edda',
-        color: '#155724',
-        padding: '10px',
-        margin: '10px 0',
-        border: '1px solid #c3e6cb',
-        borderRadius: '4px',
-        textAlign: 'center',
-    },
-    error: {
-        color: 'red',
-        fontSize: '12px',
-    },
 };
 
 export default EventApplicationForm;
