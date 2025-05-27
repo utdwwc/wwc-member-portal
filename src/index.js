@@ -21,12 +21,12 @@ root.render(
       <Routes>
           <Route path="/" element={<Homepage />} />
           <Route path="/login" element={<App />} />
-          <Route path="/information" element={<Information />} />
           <Route path="/regularEvents" element={<RegularEventsPage />} />
           <Route path="/eventapplications" element={<EventApplicationForm />} />
           <Route path="/eventCheckIn" element = {<EventCheckIn/>} />
-          <Route path="/admin" element = {<Admin/>} />
           <Route path="/profile" element = {<Profile/>} />
+          <Route path="/information" element={<Information />} />
+          <Route path="/admin" element = {<Admin/>} />
         </Routes>
       </Router>
     </GoogleOAuthProvider>

@@ -120,16 +120,6 @@
       gap: 30px;
       padding-top: 10%;
       margin-top: 150px;
-  
-      /* old:
-      display: flex;
-      position: absolute;
-      justify-content: center;
-      align-items: center;
-      grid-template-columns: repeat(3, 1fr); /* 3 columns
-      grid-template-rows: repeat(3, 1fr);    /* 3 rows
-      gap: 30%; 
-      padding-top: 10%;*/
     }
   
     .gridContainer2 {

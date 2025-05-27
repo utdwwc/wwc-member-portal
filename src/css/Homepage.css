@@ -32,7 +32,7 @@
 
   /* ===== NAVBAR LOGIN BUTTON ===== */
 .navbar__login-button {
-    background-color: #4285f4; /* Google blue */
+    background-color: #4285f4; /* google blue */
     color: black;
     padding: 0.5rem 1rem;
     border-radius: 4px;
@@ -53,7 +53,7 @@
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   }
   
-  /* If you want to add a Google icon */
+  /* Google icon */
   .navbar__login-button::before {
     content: '';
     display: inline-block;
@@ -100,9 +100,11 @@
   /* Values Section */
   .values__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    grid-template-rows: repeat(2, 1fr);    /* 2 rows (equal height) */
     gap: 2rem;
     width: 100%;
+    aspect-ratio: 1 / 1; /* optional: makes the entire grid square */
   }
   
   .value-card {
@@ -110,6 +112,22 @@
     border-radius: 8px;
     background: white;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    
+    /* Ensures each card is a square */
+    aspect-ratio: 1 / 1; /* width = height */
+    width: 100%;        /* fills grid cell width */
+    height: 100%;       /* fills grid cell height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* centers content vertically */
+    align-items: center;     /* centers content horizontally */
+  }
+
+  @media (max-width: 768px) {
+    .values__grid {
+      grid-template-columns: 1fr; /* single column on mobile */
+      aspect-ratio: auto;         /* disable square grid on small screens */
+    }
   }
   
   /* Team Section */

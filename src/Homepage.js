@@ -137,7 +137,7 @@ const Homepage = () => {
                 <div className="navbar__logo">Women Who Compute</div>
                 <div className="navbar__links">
                     <button onClick={() => scrollTo('header')}>Home</button>
-                    <button onClick={() => scrollTo('values')}>Values</button>
+                    <button onClick={() => scrollTo('values')}>What We Offer</button>
                     <button onClick={() => scrollTo('team')}>Team</button>
                     <button onClick={() => scrollTo('partners')}>Partners</button>
                     <button 
@@ -152,26 +152,30 @@ const Homepage = () => {
             {/* --- HEADER --- */}
             <section id="header" className="section section--header">
                 <div className="header__content">
-                    <h1>Welcome to WWC!</h1>
-                    <p>Connecting students with industry professionals</p>
+                    <h1>Empowering the Future of Tech</h1>
+                    <p>At Women Who Compute, we are dedicated to the empowerment and advancement of women in engineering and computer science.</p>
                 </div>
             </section>
 
             {/* --- VALUES --- */}
             <section id="values" className="section section--values">
-                <h2>Our Mission & Values</h2>
+                <h2>What We Offer</h2>
                 <div className="values__grid">
                     <div className="value-card">
-                        <h3>Community</h3>
-                        <p>Building strong connections between members</p>
+                        <h3>Speed Mentoring</h3>
+                        <p>Join our networking event armed with your resume, blazer, and elevator pitch to engage with Dallas' top engineers and recruiters for securing high-profile internships and jobs.</p>
                     </div>
                     <div className="value-card">
-                        <h3>Growth</h3>
-                        <p>Helping members develop professional skills</p>
+                        <h3>Technical Workshops</h3>
+                        <p>Through our technical workshops, led by industry engineers, we enhance students' programming skills for better career prospects.</p>
                     </div>
                     <div className="value-card">
-                        <h3>Innovation</h3>
-                        <p>Encouraging creative problem solving</p>
+                        <h3>Career Talks</h3>
+                        <p>Explore the corporate engineering world through our career talks and the nature of work in diverse companies.</p>
+                    </div>
+                    <div className="value-card">
+                        <h3>WeHack</h3>
+                        <p>WeHack at UTD: Empowering underrepresented tech innovators to build skills and solve complex problems through our women and non-binary focused hackathon.</p>
                     </div>
                 </div>
             </section>
