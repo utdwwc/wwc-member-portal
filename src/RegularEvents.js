@@ -21,7 +21,6 @@ const RegularEventsPage = () => {
     const [currentEvent, setCurrentEvent] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    
     /* PURPOSE: Retrieves list of existing events from backend */
     const fetchEvents = async (targetUser) => {
         try {
@@ -52,7 +51,6 @@ const RegularEventsPage = () => {
             setLoading(false);
           }
     };
-
 
     /* PURPOSE: Get User Data from location OR localStorage */
     useEffect(() => {
@@ -87,13 +85,14 @@ const RegularEventsPage = () => {
           loadUserData();
     }, [navigate]);
 
+    /* PURPOSE: Shows Events if User is Authenticated */
     useEffect(() => {
         if (user._id) {
           fetchEvents(user); //pass the current user
         }
-      }, [user._id]);
+    }, [user._id]);
     
-    /* PURPOSE: RSVP handler with user verification */
+    /* PURPOSE: RSVP Handler with User Verification */
     const handleCheckboxChange = async (eventId) => {
         console.group(`RSVP update for event ${eventId}`);
         console.log("Current user state:", user);
@@ -175,7 +174,7 @@ const RegularEventsPage = () => {
             console.groupEnd();
         }
     };
-
+  
     /* PURPOSE: Generates a Google Calendar Event link */
     const handleAddToCalendar = () => {
         if (!currentEvent) return;
@@ -195,6 +194,7 @@ const RegularEventsPage = () => {
         setIsModalOpen(false);
     };
 
+    /* PURPOSE: Only Allows WWC Email into Admin Page */
     const handleClick = () => {
         if (user?.email === "utdwwc@gmail.com" ||
             user?.utdEmail === "utdwwc@gmail.com") {
@@ -208,12 +208,13 @@ const RegularEventsPage = () => {
         }
     };
 
-    // Sort events by date in descending order (newest first)
+    /* PURPOSE: Sorts Events by Date in Descending Order (Newest First) */
     const sortedEvents = [...events].sort((a, b) => new Date(b.date) - new Date(a.date));
+
 
     return (
         <div className="regular-events">
-            <h1 className="page-title">Events Page</h1>
+            <h1 className="page-title">Women Who Compute Events</h1>
             
             {/* Navigation buttons (moved outside event mapping) */}
             <div className="event-container">
@@ -265,7 +266,7 @@ const RegularEventsPage = () => {
                     Admin Dashboard
                 </button>
             </div>
-
+            
             {sortedEvents.map((event) => (
                 <div key={event._id} className="event-container">
                     <h1 className="event-title">Event: {event.title}</h1>
@@ -274,6 +275,7 @@ const RegularEventsPage = () => {
                     <p><strong>Location:</strong> {event.location}</p>
                     
                     {event.appReq ? (
+                        <>
                         <button 
                             onClick={() => navigate('/eventapplications', { 
                                 state: { 
@@ -284,10 +286,26 @@ const RegularEventsPage = () => {
                                     email: user.email,
                                 }
                             })}
-                        className="event-title"
+                        className="event-button event-button--primary"
                       >
-                        Apply for Event
+                        Apply!
                       </button>
+
+                      <button 
+                            onClick={() => navigate('/eventcheckin', { 
+                                state: { 
+                                    eventId: event._id,
+                                    eventTitle: event.title,
+                                    userId: user._id,
+                                    name: user.name,
+                                    email: user.email,
+                                }
+                            })}
+                        className="event-button event-button--primary"
+                      >
+                        Check-In!
+                      </button>
+                      </>
                     ) : (
                         <>
                             <label className="event-label">
@@ -300,6 +318,21 @@ const RegularEventsPage = () => {
                                 RSVP
                             </label>
                             {rsvpStatus[event._id] && <p className="confirmation-message">You have RSVPed!</p>}
+
+                            <button 
+                                onClick={() => navigate('/eventcheckin', { 
+                                    state: { 
+                                        eventId: event._id,
+                                        eventTitle: event.title,
+                                        userId: user._id,
+                                        name: user.name,
+                                        email: user.email,
+                                    }
+                                })}
+                                className="event-button event-button--primary"
+                            >
+                                Check-In!
+                            </button>
                         </>
                     )}
                     

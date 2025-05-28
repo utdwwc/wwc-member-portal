@@ -66,6 +66,10 @@
     border: none;
     transition: all 0.2s ease;
   }
+
+  .event-button:hover {
+    background-color: #2980b9;
+  }
   
   .event-button--primary {
     background-color: #3498db;
@@ -93,6 +97,33 @@
   .event-button--success:hover {
     background-color: #219653;
   }
+
+  .event-button--checkin {
+    background-color: #4caf50;
+    margin-top: 15px;
+}
+
+.status-message {
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 15px;
+    font-size: 0.9rem;
+}
+
+.status-message.active {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-message.inactive {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.status-message.upcoming {
+    background-color: #e3f2fd;
+    color: #1565c0;
+}
   
   /* ===== STATUS MESSAGES ===== */
   .confirmation-message {
