@@ -5,17 +5,16 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  backdrop-filter: blur(4px);
 }
 
 /* ===== MODAL CONTENT - SQUARE FORMAT ===== */
 .modal-content {
-  background: #fcfcfc;
+  background: #6c497c;
   padding: 2.5rem;
   border-radius: 12px;
   text-align: center;
@@ -29,13 +28,13 @@
 
 /* ===== TEXT STYLES ===== */
 .modal-content h2 {
-  color: #a2bbd4;
+  color: #ffffff;
   margin-bottom: 1.5rem;
   font-size: 1.8rem;
 }
 
 .modal-content p {
-  color: #a2bbd4; /* Slightly lighter text color */
+  color: #ffffff; /* Slightly lighter text color */
   font-size: 1.1rem;
   line-height: 1.6;
   margin-bottom: 2rem;

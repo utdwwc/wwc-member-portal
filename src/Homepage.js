@@ -124,10 +124,20 @@ const Homepage = () => {
 
     /* PARTNERS DATA */
     const partners = [
-        { name: 'TechCorp', logo: '#' },
-        { name: 'DesignCo', logo: '#' },
-        { name: 'Future Labs', logo: '#' },
-        { name: 'Innovate Inc', logo: '#' }
+        { name: 'JPMorgan Chase', logo: '#' },
+        { name: 'AT&T', logo: '#' },
+        { name: 'American Airlines', logo: '#' },
+        { name: 'State Farm', logo: '#' }, 
+        { name: 'Core Logic', logo: '#' },
+        { name: 'Cisco', logo: '#' },
+        { name: 'McAfee', logo: '#' },
+        { name: 'Allstate', logo: '#' },
+        { name: 'Intuit', logo: '#' },
+        { name: 'Celanese', logo: '#' },
+        { name: 'Fannie Mae', logo: '#' },
+        { name: 'USAA', logo: '#' },
+        { name: 'Blue Yonder', logo: '#' },
+        { name: 'CBRE', logo: '#' }
     ];
 
     return (

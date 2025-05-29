@@ -174,6 +174,122 @@ const RegularEventsPage = () => {
             console.groupEnd();
         }
     };
+
+    /* TESTING: Determining if Event has Passed Already */
+    const isEventPassed = (eventDate) => {
+        const now = new Date();
+        const eventDateTime = new Date(eventDate);
+        
+        // Set to 7:45 PM (end of check-in period) on event day
+        eventDateTime.setHours(19, 45, 0, 0); // 19:45 = 7:45 PM
+        return now > eventDateTime;
+    };
+
+    /* TESTING: Button Rendering */
+    const getEventButtons = (event, user, navigate, rsvpStatus, handleCheckboxChange) => {
+        if (isEventPassed(event.date)) {
+            return <p className="event-passed-message">Event has passed</p>;
+        }
+    
+        const eventDate = new Date(event.date);
+        const now = new Date();
+        
+        // Check if the event is today
+        const isEventToday = 
+            eventDate.getDate() === now.getDate() &&
+            eventDate.getMonth() === now.getMonth() &&
+            eventDate.getFullYear() === now.getFullYear();
+        
+        // Check if current time is between 6:45PM and 7:45PM on event day
+        const isCheckInPeriod = isEventToday && 
+            now.getHours() >= 18 && now.getMinutes() >= 45 &&
+            now.getHours() < 19;
+    
+        // During check-in period, only show Check-In button
+        if (isCheckInPeriod) {
+            return (
+                <button 
+                    onClick={() => navigate('/eventcheckin', { 
+                        state: { 
+                            eventId: event._id,
+                            eventTitle: event.title,
+                            userId: user._id,
+                            name: user.name,
+                            email: user.email,
+                        }
+                    })}
+                    className="event-button event-button--primary"
+                >
+                    Check-In!
+                </button>
+            );
+        }
+    
+        // Show normal buttons for future events
+        if (event.appReq) {
+            return (
+                <>
+                    <button 
+                        onClick={() => navigate('/eventapplications', { 
+                            state: { 
+                                eventId: event._id,
+                                eventTitle: event.title,
+                                userId: user._id,
+                                name: user.name,
+                                email: user.email,
+                            }
+                        })}
+                        className="event-button event-button--primary"
+                    >
+                        Apply!
+                    </button>
+                    <button 
+                        onClick={() => navigate('/eventcheckin', { 
+                            state: { 
+                                eventId: event._id,
+                                eventTitle: event.title,
+                                userId: user._id,
+                                name: user.name,
+                                email: user.email,
+                            }
+                        })}
+                        className="event-button event-button--primary"
+                    >
+                        Check-In!
+                    </button>
+                </>
+            );
+        }
+    
+        return (
+            <>
+                <label className="event-label">
+                    <input 
+                        type="checkbox" 
+                        checked={rsvpStatus[event._id] || false} 
+                        onChange={() => handleCheckboxChange(event._id)} 
+                        className="event-checkbox" 
+                    />
+                    RSVP
+                </label>
+                {rsvpStatus[event._id] && <p className="confirmation-message">You have RSVPed!</p>}
+                <button 
+                    onClick={() => navigate('/eventcheckin', { 
+                        state: { 
+                            eventId: event._id,
+                            eventTitle: event.title,
+                            userId: user._id,
+                            name: user.name,
+                            email: user.email,
+                        }
+                    })}
+                    className="event-button event-button--primary"
+                >
+                    Check-In!
+                </button>
+            </>
+        );
+    };
   
     /* PURPOSE: Generates a Google Calendar Event link */
     const handleAddToCalendar = () => {
@@ -268,6 +384,23 @@ const RegularEventsPage = () => {
             </div>
             
             {sortedEvents.map((event) => (
+            <div key={event._id} className="event-container">
+                <h1 className="event-title">Event: {event.title}</h1>
+                <p><strong>Description:</strong> {event.description}</p>
+                <p><strong>Date:</strong> {new Date(event.date).toLocaleDateString()}</p>
+                <p><strong>Location:</strong> {event.location}</p>
+                
+                {getEventButtons(event, user, navigate, rsvpStatus, handleCheckboxChange)}
+                
+                <Modal 
+                    isOpen={isModalOpen} 
+                    onClose={() => setIsModalOpen(false)} 
+                    onAddToCalendar={handleAddToCalendar} 
+                    event={currentEvent}
+                />
+            </div>
+        ))}
+            {/*sortedEvents.map((event) => (
                 <div key={event._id} className="event-container">
                     <h1 className="event-title">Event: {event.title}</h1>
                     <p><strong>Description:</strong> {event.description}</p>
@@ -343,7 +476,8 @@ const RegularEventsPage = () => {
                         event={currentEvent}
                     />
                 </div>
-            ))}
+            ))*/}
+
         </div>
     );
 };
