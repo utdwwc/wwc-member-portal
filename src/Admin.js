@@ -229,7 +229,6 @@ const Admin = () => {
                 <input type="date" name="date" value={eventData.date} onChange={handleEventChange} required />
                 <input type="text" name="location" placeholder="Event Location" value={eventData.location} onChange={handleEventChange} required />
                 <input type="number" name="points" placeholder="Points Value" value={eventData.points || ''} onChange={handleEventChange} min="0" step="1" required />
-                {/*<input type="number" name="rsvpGoal" placeholder="RSVP Goal" value={eventData.rsvpGoal || ''} onChange={handleEventChange} min="0" step="1" required />*/}
                 <label style={{ display: "flex", alignItems: "center", gap: "5px" }}>
                   <input type="checkbox" checked={eventData.appReq} onChange={(e) => setEventData({...eventData, appReq: e.target.checked})}/>
                   Speed Mentoring Event 

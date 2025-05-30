@@ -5,7 +5,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0);
+  background-color: #6c497c;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -14,7 +14,7 @@
 
 /* ===== MODAL CONTENT - SQUARE FORMAT ===== */
 .modal-content {
-  background: #6c497c;
+  background-color: #6c497c;
   padding: 2.5rem;
   border-radius: 12px;
   text-align: center;

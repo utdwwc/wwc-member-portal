@@ -176,48 +176,53 @@ const RegularEventsPage = () => {
         }
     };
 
-    /* TESTING: Determining if Event has Passed Already */
-    const isEventPassed = (eventDate) => {
-        const now = new Date();
-        const eventDateTime = new Date(eventDate);
-
-        // Convert to CST (America/Chicago)
-        const nowCST = toZonedTime(now, 'America/Chicago');
-        const eventTimeCST = toZonedTime(eventDateTime, 'America/Chicago');
-  
-        // Set to 7:45 PM CST (end of check-in period)
-        const checkInEnd = new Date(eventTimeCST);
-        checkInEnd.setHours(19, 45, 0, 0); // 7:45 PM CST
-  
-        return nowCST > checkInEnd;
-    };
-
     /* TESTING: Button Rendering */
-    const getEventButtons = (event, user, navigate, rsvpStatus, handleCheckboxChange) => {
-        if (isEventPassed(event.date)) {
-            return <p className="event-passed-message">Event has passed</p>;
-        }
-    
-        const eventDate = new Date(event.date);
+    const getEventButtons = (event, user, navigate, rsvpStatus, handleCheckboxChange) => {        
         const now = new Date();
-
-        // Convert to CST
+        const eventDate = new Date(event.date);
+        
+        //convert to CST
         const nowCST = toZonedTime(now, 'America/Chicago');
         const eventDateCST = toZonedTime(eventDate, 'America/Chicago');
+
+        //TEMPORARILY TESTING: set check-in period end time (10:00PM CST)
+        const checkInEnd = new Date(eventDateCST);
+        checkInEnd.setHours(22, 0, 0, 0); //10:00PM CST
+
+        // DEBUG: Critical time values
+    console.log('TIME DEBUG:', {
+        currentTime: nowCST.toString(),
+        eventDate: eventDateCST.toString(),
+        checkInEnd: checkInEnd.toString(),
+        isSameDay: (
+            eventDateCST.getDate() === nowCST.getDate() &&
+            eventDateCST.getMonth() === nowCST.getMonth() &&
+            eventDateCST.getFullYear() === nowCST.getFullYear()
+        ),
+        isFuture: nowCST < eventDateCST,
+        isPast: nowCST > checkInEnd
+    });
         
-        // Check if the event is today
+        //check if event is in the past (after 8:00PM CST on event day)
+        if (nowCST > checkInEnd) {
+            return <p className="event-passed-message">Event has passed</p>;
+        }
+        
+        //check if event is today in CST
         const isEventToday = 
             eventDateCST.getDate() === nowCST.getDate() &&
             eventDateCST.getMonth() === nowCST.getMonth() &&
             eventDateCST.getFullYear() === nowCST.getFullYear();
         
-        // Check if current time is between 6:45PM and 7:45PM on event day
-        const isCheckInPeriod = isEventToday && 
-            nowCST.getHours() >= 18 &&
-            nowCST.getMinutes() >= 45 &&
-            nowCST.getHours() < 19;
-    
-        // During check-in period, only show Check-In button
+        //check if current time is between 6:45PM and 8:00PM CST on event day
+        // Check if current time is between 6:45PM and 8:00PM CST on event day
+        const isCheckInPeriod = isEventToday && (
+            (nowCST.getHours() === 18 && nowCST.getMinutes() >= 45) || // 6:45 PM - 6:59PM
+            (nowCST.getHours() >= 19 && nowCST.getHours() <= 21) ||    // 7:00-9:59pm
+            (nowCST.getHours() === 22 && nowCST.getMinutes() === 0)    // 10:00 PM exactly
+        );
+
+        // ====== 1. during check-in period (ONLY show check-In) ======
         if (isCheckInPeriod) {
             return (
                 <button 
@@ -237,10 +242,10 @@ const RegularEventsPage = () => {
             );
         }
     
-        // Show normal buttons for future events
-        if (event.appReq) {
-            return (
-                <>
+        // ====== 2. if event is in the future (NOT today) ======
+        if (!isEventToday && nowCST < eventDateCST) {
+            if (event.appReq) {
+                return (
                     <button 
                         onClick={() => navigate('/eventapplications', { 
                             state: { 
@@ -255,8 +260,31 @@ const RegularEventsPage = () => {
                     >
                         Apply!
                     </button>
+                );
+            } else {
+                return (
+                    <>
+                        <label className="event-label">
+                            <input 
+                                type="checkbox" 
+                                checked={rsvpStatus[event._id] || false} 
+                                onChange={() => handleCheckboxChange(event._id)} 
+                                className="event-checkbox" 
+                            />
+                            RSVP
+                        </label>
+                        {rsvpStatus[event._id] && <p className="confirmation-message">You have RSVPed!</p>}
+                    </>
+                );
+            }
+        }
+    
+        // ====== 3. if it's event day but NOT check-in period (before 6:45 PM) ======
+        if (isEventToday && !isCheckInPeriod) {
+            if (event.appReq) {
+                return (
                     <button 
-                        onClick={() => navigate('/eventcheckin', { 
+                        onClick={() => navigate('/eventapplications', { 
                             state: { 
                                 eventId: event._id,
                                 eventTitle: event.title,
@@ -267,40 +295,29 @@ const RegularEventsPage = () => {
                         })}
                         className="event-button event-button--primary"
                     >
-                        Check-In!
+                        Apply!
                     </button>
-                </>
-            );
+                );
+            } else {
+                return (
+                    <>
+                        <label className="event-label">
+                            <input 
+                                type="checkbox" 
+                                checked={rsvpStatus[event._id] || false} 
+                                onChange={() => handleCheckboxChange(event._id)} 
+                                className="event-checkbox" 
+                            />
+                            RSVP
+                        </label>
+                        {rsvpStatus[event._id] && <p className="confirmation-message">You have RSVPed!</p>}
+                    </>
+                );
+            }
         }
     
-        return (
-            <>
-                <label className="event-label">
-                    <input 
-                        type="checkbox" 
-                        checked={rsvpStatus[event._id] || false} 
-                        onChange={() => handleCheckboxChange(event._id)} 
-                        className="event-checkbox" 
-                    />
-                    RSVP
-                </label>
-                {rsvpStatus[event._id] && <p className="confirmation-message">You have RSVPed!</p>}
-                <button 
-                    onClick={() => navigate('/eventcheckin', { 
-                        state: { 
-                            eventId: event._id,
-                            eventTitle: event.title,
-                            userId: user._id,
-                            name: user.name,
-                            email: user.email,
-                        }
-                    })}
-                    className="event-button event-button--primary"
-                >
-                    Check-In!
-                </button>
-            </>
-        );
+        // Default fallback (shouldn't reach here)
+        return null;
     };
   
     /* PURPOSE: Generates a Google Calendar Event link */
@@ -399,7 +416,7 @@ const RegularEventsPage = () => {
             <div key={event._id} className="event-container">
                 <h1 className="event-title">Event: {event.title}</h1>
                 <p><strong>Description:</strong> {event.description}</p>
-                <p><strong>Date:</strong> {new Date(event.date).toLocaleDateString()}</p>
+                <p><strong>Date:</strong> {`${String(new Date(event.date).getUTCMonth()).padStart(2, '0')}/${String(new Date(event.date).getUTCDate()).padStart(2, '0')}/${new Date(event.date).getUTCFullYear()}`}</p>
                 <p><strong>Location:</strong> {event.location}</p>
                 
                 {getEventButtons(event, user, navigate, rsvpStatus, handleCheckboxChange)}
