@@ -35,7 +35,7 @@
 
 /* Buttons */
 .form-button {
-    background-color: #28a745;
+    background-color: #6c497c;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -47,7 +47,7 @@
 }
 
 .form-button:hover {
-    background-color: #218838; /* Darker shade on hover */
+    background-color: #8e5fa3;
 }
 
 /* Messages */

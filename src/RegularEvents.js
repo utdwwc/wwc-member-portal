@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Modal from './Modal'; //adjust the path to your modal component
 import { jwtDecode } from 'jwt-decode';
 import './css/RegularEvents.css';
+import { toZonedTime } from 'date-fns-tz';
 
 const RegularEventsPage = () => {
     const navigate = useNavigate(); //helps move between pages dynamically
@@ -179,10 +180,16 @@ const RegularEventsPage = () => {
     const isEventPassed = (eventDate) => {
         const now = new Date();
         const eventDateTime = new Date(eventDate);
-        
-        // Set to 7:45 PM (end of check-in period) on event day
-        eventDateTime.setHours(19, 45, 0, 0); // 19:45 = 7:45 PM
-        return now > eventDateTime;
+
+        // Convert to CST (America/Chicago)
+        const nowCST = toZonedTime(now, 'America/Chicago');
+        const eventTimeCST = toZonedTime(eventDateTime, 'America/Chicago');
+  
+        // Set to 7:45 PM CST (end of check-in period)
+        const checkInEnd = new Date(eventTimeCST);
+        checkInEnd.setHours(19, 45, 0, 0); // 7:45 PM CST
+  
+        return nowCST > checkInEnd;
     };
 
     /* TESTING: Button Rendering */
@@ -193,17 +200,22 @@ const RegularEventsPage = () => {
     
         const eventDate = new Date(event.date);
         const now = new Date();
+
+        // Convert to CST
+        const nowCST = toZonedTime(now, 'America/Chicago');
+        const eventDateCST = toZonedTime(eventDate, 'America/Chicago');
         
         // Check if the event is today
         const isEventToday = 
-            eventDate.getDate() === now.getDate() &&
-            eventDate.getMonth() === now.getMonth() &&
-            eventDate.getFullYear() === now.getFullYear();
+            eventDateCST.getDate() === nowCST.getDate() &&
+            eventDateCST.getMonth() === nowCST.getMonth() &&
+            eventDateCST.getFullYear() === nowCST.getFullYear();
         
         // Check if current time is between 6:45PM and 7:45PM on event day
         const isCheckInPeriod = isEventToday && 
-            now.getHours() >= 18 && now.getMinutes() >= 45 &&
-            now.getHours() < 19;
+            nowCST.getHours() >= 18 &&
+            nowCST.getMinutes() >= 45 &&
+            nowCST.getHours() < 19;
     
         // During check-in period, only show Check-In button
         if (isCheckInPeriod) {

@@ -528,7 +528,8 @@ app.get('/api/events/attendance', async (req, res) => {
 
 /*  <------------  EVENTS TABLE  ------------>  */
 
-/* GORL idk why but i have to comment these out/back in all the time */
+/* GORL idk why but i have to comment
+these out/back in all the time */
 app.listen(4000, () => {
   console.log('Server is running on port 4000');
 });

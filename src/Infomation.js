@@ -186,10 +186,11 @@ function Information() {
           </div>
 
           <button
+            className="information-button"
             type='submit'
             disabled={loading.profile || loading.resume}
           >
-            Save Profile
+            Save
           </button>
 
           <div>

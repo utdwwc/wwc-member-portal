@@ -36,7 +36,7 @@
     margin-bottom: 15px;
     font-size: 1.5rem;
     font-weight: 500;
-    border-bottom: 2px solid #3498db;
+    border-bottom: 2px solid #6c497c;
     padding-bottom: 8px;
   }
   
@@ -53,7 +53,7 @@
     margin-right: 10px;
     width: 18px;
     height: 18px;
-    accent-color: #3498db;
+    accent-color: #6c497c;
   }
   
   /* ===== BUTTONS ===== */
@@ -68,16 +68,16 @@
   }
 
   .event-button:hover {
-    background-color: #2980b9;
+    background-color: #8e5fa3;
   }
   
   .event-button--primary {
-    background-color: #3498db;
+    background-color: #6c497c;
     color: white;
   }
   
   .event-button--primary:hover {
-    background-color: #2980b9;
+    background-color: #8e5fa3;
   }
   
   .event-button--secondary {

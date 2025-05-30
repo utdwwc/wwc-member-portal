@@ -365,6 +365,7 @@ const Admin = () => {
                                 <td>{event.applicationCount}</td>
                                 <td>
                                     <Button 
+                                        className="details-button"
                                         variant="info"
                                         onClick={() => toggleAppUsers(event._id)}
                                     >
@@ -426,6 +427,7 @@ const Admin = () => {
                                     <td>{user.points || 0}</td>
                                     <td>
                                         <Button 
+                                            className="details-button"
                                             variant="info"
                                             onClick={() => toggleUserDetails(user._id)}
                                         >
