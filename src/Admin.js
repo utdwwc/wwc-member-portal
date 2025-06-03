@@ -73,9 +73,10 @@ const Admin = () => {
 
     /* PURPOSE: Retrieves List of Registered Users from Backend */
     const fetchUsers = async () => {
+        console.log('user list:', users)
         setErrorMessage('');
         
-        try { //TESTING: simplified endpint without token (for now)
+        try { //simplified endpint without token (for now)
             const response = await fetch('http://localhost:4000/users');
             const data = await response.json();
             setUsers(data);
@@ -441,16 +442,25 @@ const Admin = () => {
                                             <Table className="admin-table">
                                                 <tbody>
                                                     <tr>
+                                                        <td><strong>Events Attended:</strong></td>
+                                                          <td>
+                                                            {user.attendedEvents && user.attendedEvents.length > 0 ? (
+                                                            <>
+                                                              <span>Total: {user.attendedEvents.length}</span>
+                                                              <ul style={{ paddingLeft: '1.2rem', margin: '0.5rem 0' }}>
+                                                                {user.attendedEvents.map((event, index) => (
+                                                                  <li key={index}>{event.title || 'Untitled Event'}</li>
+                                                                ))}
+                                                              </ul>
+                                                            </>
+                                                          ) : (
+                                                            "None"
+                                                          )}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
                                                         <td><strong>User ID:</strong></td>
                                                         <td>{user._id}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><strong>UTD Email:</strong></td>
-                                                        <td>{user.utdEmail || '—'}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><strong>Events Attended:</strong></td>
-                                                        <td>{user.eventsAttended?.length || 0}</td>
                                                     </tr>
                                                     <tr>
                                                         <td><strong>Admin Status:</strong></td>

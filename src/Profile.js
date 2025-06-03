@@ -14,52 +14,34 @@ const Profile = () => {
   const gmail = userFromState?.gmail; //now properly nested
 
   useEffect(() => {
-    //check if we have user data from state
-    if (userFromState) {
-      console.log('Using user data from navigation state');
-      const { _id, googleId, ...safeUserData } = userFromState;
-      setUser(safeUserData);
-      setLoading(false);
-      return;
-    }
-
-    setError('No user data received');
-    setLoading(false);
-    console.error('No user data in location state');
-
-    // fall back to fetching if no state
-    if (!gmail) {
-      setError('no user specified :/');
-      setLoading(false);
-      return;
-    }
-
-    const fetchUser = async () => {
-      try {
-        const response = await fetch(`http://localhost:4000/user/gmail/${gmail}`);
-        
-        if (!response.ok) {
-          throw new Error(response.status === 404 
-            ? 'User not found' 
-            : 'Failed to fetch user data');
-        }
-
-        const userData = await response.json();
-        
-        // Filter out sensitive fields (IDs) before setting state
-        const { _id, googleId, ...safeUserData } = userData;
-        setUser(safeUserData);
-        
-      } catch (err) {
-        setError(err.message);
-        console.error('Fetch error:', err);
-      } finally {
-        setLoading(false);
+  const fetchUser = async () => {
+    try {
+      // Try getting user ID from localStorage (more reliable than gmail)
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      if (!storedUser?._id) {
+        navigate('/');
+        return;
       }
-    };
 
-    fetchUser();
-  }, [gmail, userFromState, navigate]);
+      // Fetch fresh data from backend
+      const response = await fetch(`http://localhost:4000/user/${storedUser._id}`, {
+        headers: { 'Authorization': `Bearer ${storedUser.token}` }
+      });
+
+      if (!response.ok) throw new Error('Failed to fetch user');
+      const userData = await response.json();
+      setUser(userData); // No need to filter out _id/googleId here
+      
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      navigate('/');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchUser();
+}, [navigate]);
 
   if (loading) return <p>Loading user data...</p>;
   if (error) return <p>Error: {error}</p>;

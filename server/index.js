@@ -73,6 +73,7 @@ app.get('/user/:id', async (req, res) => {
       pronouns: user.pronouns,
       major: user.major,
       year: user.year,
+      points: user.points || 0,
     });
   } catch (error) {
     res.status(500).send('Server error');
@@ -532,6 +533,6 @@ app.get('/api/events/attendance', async (req, res) => {
 these out/back in all the time */
 app.listen(4000, () => {
   console.log('Server is running on port 4000');
-});
+}); 
 
 module.exports = app;

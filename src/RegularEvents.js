@@ -13,7 +13,8 @@ const RegularEventsPage = () => {
         id: null,
         email: null,
         name: '',
-        _id: null //mongoDB ID
+        _id: null, //mongoDB ID
+        points: null
     });
     
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -397,19 +398,7 @@ const RegularEventsPage = () => {
                             return;
                         }
                         
-                        navigate('/profile', {
-                            state: {
-                              user: {
-                                _id: user._id,
-                                name: user.name,
-                                email: user.email,
-                                utdEmail: user.utdEmail || '',  //fallback if missing
-                                pronouns: user.pronouns || '',  //fallback if missing
-                                major: user.major || '',        //fallback if missing
-                                year: user.year || ''           //fallback if missing
-                              }
-                            } 
-                          });
+                        navigate('/profile', { state: { user } });
                     }}
                 >
                     User Profile
