@@ -192,7 +192,7 @@ const RegularEventsPage = () => {
         const checkInEnd = new Date(eventDateCST);
         checkInEnd.setHours(12, 0, 0, 0); //12:00PM CST
 
-        // DEBUG: Critical time values
+        /* DEBUG: Critical time values
         console.log('TIME DEBUG:', {
             currentTime: nowCST.toString(),
             eventDate: eventDateCST.toString(),
@@ -204,7 +204,7 @@ const RegularEventsPage = () => {
             ),
             isFuture: nowCST < eventDateCST,
             isPast: nowCST > checkInEnd
-        });
+        }); */
         
         //check if event is in the past (after 8:00PM CST on event day)
         if (nowCST > checkInEnd) {
@@ -227,14 +227,21 @@ const RegularEventsPage = () => {
         // ====== 1. during check-in period (ONLY show check-In) ======
         if (isCheckInPeriod) {
             return (
-                <button 
+                <button                     
                     onClick={() => navigate('/eventcheckin', { 
                         state: { 
-                            eventId: event._id,
-                            eventTitle: event.title,
-                            userId: user._id,
+                            event: {
+                                eventId: event._id,
+                                eventTitle: event.title,
+                                date: event.date,
+                                location: event.location
+                            },
+                        user: {
+                            uid: user._id,
                             name: user.name,
-                            email: user.email,
+                            utdEmail: user.utdEmail,
+                            token: user.token
+                        }
                         }
                     })}
                     className="event-button event-button--primary"
@@ -253,6 +260,7 @@ const RegularEventsPage = () => {
                             state: { 
                                 eventId: event._id,
                                 eventTitle: event.title,
+                                date: event.eventDate,
                                 userId: user._id,
                                 name: user.name,
                                 email: user.email,
@@ -290,6 +298,7 @@ const RegularEventsPage = () => {
                             state: { 
                                 eventId: event._id,
                                 eventTitle: event.title,
+                                date: event.eventDate,
                                 userId: user._id,
                                 name: user.name,
                                 email: user.email,

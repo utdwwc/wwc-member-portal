@@ -1,124 +1,104 @@
-/* ===== BASE CONTAINER ===== */
 .event-checkin-container {
-    max-width: 800px;
-    margin: 2rem auto;
-    padding: 0 1rem;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.checkin-card {
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.checkin-header {
+  background: #6c497c;
+  color: white;
+  padding: 1.5rem;
+  position: relative;
+  text-align: center;
+}
+
+.checked-in-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 0.9rem;
+}
+
+.event-details {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+}
+
+.event-title {
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.detail-row {
+  display: flex;
+  margin: 0.8rem 0;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid #eee;
+}
+
+.detail-label {
+  font-weight: 600;
+  min-width: 100px;
+  color: #555;
+}
+
+.user-details {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background-color: #e9f7fe;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.checkin-button {
+  background-color: #8d5fa3c0;
+  color: black;
+}
+
+.checkin-button:hover {
+  background-color: #6c497c;
+  color: white;
+}
+
+.alert-message {
+  margin: 1rem 0;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+}
+
+.loading-container p {
+  margin-top: 1rem;
+  color: #666;
+}
+
+@media (max-width: 576px) {
+  .detail-row {
+    flex-direction: column;
   }
   
-  /* ===== CARD STYLES ===== */
-  .event-checkin-card {
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    border: none;
+  .detail-label {
+    margin-bottom: 0.3rem;
   }
-  
-  .event-checkin-card-header {
-    background-color: #3498db;
-    color: white;
-    padding: 1.5rem;
-    font-size: 1.8rem;
-    font-weight: 600;
-    border-bottom: none;
-  }
-  
-  .event-checkin-card-body {
-    padding: 2rem;
-  }
-  
-  /* ===== EVENT INFO STYLES ===== */
-  .event-checkin-title {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-    color: #2c3e50;
-  }
-  
-  .event-checkin-details {
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-    color: #34495e;
-    line-height: 1.6;
-  }
-  
-  .event-checkin-detail {
-    margin-bottom: 0.5rem;
-  }
-  
-  /* ===== BUTTON STYLES ===== */
-  .event-checkin-button {
-    padding: 0.75rem 2rem;
-    font-size: 1.1rem;
-    font-weight: 500;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-    min-width: 200px;
-  }
-  
-  .event-checkin-button-primary {
-    background-color: #3498db;
-    border-color: #3498db;
-  }
-  
-  .event-checkin-button-primary:hover {
-    background-color: #2980b9;
-    border-color: #2980b9;
-    transform: translateY(-2px);
-  }
-  
-  .event-checkin-button-warning {
-    background-color: #f39c12;
-    border-color: #f39c12;
-  }
-  
-  .event-checkin-button-warning:hover {
-    background-color: #e67e22;
-    border-color: #e67e22;
-    transform: translateY(-2px);
-  }
-  
-  /* ===== ALERT STYLES ===== */
-  .event-checkin-alert {
-    border-radius: 6px;
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-  }
-  
-  /* ===== LOADING SPINNER ===== */
-  .event-checkin-spinner {
-    width: 3rem;
-    height: 3rem;
-    margin: 2rem auto;
-    display: block;
-    color: #3498db;
-  }
-  
-  /* ===== RESPONSIVE ADJUSTMENTS ===== */
-  @media (max-width: 768px) {
-    .event-checkin-card-header {
-      font-size: 1.5rem;
-      padding: 1.2rem;
-    }
-    
-    .event-checkin-card-body {
-      padding: 1.5rem;
-    }
-    
-    .event-checkin-title {
-      font-size: 1.3rem;
-    }
-    
-    .event-checkin-details {
-      font-size: 1rem;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .event-checkin-container {
-      padding: 0 0.5rem;
-    }
-    
-    .event-checkin-button {
-      width: 100%;
-      padding: 0.75rem;
-    }
-  }
+}
