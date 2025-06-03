@@ -176,32 +176,35 @@ const RegularEventsPage = () => {
         }
     };
 
-    /* TESTING: Button Rendering */
+    /* PURPOSE: Button Rendering based on Event Timing */
     const getEventButtons = (event, user, navigate, rsvpStatus, handleCheckboxChange) => {        
         const now = new Date();
         const eventDate = new Date(event.date);
+
+        // TEMPORARY: Add 1 day to eventDate for testing
+        eventDate.setDate(eventDate.getDate() + 1);
         
         //convert to CST
         const nowCST = toZonedTime(now, 'America/Chicago');
         const eventDateCST = toZonedTime(eventDate, 'America/Chicago');
 
-        //TEMPORARILY TESTING: set check-in period end time (10:00PM CST)
+        //TEMPORARILY TESTING: set check-in period end time
         const checkInEnd = new Date(eventDateCST);
-        checkInEnd.setHours(22, 0, 0, 0); //10:00PM CST
+        checkInEnd.setHours(12, 0, 0, 0); //12:00PM CST
 
         // DEBUG: Critical time values
-    console.log('TIME DEBUG:', {
-        currentTime: nowCST.toString(),
-        eventDate: eventDateCST.toString(),
-        checkInEnd: checkInEnd.toString(),
-        isSameDay: (
-            eventDateCST.getDate() === nowCST.getDate() &&
-            eventDateCST.getMonth() === nowCST.getMonth() &&
-            eventDateCST.getFullYear() === nowCST.getFullYear()
-        ),
-        isFuture: nowCST < eventDateCST,
-        isPast: nowCST > checkInEnd
-    });
+        console.log('TIME DEBUG:', {
+            currentTime: nowCST.toString(),
+            eventDate: eventDateCST.toString(),
+            checkInEnd: checkInEnd.toString(),
+            isSameDay: (
+                eventDateCST.getDate() === nowCST.getDate() &&
+                eventDateCST.getMonth() === nowCST.getMonth() &&
+                eventDateCST.getFullYear() === nowCST.getFullYear()
+            ),
+            isFuture: nowCST < eventDateCST,
+            isPast: nowCST > checkInEnd
+        });
         
         //check if event is in the past (after 8:00PM CST on event day)
         if (nowCST > checkInEnd) {
@@ -215,11 +218,10 @@ const RegularEventsPage = () => {
             eventDateCST.getFullYear() === nowCST.getFullYear();
         
         //check if current time is between 6:45PM and 8:00PM CST on event day
-        // Check if current time is between 6:45PM and 8:00PM CST on event day
         const isCheckInPeriod = isEventToday && (
-            (nowCST.getHours() === 18 && nowCST.getMinutes() >= 45) || // 6:45 PM - 6:59PM
-            (nowCST.getHours() >= 19 && nowCST.getHours() <= 21) ||    // 7:00-9:59pm
-            (nowCST.getHours() === 22 && nowCST.getMinutes() === 0)    // 10:00 PM exactly
+            (nowCST.getHours() === 6 && nowCST.getMinutes() >= 0) || // 6:00-6:59AM
+            (nowCST.getHours() >= 7 && nowCST.getHours() <= 11) ||    // 7:00-11:59AM
+            (nowCST.getHours() === 12 && nowCST.getMinutes() === 0)    // 12:00PM exactly
         );
 
         // ====== 1. during check-in period (ONLY show check-In) ======
@@ -416,7 +418,7 @@ const RegularEventsPage = () => {
             <div key={event._id} className="event-container">
                 <h1 className="event-title">Event: {event.title}</h1>
                 <p><strong>Description:</strong> {event.description}</p>
-                <p><strong>Date:</strong> {`${String(new Date(event.date).getUTCMonth()).padStart(2, '0')}/${String(new Date(event.date).getUTCDate()).padStart(2, '0')}/${new Date(event.date).getUTCFullYear()}`}</p>
+                <p><strong>Date:</strong> {`${String(new Date(event.date).getUTCMonth() + 1).padStart(2, '0')}/${String(new Date(event.date).getUTCDate()).padStart(2, '0')}/${new Date(event.date).getUTCFullYear()}`}</p>
                 <p><strong>Location:</strong> {event.location}</p>
                 
                 {getEventButtons(event, user, navigate, rsvpStatus, handleCheckboxChange)}
@@ -429,84 +431,6 @@ const RegularEventsPage = () => {
                 />
             </div>
         ))}
-            {/*sortedEvents.map((event) => (
-                <div key={event._id} className="event-container">
-                    <h1 className="event-title">Event: {event.title}</h1>
-                    <p><strong>Description:</strong> {event.description}</p>
-                    <p><strong>Date:</strong> {new Date(event.date).toLocaleDateString()}</p>
-                    <p><strong>Location:</strong> {event.location}</p>
-                    
-                    {event.appReq ? (
-                        <>
-                        <button 
-                            onClick={() => navigate('/eventapplications', { 
-                                state: { 
-                                    eventId: event._id,
-                                    eventTitle: event.title,
-                                    userId: user._id,
-                                    name: user.name,
-                                    email: user.email,
-                                }
-                            })}
-                        className="event-button event-button--primary"
-                      >
-                        Apply!
-                      </button>
-
-                      <button 
-                            onClick={() => navigate('/eventcheckin', { 
-                                state: { 
-                                    eventId: event._id,
-                                    eventTitle: event.title,
-                                    userId: user._id,
-                                    name: user.name,
-                                    email: user.email,
-                                }
-                            })}
-                        className="event-button event-button--primary"
-                      >
-                        Check-In!
-                      </button>
-                      </>
-                    ) : (
-                        <>
-                            <label className="event-label">
-                                <input 
-                                    type="checkbox" 
-                                    checked={rsvpStatus[event._id] || false} 
-                                    onChange={() => handleCheckboxChange(event._id)} 
-                                    className="event-checkbox" 
-                                />
-                                RSVP
-                            </label>
-                            {rsvpStatus[event._id] && <p className="confirmation-message">You have RSVPed!</p>}
-
-                            <button 
-                                onClick={() => navigate('/eventcheckin', { 
-                                    state: { 
-                                        eventId: event._id,
-                                        eventTitle: event.title,
-                                        userId: user._id,
-                                        name: user.name,
-                                        email: user.email,
-                                    }
-                                })}
-                                className="event-button event-button--primary"
-                            >
-                                Check-In!
-                            </button>
-                        </>
-                    )}
-                    
-                    <Modal 
-                        isOpen={isModalOpen} 
-                        onClose={() => setIsModalOpen(false)} 
-                        onAddToCalendar={handleAddToCalendar} 
-                        event={currentEvent}
-                    />
-                </div>
-            ))*/}
-
         </div>
     );
 };
