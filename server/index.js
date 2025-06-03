@@ -74,6 +74,7 @@ app.get('/user/:id', async (req, res) => {
       major: user.major,
       year: user.year,
       points: user.points || 0,
+      attendedEvents: user.attendedEvents,
     });
   } catch (error) {
     res.status(500).send('Server error');

@@ -91,6 +91,22 @@ const Profile = () => {
             <p className="detail-value">{user.utdEmail}</p>
           </div>
         )}
+
+        {user.attendedEvents?.length > 0 ? (
+          <div className="detail-card">
+            <h3 className="detail-label">Attended Events</h3>
+            <ul className="detail-value list-disc pl-5 space-y-1">
+              {user.attendedEvents.map(event => (
+                <li key={event._id}>{event.title}</li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <div className="detail-card">
+            <h3 className="detail-label">Attended Events</h3>
+            <p className="detail-value">No events attended yet</p>
+          </div>
+        )}
   </div>
   
   <div>
