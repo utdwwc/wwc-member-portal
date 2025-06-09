@@ -107,7 +107,7 @@ const Profile = () => {
             <p className="detail-value">No events attended yet</p>
           </div>
         )}
-  </div>
+   </div>
   
   <div>
     <button

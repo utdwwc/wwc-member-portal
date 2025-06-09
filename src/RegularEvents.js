@@ -368,7 +368,6 @@ const RegularEventsPage = () => {
     /* PURPOSE: Sorts Events by Date in Descending Order (Newest First) */
     const sortedEvents = [...events].sort((a, b) => new Date(b.date) - new Date(a.date));
 
-
     return (
         <div className="regular-events">
             <h1 className="page-title">Women Who Compute Events</h1>
@@ -413,7 +412,58 @@ const RegularEventsPage = () => {
             </div>
             
             {sortedEvents.map((event) => (
+            
             <div key={event._id} className="event-container">
+  <div className="event-content-wrapper">
+    
+    {/* Left Side: Event Info */}
+    <div className="event-details">
+      <h1 className="event-title">Event: {event.title}</h1>
+      <p><strong>Description:</strong> {event.description}</p>
+      <p><strong>Date:</strong> {`${String(new Date(event.date).getUTCMonth() + 1).padStart(2, '0')}/${String(new Date(event.date).getUTCDate()).padStart(2, '0')}/${new Date(event.date).getUTCFullYear()}`}</p>
+      <p><strong>Location:</strong> {event.location}</p>
+
+      {getEventButtons(event, user, navigate, rsvpStatus, handleCheckboxChange)}
+
+      <Modal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        onAddToCalendar={handleAddToCalendar} 
+        event={currentEvent}
+      />
+    </div>
+
+    {/* Right Side: Event Poster */}
+    {event.imageUrl && (
+      <div className="event-poster-container">
+        <img 
+          src={event.imageUrl} 
+          alt={`${event.title} poster`} 
+          className="event-poster"
+          onError={(e) => {
+            e.target.style.display = 'none';
+          }}
+        />
+      </div>
+    )}
+  </div>
+</div>
+
+            /*<div key={event._id} className="event-container">
+
+                {event.imageUrl && (
+                    <div className="event-poster-container">
+                        <img 
+                            src={event.imageUrl} 
+                            alt={`${event.title} poster`} 
+                            className="event-poster"
+                            onError={(e) => {
+                                e.target.style.display = 'none'; // Hide if image fails to load
+                            }}
+                        />
+                    </div>
+                )}
+
                 <h1 className="event-title">Event: {event.title}</h1>
                 <p><strong>Description:</strong> {event.description}</p>
                 <p><strong>Date:</strong> {`${String(new Date(event.date).getUTCMonth() + 1).padStart(2, '0')}/${String(new Date(event.date).getUTCDate()).padStart(2, '0')}/${new Date(event.date).getUTCFullYear()}`}</p>
@@ -427,7 +477,7 @@ const RegularEventsPage = () => {
                     onAddToCalendar={handleAddToCalendar} 
                     event={currentEvent}
                 />
-            </div>
+            </div> */
         ))}
         </div>
     );

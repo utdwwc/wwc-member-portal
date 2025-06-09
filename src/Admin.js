@@ -25,8 +25,9 @@ const Admin = () => {
         location: '',
         appReq: false,
         points: 0,
-        rsvpGoal: 0,
+        //rsvpGoal: 0,
         actualAttendees: 0,
+        imageUrl: ''
     });
 
     const toggleEventDetails = (eventId) => {
@@ -141,11 +142,23 @@ const Admin = () => {
 
     /* PURPOSE: Updates Form with 'eventData' State */
     const handleEventChange = (e) => {
-      const { name, value } = e.target;
-      setEventData(prev => ({
+      const { name, value, type } = e.target;
+
+      if (type === 'file') {
+        setEventData(prev => ({
+          ...prev,
+          [name]: e.target.files[0] // Store the file object
+        }));
+      } else {
+        setEventData(prev => ({
+          ...prev,
+          [name]: name === 'points' || name === 'rsvpGoal' ? parseInt(value) || 0 : value
+        }));
+      }
+      /*setEventData(prev => ({
         ...prev,
         [name]: name === 'points' ? parseInt(value) || 0 : value
-      }));
+      }));*/
     };
 
     /* PURPOSE: Creates New Event in Database */
@@ -153,6 +166,18 @@ const Admin = () => {
         setErrorMessage('');
         
         try {
+          const formData = new FormData();
+          formData.append('title', eventData.title);
+          formData.append('description', eventData.description);
+          formData.append('date', eventData.date);
+          formData.append('location', eventData.location);
+          formData.append('appReq', eventData.appReq.toString());
+          formData.append('points', eventData.points.toString());
+
+          if (eventData.imageUrl) {
+            formData.append('poster', eventData.imageUrl); // 'poster' should match the field name expected by your multer middleware
+          }
+        /*try {
           const payload = {
             title: eventData.title,
             description: eventData.description,
@@ -160,15 +185,18 @@ const Admin = () => {
             location: eventData.location,
             appReq: Boolean(eventData.appReq),
             points: Number(eventData.points) || 0,
-            rsvpGoal: Number(eventData.rsvpGoal) || 0
-          };
+            //rsvpGoal: Number(eventData.rsvpGoal) || 0,
+            imageUrl: eventData.imageUrl
+          }; */
 
-          console.log('Sending:', payload); //debugging
+          //console.log('Sending:', payload); //debugging
+          console.log('Image file:', eventData.imageUrl, 'Is file:', eventData.imageUrl instanceof File);
 
           const response = await fetch('http://localhost:4000/regularevents', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+            body: formData
+            //headers: { 'Content-Type': 'application/json' },
+            //body: JSON.stringify(payload)
           });
 
             if (!response.ok) {
@@ -186,7 +214,8 @@ const Admin = () => {
                 location: '',
                 appReq: false,
                 points: 0,
-                rsvpGoal: 0,
+                //rsvpGoal: 0,
+                imageUrl: null
             }); //clear form
             console.log('Event created:', data);
         } catch (error) {
@@ -224,6 +253,7 @@ const Admin = () => {
                 createEvent(eventData);
               }}
               className="event-form"
+              encType="multipart/form-data" //important for file uploads
             >
                 <input type="text" name="title" placeholder="Event Title" value={eventData.title} onChange={handleEventChange} required />
                 <input type="text" name="description" placeholder="Event Description" value={eventData.description} onChange={handleEventChange} required />
@@ -234,6 +264,39 @@ const Admin = () => {
                   <input type="checkbox" checked={eventData.appReq} onChange={(e) => setEventData({...eventData, appReq: e.target.checked})}/>
                   Speed Mentoring Event 
                 </label>
+
+                <div style={{ margin: '10px 0' }}>
+                  <label htmlFor="poster-upload" style={{ display: 'block', marginBottom: '5px' }}>
+                    Event Poster (optional):
+                  </label>
+                  <input
+                    type="file"
+                    id="poster-upload"
+                    name="imageUrl"
+                    accept="image/*"
+                    onChange={handleEventChange}
+                    style={{ width: '100%' }}
+                  />
+                  {eventData.imageUrl && (
+                    <div style={{ marginTop: '10px' }}>
+                      <p>Selected file: {eventData.imageUrl.name}</p>
+                      {typeof eventData.imageUrl === 'string' ? (
+                        <img 
+                          src={eventData.imageUrl} 
+                          alt="Preview" 
+                          style={{ maxWidth: '200px', maxHeight: '200px' }} 
+                        />
+                      ) : (
+                        <img 
+                          src={URL.createObjectURL(eventData.imageUrl)} 
+                          alt="Preview" 
+                          style={{ maxWidth: '200px', maxHeight: '200px' }} 
+                        />
+                      )}
+                    </div>
+                  )}
+                </div>
+
                 <button type="submit">Create Event</button>
             </form>
             

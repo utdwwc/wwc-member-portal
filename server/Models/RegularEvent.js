@@ -7,9 +7,8 @@ const eventSchema = new mongoose.Schema({
     location: { type: String, required: true },
     appReq: {type: Boolean, required: true, default: false},
     points: {type: Number, default: 0, min: 0}, 
-    rsvpGoal: { type: Number, default: 0, min: 0 },
-    //actualAttendees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Store user IDs of attendees
-    //attendeeNames: [{ type: String }]
+    //rsvpGoal: { type: Number, default: 0, min: 0 },
+    imageUrl: { type: String }
 }); 
 
 const RegularEvent = mongoose.model('RegularEvent', eventSchema);

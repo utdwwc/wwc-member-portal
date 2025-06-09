@@ -1,6 +1,6 @@
 const express = require('express');
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/resumes/' });
+//const upload = multer({ dest: 'uploads/' }); //configure as needed
 const mongoose = require('mongoose');
 const User = require('./Models/User');
 const RegularEvent = require('./Models/RegularEvent');
@@ -21,6 +21,7 @@ const app = express();
 app.use(express.json()); //middleware to parse JSON requests
 app.use(express.urlencoded({ extended: true }));
 app.use('/api', authRoutes); //mount auth routes
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 //app.use(cors());
 app.use(cors({
@@ -40,6 +41,7 @@ const storage = multer.diskStorage({
     cb(null, uniqueSuffix + path.extname(file.originalname));
   },
 });
+const upload = multer({ storage: storage });
 
 /* PURPOSE: Fetches Registered User from Database */
 app.get('/users', async (req, res) => {
@@ -163,8 +165,65 @@ app.get('/regularevents', async (req, res) => {
   }
 });
 
-/* PURPOSE: General Event Creation */
-app.post('/regularevents', async (req, res) => {
+/* PURPOSE: Admin Event Creation */
+app.post('/regularevents', upload.single('poster'), async (req, res) => {
+  try {
+    console.log("Received request:", {
+      body: req.body,
+      file: req.file ? `File received: ${req.file.originalname}` : 'No file received'
+    });
+
+    // Parse form data
+    const {
+      title,
+      description,
+      date,
+      location,
+      appReq = 'false', // Default as string since FormData sends strings
+      points = '0'      // Default as string
+    } = req.body;
+
+    // Handle file upload
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+
+    // Validate required fields
+    if (!title || !description || !date || !location) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    // Convert values to proper types
+    const parsedAppReq = appReq === 'true';
+    const parsedPoints = parseInt(points);
+    
+    // Validate points is a valid number
+    if (isNaN(parsedPoints)) {
+      return res.status(400).json({ message: 'Points must be a valid number' });
+    }
+
+    // Create new event (without any rsvp fields)
+    const newEvent = new RegularEvent({
+      title,
+      description,
+      date: new Date(date),
+      location,
+      appReq: parsedAppReq,
+      points: parsedPoints,
+      actualAttendees: [], // Explicit empty array
+      imageUrl
+    });
+
+    const savedEvent = await newEvent.save();
+    res.status(201).json(savedEvent);
+    
+  } catch (error) {
+    console.error('Error creating event:', error);
+    res.status(500).json({ 
+      message: 'Error saving event',
+      error: error.message
+    });
+  }
+});
+/*app.post('/regularevents', upload.single('poster'), async (req, res) => {
   
   try {
     console.log("Received request:", req.body); //debugging
@@ -175,9 +234,14 @@ app.post('/regularevents', async (req, res) => {
       location,
       appReq = false,
       points = 0,
-      rsvpLimit = 0,
+      //rsvpLimit = 0,
       actualAttendees = []
     } = req.body;
+
+    // TESTING: poster uploads
+    // Get the file path (you would typically upload this to cloud storage first)
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+
 
     if (!title || !description || !date || !location) {
       return res.status(400).json({ message: 'Missing required fields' });
@@ -187,16 +251,22 @@ app.post('/regularevents', async (req, res) => {
       return res.status(400).json({ message: 'Points must be a number' });
     }
 
+    // Convert string values to proper types
+    const parsedAppReq = appReq === 'true'; // FormData sends booleans as strings
+    const parsedPoints = points ? parseInt(points) : 0;
+    const parsedRsvpGoal = rsvpGoal ? parseInt(rsvpGoal) : 0;
+
     // Create new event
     const newEvent = new RegularEvent({
       title,
       description,
       date: new Date(date),
       location,
-      appReq,
-      points: Number(points),
-      rsvpLimit: Number(rsvpLimit),
-      actualAttendees
+      appReq: parsedAppReq,
+      points: parsedPoints,
+      //rsvpLimit: Number(rsvpLimit),
+      actualAttendees,
+      imageUrl
   });
 
     const savedEvent = await newEvent.save();
@@ -206,7 +276,7 @@ app.post('/regularevents', async (req, res) => {
     console.error('Error creating event: ', error);
     res.status(500).json({ message: 'Error saving event: ', error: error.message });
   }
-});
+}); */
 
 /* PURPOSE: Retrieves RSVP Data */
 app.get('/rsvps', async (req, res) => {
@@ -534,6 +604,6 @@ app.get('/api/events/attendance', async (req, res) => {
 these out/back in all the time */
 app.listen(4000, () => {
   console.log('Server is running on port 4000');
-}); 
+});
 
 module.exports = app;

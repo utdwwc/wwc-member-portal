@@ -154,7 +154,7 @@ const Homepage = () => {
                         className="navbar__login-button"
                         onClick={() => navigate('/login')}
                     >
-                        Member Login
+                        Member Portal
                     </button>
                 </div>
             </nav>
