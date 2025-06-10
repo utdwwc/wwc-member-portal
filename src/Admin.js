@@ -113,7 +113,7 @@ const Admin = () => {
           attendancesRes.ok ? attendancesRes.json() : []
         ]);
 
-        // Combine the data
+        //combine the data
         const combinedEvents = events.map(event => {
           const eventRsvpData = rsvps.find(rsvp => rsvp._id === event._id);
           const eventAttendanceData = attendances.find(att => att._id === event._id);
@@ -155,10 +155,6 @@ const Admin = () => {
           [name]: name === 'points' || name === 'rsvpGoal' ? parseInt(value) || 0 : value
         }));
       }
-      /*setEventData(prev => ({
-        ...prev,
-        [name]: name === 'points' ? parseInt(value) || 0 : value
-      }));*/
     };
 
     /* PURPOSE: Creates New Event in Database */
@@ -178,26 +174,11 @@ const Admin = () => {
             formData.append('poster', eventData.imageUrl); // 'poster' should match the field name expected by your multer middleware
           }
 
-        /*try {
-          const payload = {
-            title: eventData.title,
-            description: eventData.description,
-            date: eventData.date,
-            location: eventData.location,
-            appReq: Boolean(eventData.appReq),
-            points: Number(eventData.points) || 0,
-            //rsvpGoal: Number(eventData.rsvpGoal) || 0,
-            imageUrl: eventData.imageUrl
-          }; */
-
-          //console.log('Sending:', payload); //debugging
           console.log('Image file:', eventData.imageUrl, 'Is file:', eventData.imageUrl instanceof File);
 
           const response = await fetch('http://localhost:4000/regularevents', {
             method: 'POST',
             body: formData
-            //headers: { 'Content-Type': 'application/json' },
-            //body: JSON.stringify(payload)
           });
 
             if (!response.ok) {
@@ -215,7 +196,6 @@ const Admin = () => {
                 location: '',
                 appReq: false,
                 points: 0,
-                //rsvpGoal: 0,
                 imageUrl: null
             }); //clear form
             console.log('Event created:', data);
@@ -224,7 +204,7 @@ const Admin = () => {
         }
     };
 
-    // Sort events by date in descending order (newest first)
+    //sort events by date in descending order (newest first)
     const sortedEvents = [...events].sort((a, b) => new Date(b.date) - new Date(a.date));
     const sortedAppEvents = [...appEvents].sort((a, b) => new Date(b.eventDate) - new Date(a.eventDate));
 
@@ -321,7 +301,7 @@ const Admin = () => {
                         {sortedEvents.map(event => (
                             <React.Fragment key={event._id}>
                                 <tr>
-                                    <td>{new Date(event.date).toLocaleDateString()}</td>
+                                    <td>{`${String(new Date(event.date).getUTCMonth() + 1).padStart(2, '0')}/${String(new Date(event.date).getUTCDate()).padStart(2, '0')}/${new Date(event.date).getUTCFullYear()}`}</td>
                                     <td>{event.title || '—'}</td>
                                     <td style={{ whiteSpace: 'pre-wrap' }}>{event.description || '—'}</td>
                                     <td>{event.location || '—'}</td>
@@ -424,7 +404,7 @@ const Admin = () => {
                     {sortedAppEvents.map(event => (
                         <React.Fragment key={event._id}>
                             <tr>
-                                <td>{new Date(event.eventDate).toLocaleDateString()}</td>
+                                <td>{`${String(new Date(event.eventDate).getUTCMonth() + 1).padStart(2, '0')}/${String(new Date(event.eventDate).getUTCDate()).padStart(2, '0')}/${new Date(event.eventDate).getUTCFullYear()}`}</td>
                                 <td>{event.eventName}</td>
                                 <td>{event.applicationCount}</td>
                                 <td>

@@ -18,12 +18,12 @@
   padding: 2.5rem;
   border-radius: 12px;
   text-align: center;
-  width: 380px; /* Slightly rectangular for better text flow */
+  width: 380px; /* slightly rectangular for better text flow */
   min-height: 380px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Evenly spaces content */
+  justify-content: space-between; /* evenly spaces content */
 }
 
 /* ===== TEXT STYLES ===== */
@@ -34,7 +34,7 @@
 }
 
 .modal-content p {
-  color: #ffffff; /* Slightly lighter text color */
+  color: #ffffff; /* slightly lighter text color */
   font-size: 1.1rem;
   line-height: 1.6;
   margin-bottom: 2rem;
@@ -44,7 +44,7 @@
 .modal-content .button-container {
   display: flex;
   justify-content: center;
-  gap: 1rem; /* Space between buttons */
+  gap: 1rem; /* space between buttons */
 }
 
 /* ===== BUTTON STYLES ===== */
@@ -59,7 +59,7 @@
 }
 
 .modal-button-primary {
-  background-color: #4285f4; /* Google blue */
+  background-color: #4285f4; /* google blue */
   color: white;
 }
 
@@ -69,7 +69,7 @@
 }
 
 .modal-button-secondary {
-  background-color: #f1f3f4; /* Light gray */
+  background-color: #f1f3f4; /* light gray */
   color: #3c4043;
 }
 

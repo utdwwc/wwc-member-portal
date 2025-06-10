@@ -89,9 +89,9 @@
   font-size: 16px;
   margin-top: 20px;
   margin-right: 10px;
-  transition: background 0.3s ease; /* Optional: Add hover effect */
+  transition: background 0.3s ease; /* optional: add hover effect */
 }
 
 .button:hover {
-  background: #3367d6; /* Darker shade on hover */
+  background: #3367d6; /* darker shade on hover */
 }

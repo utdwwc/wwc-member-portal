@@ -75,8 +75,6 @@ const EventApplicationForm = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    // Add authorization header if needed
-                    // 'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
                 body: JSON.stringify(payload)
             });
@@ -93,7 +91,7 @@ const EventApplicationForm = () => {
             setShowSuccessMessage(true);
             setSubmissionMessage('Application submitted successfully!');
             
-            // Reset form (optional - you might want to keep the data)
+            //reset form (optional - you might want to keep the data)
             setFormData(prev => ({
                 ...prev,
                 year: '',

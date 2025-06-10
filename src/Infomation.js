@@ -5,7 +5,7 @@ import './css/Information.css';
 function Information() {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const [user, setUser] = useState(null); //testing 04/29/25
+  const [user, setUser] = useState(null);
   const [formData, setFormData] = useState({
     pronouns: '',
     major: '',
@@ -23,7 +23,7 @@ function Information() {
   console.log('Location state:', state);
   
 
-  /*PURPOSE: Check for User on Component Mount*/
+  /* PURPOSE: Check for User on Component Mount */
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (!storedUser) {

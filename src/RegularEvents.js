@@ -23,7 +23,7 @@ const RegularEventsPage = () => {
     const [currentEvent, setCurrentEvent] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    /* PURPOSE: Retrieves list of existing events from backend */
+    /* PURPOSE: Retrieves List of Existing Events from Backend */
     const fetchEvents = async (targetUser) => {
         try {
             console.log("fetching events for user: ", targetUser);
@@ -64,7 +64,7 @@ const RegularEventsPage = () => {
                 return;
               }
         
-              // Fetch COMPLETE user data from backend
+              //fetch COMPLETE user data from backend
               const response = await fetch(`http://localhost:4000/user/${storedUser._id}`, {
                 headers: {
                   'Authorization': `Bearer ${storedUser.token}`
@@ -182,14 +182,17 @@ const RegularEventsPage = () => {
         const now = new Date();
         const eventDate = new Date(event.date);
 
-        // TEMPORARY: Add 1 day to eventDate for testing
+        //add 1 day to eventDate
+        //bc gorl
+        //its saving wrong
+        //and im blunt forcing my way through this lmao
         eventDate.setDate(eventDate.getDate() + 1);
         
         //convert to CST
         const nowCST = toZonedTime(now, 'America/Chicago');
         const eventDateCST = toZonedTime(eventDate, 'America/Chicago');
 
-        //TEMPORARILY TESTING: set check-in period end time
+        //set check-in period end time
         const checkInEnd = new Date(eventDateCST);
         checkInEnd.setHours(12, 0, 0, 0); //12:00PM CST
 
@@ -327,8 +330,6 @@ const RegularEventsPage = () => {
                 );
             }
         }
-    
-        // Default fallback (shouldn't reach here)
         return null;
     };
   
@@ -412,72 +413,40 @@ const RegularEventsPage = () => {
             </div>
             
             {sortedEvents.map((event) => (
-            
             <div key={event._id} className="event-container">
-  <div className="event-content-wrapper">
-    
-    {/* Left Side: Event Info */}
-    <div className="event-details">
-      <h1 className="event-title">Event: {event.title}</h1>
-      <p><strong>Description:</strong> {event.description}</p>
-      <p><strong>Date:</strong> {`${String(new Date(event.date).getUTCMonth() + 1).padStart(2, '0')}/${String(new Date(event.date).getUTCDate()).padStart(2, '0')}/${new Date(event.date).getUTCFullYear()}`}</p>
-      <p><strong>Location:</strong> {event.location}</p>
+                <div className="event-content-wrapper">
+                    {/* Left Side: Event Info */}
+                    <div className="event-details">
+                        <h1 className="event-title">Event: {event.title}</h1>
+                            <p><strong>Description:</strong> {event.description}</p>
+                            <p><strong>Date:</strong> {`${String(new Date(event.date).getUTCMonth() + 1).padStart(2, '0')}/${String(new Date(event.date).getUTCDate()).padStart(2, '0')}/${new Date(event.date).getUTCFullYear()}`}</p>
+                            <p><strong>Location:</strong> {event.location}</p>
 
-      {getEventButtons(event, user, navigate, rsvpStatus, handleCheckboxChange)}
+                        {getEventButtons(event, user, navigate, rsvpStatus, handleCheckboxChange)}
 
-      <Modal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        onAddToCalendar={handleAddToCalendar} 
-        event={currentEvent}
-      />
-    </div>
-
-    {/* Right Side: Event Poster */}
-    {event.imageUrl && (
-      <div className="event-poster-container">
-        <img 
-          src={event.imageUrl} 
-          alt={`${event.title} poster`} 
-          className="event-poster"
-          onError={(e) => {
-            e.target.style.display = 'none';
-          }}
-        />
-      </div>
-    )}
-  </div>
-</div>
-
-            /*<div key={event._id} className="event-container">
-
-                {event.imageUrl && (
-                    <div className="event-poster-container">
-                        <img 
-                            src={event.imageUrl} 
-                            alt={`${event.title} poster`} 
-                            className="event-poster"
-                            onError={(e) => {
-                                e.target.style.display = 'none'; // Hide if image fails to load
-                            }}
+                        <Modal 
+                            isOpen={isModalOpen} 
+                            onClose={() => setIsModalOpen(false)} 
+                            onAddToCalendar={handleAddToCalendar} 
+                            event={currentEvent}
                         />
                     </div>
-                )}
 
-                <h1 className="event-title">Event: {event.title}</h1>
-                <p><strong>Description:</strong> {event.description}</p>
-                <p><strong>Date:</strong> {`${String(new Date(event.date).getUTCMonth() + 1).padStart(2, '0')}/${String(new Date(event.date).getUTCDate()).padStart(2, '0')}/${new Date(event.date).getUTCFullYear()}`}</p>
-                <p><strong>Location:</strong> {event.location}</p>
-                
-                {getEventButtons(event, user, navigate, rsvpStatus, handleCheckboxChange)}
-                
-                <Modal 
-                    isOpen={isModalOpen} 
-                    onClose={() => setIsModalOpen(false)} 
-                    onAddToCalendar={handleAddToCalendar} 
-                    event={currentEvent}
-                />
-            </div> */
+                    {/* Right Side: Event Poster */}
+                    {event.imageUrl && (
+                        <div className="event-poster-container">
+                            <img 
+                                src={event.imageUrl} 
+                                alt={`${event.title} poster`} 
+                                className="event-poster"
+                                onError={(e) => {
+                                    e.target.style.display = 'none';
+                                }}
+                            />
+                        </div>
+            )}
+            </div>
+        </div>
         ))}
         </div>
     );

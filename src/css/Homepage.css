@@ -311,36 +311,36 @@
 .footer {
     background: #333;
     color: white;
-    padding: 2rem 0; /* Changed from 2rem to 2rem 0 to remove horizontal padding */
+    padding: 2rem 0; /* changed from 2rem to 2rem 0 to remove horizontal padding */
     text-align: center;
-    width: 100%; /* Ensure full width */
-    margin: 0; /* Remove any default margins */
+    width: 100%; /* ensure full width */
+    margin: 0; /* remove any default margins */
 }
 
 .footer__content {
     display: flex;
     justify-content: space-around;
     margin-bottom: 1rem;
-    max-width: 1200px; /* Optional: constrain content width */
-    margin: 0 auto; /* Center the content */
-    padding: 0 20px; /* Add some padding on sides */
+    max-width: 1200px; /* optional: constrain content width */
+    margin: 0 auto; /* center the content */
+    padding: 0 20px; /* add some padding on sides */
 }
 
 .footer__links a {
     color: white;
     display: block;
     margin: 0.5rem 0;
-    text-decoration: none; /* Optional: remove underline */
-    transition: color 0.2s ease; /* Optional: hover effect */
+    text-decoration: none; /* optional: remove underline */
+    transition: color 0.2s ease; /* optional: hover effect */
 }
 
 .footer__links a:hover {
-    color: #3498db; /* Optional: hover color */
+    color: #3498db; /* optional: hover color */
 }
 
 .footer__copyright {
     padding-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1); /* Optional: subtle divider */
+    border-top: 1px solid rgba(255, 255, 255, 0.1); /* optional: subtle divider */
     margin-top: 1rem;
 }
 

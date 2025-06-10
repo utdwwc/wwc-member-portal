@@ -16,21 +16,21 @@ const Profile = () => {
   useEffect(() => {
   const fetchUser = async () => {
     try {
-      // Try getting user ID from localStorage (more reliable than gmail)
+      //get user ID from localStorage (more reliable than gmail)
       const storedUser = JSON.parse(localStorage.getItem('user'));
       if (!storedUser?._id) {
         navigate('/');
         return;
       }
 
-      // Fetch fresh data from backend
+      //fetch fresh data from backend
       const response = await fetch(`http://localhost:4000/user/${storedUser._id}`, {
         headers: { 'Authorization': `Bearer ${storedUser.token}` }
       });
 
       if (!response.ok) throw new Error('Failed to fetch user');
       const userData = await response.json();
-      setUser(userData); // No need to filter out _id/googleId here
+      setUser(userData); //no need to filter out _id/googleId here
       
     } catch (error) {
       console.error('Error fetching user:', error);

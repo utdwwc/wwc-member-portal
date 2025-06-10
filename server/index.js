@@ -1,6 +1,5 @@
 const express = require('express');
 const multer = require('multer');
-//const upload = multer({ dest: 'uploads/' }); //configure as needed
 const mongoose = require('mongoose');
 const User = require('./Models/User');
 const RegularEvent = require('./Models/RegularEvent');
@@ -21,7 +20,6 @@ const app = express();
 app.use(express.json()); //middleware to parse JSON requests
 app.use(express.urlencoded({ extended: true }));
 app.use('/api', authRoutes); //mount auth routes
-//app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 //CORS
 app.use(cors({
@@ -53,8 +51,8 @@ app.use('/uploads', express.static(uploadsDir));
 app.get('/users', async (req, res) => {
   try {
     const users = await User.find({})
-      .select('-password -__v -resetToken') // Exclude sensitive fields
-      .sort({ createdAt: -1 }); // Newest first
+      .select('-password -__v -resetToken') //exclude sensitive fields
+      .sort({ createdAt: -1 }); //newest first
     
     res.json(users);
   } catch (error) {
@@ -69,7 +67,7 @@ app.use('/files', express.static(path.join(__dirname, 'files')));
 app.get('/user/:id', async (req, res) => {
   try {
     const user = await User.findById(req.params.id)
-      .select('-password -googleId -__v'); // Exclude sensitive fields
+      .select('-password -googleId -__v'); //exclude sensitive fields
     
     if (!user) return res.status(404).send('User not found');
     
@@ -140,7 +138,6 @@ app.get('/user/gmail/:gmail', async (req, res) => {
     } //returns gmail ID without password
 
     //response object
-    //const { name, email, gmail, pronouns, major, year, } = user;
     const userProfile = {
       name: user.name,
       email: user.email || user.gmail,
@@ -229,60 +226,6 @@ app.post('/regularevents', upload.single('poster'), async (req, res) => {
     });
   }
 });
-/*app.post('/regularevents', upload.single('poster'), async (req, res) => {
-  
-  try {
-    console.log("Received request:", req.body); //debugging
-    const {
-      title,
-      description,
-      date,
-      location,
-      appReq = false,
-      points = 0,
-      //rsvpLimit = 0,
-      actualAttendees = []
-    } = req.body;
-
-    // TESTING: poster uploads
-    // Get the file path (you would typically upload this to cloud storage first)
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
-
-
-    if (!title || !description || !date || !location) {
-      return res.status(400).json({ message: 'Missing required fields' });
-    }
-
-    if (points !== undefined && typeof points !== 'number') {
-      return res.status(400).json({ message: 'Points must be a number' });
-    }
-
-    // Convert string values to proper types
-    const parsedAppReq = appReq === 'true'; // FormData sends booleans as strings
-    const parsedPoints = points ? parseInt(points) : 0;
-    const parsedRsvpGoal = rsvpGoal ? parseInt(rsvpGoal) : 0;
-
-    // Create new event
-    const newEvent = new RegularEvent({
-      title,
-      description,
-      date: new Date(date),
-      location,
-      appReq: parsedAppReq,
-      points: parsedPoints,
-      //rsvpLimit: Number(rsvpLimit),
-      actualAttendees,
-      imageUrl
-  });
-
-    const savedEvent = await newEvent.save();
-    res.status(201).json(savedEvent); //returns saved event as json
-    
-  } catch (error) {
-    console.error('Error creating event: ', error);
-    res.status(500).json({ message: 'Error saving event: ', error: error.message });
-  }
-}); */
 
 /* PURPOSE: Retrieves RSVP Data */
 app.get('/rsvps', async (req, res) => {
@@ -333,7 +276,7 @@ app.get('/rsvps', async (req, res) => {
           rsvpCount: { $size: "$rsvps" }
         }
       }
-      // Removed the $match filter to include all events, not just those with RSVPs
+      //removed the $match filter to include all events, not just those with RSVPs
     ]);
 
     res.json(eventsWithRsvps);

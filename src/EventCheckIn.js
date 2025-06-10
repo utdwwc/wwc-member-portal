@@ -11,7 +11,7 @@ const EventCheckIn = () => {
   const [success, setSuccess] = useState('');
   const [alreadyCheckedIn, setAlreadyCheckedIn] = useState(false);
 
-  // DEBUGGING: State Passing
+  //DEBUGGING: state passing
   console.log('Raw location.state:', location.state);
   const [event, setEvent] = useState(
     location.state?.event || {
@@ -75,7 +75,7 @@ useEffect(() => {
 
       const res = await fetch(`/api/events/${event.eventId}/check-in`, {
       method: 'POST',
-      credentials: 'include', // Required if using cookies/sessions
+      credentials: 'include', //required if using cookies/sessions
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${currentUser.token}`
@@ -84,7 +84,7 @@ useEffect(() => {
         userId: currentUser.uid,
         userName: currentUser.displayName || currentUser.email,
         userEmail: currentUser.email,
-        // These will be available in req.body on backend
+        //these will be available in req.body on backend
       })
     });
 
@@ -97,7 +97,7 @@ useEffect(() => {
     setSuccess('Successfully checked in!');
     setAlreadyCheckedIn(true);
     
-    // Optional: Update local state if needed
+    //optional: update local state if needed
     setTimeout(() => navigate('/regularevents'), 3000);
     } catch (err) {
       setError(err.message);
