@@ -16,14 +16,14 @@ const authRoutes = require('./auth');
 
 require('./db/connection');
 
-//middleware routes
+//middleware
 const app = express();
 app.use(express.json()); //middleware to parse JSON requests
 app.use(express.urlencoded({ extended: true }));
 app.use('/api', authRoutes); //mount auth routes
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+//app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-//app.use(cors());
+//CORS
 app.use(cors({
   origin: 'http://localhost:3000',
   methods: ['GET', 'POST', 'DELETE', 'PATCH'],
@@ -31,17 +31,23 @@ app.use(cors({
   credentials: true,
 }));
 
-/* PURPOSE: Set up Multer for File Uploads */
+//ensure 'uploads' directory exists
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+//multer setup
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './files');
+  destination: (req, file, cb) => {
+    cb(null, uploadsDir); //save to ./uploads/
   },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
 });
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
+app.use('/uploads', express.static(uploadsDir));
 
 /* PURPOSE: Fetches Registered User from Database */
 app.get('/users', async (req, res) => {

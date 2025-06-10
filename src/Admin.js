@@ -177,6 +177,7 @@ const Admin = () => {
           if (eventData.imageUrl) {
             formData.append('poster', eventData.imageUrl); // 'poster' should match the field name expected by your multer middleware
           }
+
         /*try {
           const payload = {
             title: eventData.title,
