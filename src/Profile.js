@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import './Profile.css';
+import './css/Profile.css';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -14,52 +14,34 @@ const Profile = () => {
   const gmail = userFromState?.gmail; //now properly nested
 
   useEffect(() => {
-    //check if we have user data from state
-    if (userFromState) {
-      console.log('Using user data from navigation state');
-      const { _id, googleId, ...safeUserData } = userFromState;
-      setUser(safeUserData);
-      setLoading(false);
-      return;
-    }
-
-    setError('No user data received');
-    setLoading(false);
-    console.error('No user data in location state');
-
-    // fall back to fetching if no state
-    if (!gmail) {
-      setError('no user specified :/');
-      setLoading(false);
-      return;
-    }
-
-    const fetchUser = async () => {
-      try {
-        const response = await fetch(`http://localhost:4000/user/gmail/${gmail}`);
-        
-        if (!response.ok) {
-          throw new Error(response.status === 404 
-            ? 'User not found' 
-            : 'Failed to fetch user data');
-        }
-
-        const userData = await response.json();
-        
-        // Filter out sensitive fields (IDs) before setting state
-        const { _id, googleId, ...safeUserData } = userData;
-        setUser(safeUserData);
-        
-      } catch (err) {
-        setError(err.message);
-        console.error('Fetch error:', err);
-      } finally {
-        setLoading(false);
+  const fetchUser = async () => {
+    try {
+      //get user ID from localStorage (more reliable than gmail)
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      if (!storedUser?._id) {
+        navigate('/');
+        return;
       }
-    };
 
-    fetchUser();
-  }, [gmail, userFromState, navigate]);
+      //fetch fresh data from backend
+      const response = await fetch(`http://localhost:4000/user/${storedUser._id}`, {
+        headers: { 'Authorization': `Bearer ${storedUser.token}` }
+      });
+
+      if (!response.ok) throw new Error('Failed to fetch user');
+      const userData = await response.json();
+      setUser(userData); //no need to filter out _id/googleId here
+      
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      navigate('/');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchUser();
+}, [navigate]);
 
   if (loading) return <p>Loading user data...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -109,12 +91,33 @@ const Profile = () => {
             <p className="detail-value">{user.utdEmail}</p>
           </div>
         )}
-  </div>
+
+        {user.attendedEvents?.length > 0 ? (
+          <div className="detail-card">
+            <h3 className="detail-label">Attended Events</h3>
+            <ul className="detail-value list-disc pl-5 space-y-1">
+              {user.attendedEvents.map(event => (
+                <li key={event._id}>{event.title}</li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <div className="detail-card">
+            <h3 className="detail-label">Attended Events</h3>
+            <p className="detail-value">No events attended yet</p>
+          </div>
+        )}
+   </div>
   
   <div>
     <button
       onClick={() => navigate('/regularEvents', { state: { user } })}>
         Events Page
+    </button>
+
+    <button
+      onClick={() => navigate('/information', { state: { user } })}>
+        Update Your Profile
     </button>
   </div>
 

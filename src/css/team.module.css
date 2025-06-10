@@ -1,0 +1,256 @@
+@media screen and (max-width: 767px) {
+    .topLine {
+      display: none;
+    }
+    
+    .topLine2 {
+      height: 2px;
+      background-color: #000;
+      margin-top: 45%;
+    }
+  
+    .scrollText2 {
+      position: absolute;
+      overflow: hidden !important;
+      background-repeat: repeat;
+      /* animation: scrollText 10s linear infinite; */
+      color: #000;
+      font-size: 24px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 72px; /* 112.5% */
+      letter-spacing: -1.28px;
+      text-transform: uppercase;
+      text-align: center;
+      width: 70vw;
+      height: 50px;
+    }
+  
+    .scrollText {
+      display: none;
+    }
+  
+    .bottomLine {
+      display: none;
+    }
+  
+    .bottomLine2 {
+      position: absolute;
+      margin-top: 18%;
+      width: 100%;
+      height: 2px;
+      background-color: #000;
+    }
+  
+    .headerType {
+      display: hidden;
+    }
+  
+    .header {
+      display: none;
+    }
+  
+    .header2 {
+      margin-top: 15%;
+      background-image: url('../images/teamBack2.svg');
+      background-size: cover; 
+      background-repeat: no-repeat;
+      padding-top: 75px;
+      width: 100vw;
+  
+    }
+  
+    .gridContainer {
+      display: none;
+    }
+  
+    .gridContainer2 {
+      padding-top: 20%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-top: 150px;
+    }
+  
+    .row {
+      display: none;
+    }
+    
+    .row2 {
+      padding-top: 10%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+  }
+  
+  @media screen and (min-width: 768px) {
+    .scrollText2 {
+      display: none;
+    }
+  
+    .topLine {
+      position: absolute;
+      margin-top: 23%;
+      width: 100%;
+      height: 2px;
+      background-color: #000;
+    }
+  
+    .topLine2 {
+      display: none;
+    }
+  
+    .bottomLine2 {
+      display: none;
+    }
+  
+    .bottomLine {
+      position: absolute;
+      margin-top: 28%;
+      width: 100%;
+      height: 2px;
+      background-color: #000;
+    }
+  
+    .gridContainer {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 30px;
+      padding-top: 10%;
+      margin-top: 150px;
+    }
+  
+    .gridContainer2 {
+      display: none;
+    }
+    
+    .headerType2{
+      display: none;
+    }
+  
+    .scrollText {
+      position: absolute;
+      margin-top: 23%;
+      overflow: hidden !important;
+      background-repeat: repeat;
+      animation: scrollText 10s linear infinite;
+      color: #000;
+      font-size: 64px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 72px; /* 112.5% */
+      letter-spacing: -1.28px;
+      text-transform: uppercase;
+      width: 100vw;
+      height: 60px;
+    }
+  }
+  
+  .position {
+      padding-top: 10%;   
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  }
+  
+  .header {
+      width: 100vw;
+  }
+  
+  .left {
+    flex: 1; 
+    display: flex;
+    align-items: center;
+  }
+  
+  .iconContainer {
+    display: flex;
+    flex-direction: column; 
+    gap: 10px;
+  }
+  
+  .person {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  
+  }
+  
+  .github {
+      width: 20px;
+      height: 20px;
+      display: flex;
+  }
+  
+  .linkedin {
+      width: 20px;
+      height: 20px;
+      display: flex;
+  }
+  
+  .email {
+      width: 20px;
+      height: 20px;
+      display: flex;
+  }
+  
+  .cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      height: 200px;
+      width: 200px;
+      border-radius: 20px;
+      /*new*/
+      overflow: hidden;
+  }
+  
+  /*new*/
+  .cell img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+  }
+  
+  .content {
+      text-align: center;
+      margin-top: 2px;
+      margin-bottom: 20px;
+  }
+  
+    .name {
+      padding-bottom: 6px;
+      padding-left: 40px;
+      font-weight: 800;
+      font-size: 17px;
+      width: 120px;
+    }
+  
+    .title {
+      padding-right: 40px;
+    }
+  
+    @keyframes scrollText {
+      0% {
+        transform: translateX(100%);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+  
+    .fade-in-section {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+    
+    .fade-in-section.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }

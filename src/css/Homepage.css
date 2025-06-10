@@ -1,0 +1,369 @@
+/* ===== BASE STYLES ===== */
+.homepage {
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  /* ===== NAVBAR ===== */
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  
+  .navbar__logo {
+    font-weight: bold;
+    font-size: 1.25rem;
+  }
+  
+  .navbar__links button {
+    background: none;
+    border: none;
+    margin-left: 1rem;
+    cursor: pointer;
+  }
+
+  /* ===== NAVBAR LOGIN BUTTON ===== */
+.navbar__login-button {
+    background-color: #4285f4; /* google blue */
+    color: black;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    margin-left: 1rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .navbar__login-button:hover {
+    background-color: #3367d6;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
+  
+  /* Google icon */
+  .navbar__login-button::before {
+    content: '';
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMTcuNiA5LjJsLS4xLTEuOEg5djMuNGg0LjhDMTMuNiAxMiAxMyAxMyAxMiAxMy42djIuMmgzYTguOCA4LjggMCAwIDAgMi42LTYuNnoiIGZpbGw9IiM0Mjg1RjQiIGZpbGwtcnVsZT0ibm9uemVybyIvPjxwYXRoIGQ9Ik05IDE4YzIuNCAwIDQuNS0uOCA2LTIuMmwtMy0yLjJhNS40IDUuNCAwIDAgMS04LTIuOUgxVjEzYTkgOSAwIDAgMCA4IDV6IiBmaWxsPSIjMzRBODUzIiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNNCAxMC43YTUuNCA1LjQgMCAwIDEgMC0zLjRWNUgxYTkgOSAwIDAgMCAwIDhsMy0yLjN6IiBmaWxsPSIjRkJCQzA1IiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNOSAzLjZjMS4zIDAgMi41LjQgMy40IDEuM0wxNSAyLjNBOSA5IDAgMCAwIDEgNWwzIDIuNGE1LjQgNS40IDAgMCAxIDUtMy43eiIgZmlsbD0iI0VBNDMzNSIgZmlsbC1ydWxlPSJub256ZXJvIi8+PHBhdGggZD0iTTAgMGgxOHYxOEgweiIvPjwvZz48L3N2Zz4=');
+    background-size: contain;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .navbar__links {
+      flex-wrap: wrap;
+    }
+    
+    .navbar__login-button {
+      margin: 0.5rem 0 0 0;
+      width: 100%;
+      justify-content: center;
+    }
+  }
+  
+  /* ===== SECTIONS ===== */
+  .section {
+    padding: 4rem 2rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .section h2 {
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  /* Header Section */
+  .section--header {
+    justify-content: center;
+    text-align: center;
+    background: #f8f9fa;
+  }
+  
+  /* Values Section */
+  .values__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    grid-template-rows: repeat(2, 1fr);    /* 2 rows (equal height) */
+    gap: 2rem;
+    width: 100%;
+    aspect-ratio: 1 / 1; /* optional: makes the entire grid square */
+  }
+  
+  .value-card {
+    padding: 1.5rem;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    
+    /* Ensures each card is a square */
+    aspect-ratio: 1 / 1; /* width = height */
+    width: 100%;        /* fills grid cell width */
+    height: 100%;       /* fills grid cell height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* centers content vertically */
+    align-items: center;     /* centers content horizontally */
+  }
+
+  @media (max-width: 768px) {
+    .values__grid {
+      grid-template-columns: 1fr; /* single column on mobile */
+      aspect-ratio: auto;         /* disable square grid on small screens */
+    }
+  }
+  
+  /* Team Section */
+  .team__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    width: 100%;
+  }
+  
+  .officer-card {
+    text-align: center;
+    padding: 1rem;
+  }
+  
+  .officer-avatar {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    background: #ddd;
+  }
+  
+  /* Partners Section */
+  .partners__grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+  }
+  
+  .partner-logo {
+    padding: 1.5rem;
+    border: 1px solid #eee;
+    border-radius: 4px;
+  }
+
+/* ===== TEAM GRID STYLES ===== */
+.section--team {
+    padding: 4rem 2rem;
+    background: #f9f9f9;
+}
+
+.team-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.top-line, .bottom-line {
+    height: 2px;
+    background: #3498db;
+    width: 100px;
+    margin: 0 auto;
+}
+
+.scroll-text {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 1rem 0;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.team-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.team-card {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.team-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.team-image-container {
+    position: relative;
+    height: 250px;
+    overflow: hidden;
+}
+
+.team-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.team-card:hover .team-image {
+    transform: scale(1.05);
+}
+
+.team-social-links {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.team-card:hover .team-social-links {
+    opacity: 1;
+}
+
+.social-icon {
+    width: 30px;
+    height: 30px;
+    transition: transform 0.2s ease;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 5px;
+    border-radius: 50%;
+}
+
+.social-icon:hover {
+    transform: scale(1.2);
+    background: white;
+}
+
+.team-info {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.team-name {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.team-position {
+    color: #7f8c8d;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .team-grid-container {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+    
+    .team-image-container {
+        height: 220px;
+    }
+    
+    .scroll-text {
+        font-size: 1.5rem;
+    }
+    
+    .team-social-links {
+        opacity: 1; /* Always show on mobile */
+        background: rgba(0, 0, 0, 0.5);
+        padding: 10px 0;
+        bottom: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .team-grid-container {
+        grid-template-columns: 1fr;
+    }
+}
+  
+  /* ===== FOOTER ===== */
+.footer {
+    background: #333;
+    color: white;
+    padding: 2rem 0; /* changed from 2rem to 2rem 0 to remove horizontal padding */
+    text-align: center;
+    width: 100%; /* ensure full width */
+    margin: 0; /* remove any default margins */
+}
+
+.footer__content {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1rem;
+    max-width: 1200px; /* optional: constrain content width */
+    margin: 0 auto; /* center the content */
+    padding: 0 20px; /* add some padding on sides */
+}
+
+.footer__links a {
+    color: white;
+    display: block;
+    margin: 0.5rem 0;
+    text-decoration: none; /* optional: remove underline */
+    transition: color 0.2s ease; /* optional: hover effect */
+}
+
+.footer__links a:hover {
+    color: #3498db; /* optional: hover color */
+}
+
+.footer__copyright {
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1); /* optional: subtle divider */
+    margin-top: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .footer__content {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .footer__links {
+        margin-bottom: 1rem;
+    }
+}
+  
+  /* ===== UTILITIES ===== */
+  .cta-button {
+    padding: 0.75rem 1.5rem;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 1rem;
+  }

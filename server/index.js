@@ -1,6 +1,5 @@
 const express = require('express');
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/resumes/' });
 const mongoose = require('mongoose');
 const User = require('./Models/User');
 const RegularEvent = require('./Models/RegularEvent');
@@ -16,13 +15,13 @@ const authRoutes = require('./auth');
 
 require('./db/connection');
 
-//middleware routes
+//middleware
 const app = express();
 app.use(express.json()); //middleware to parse JSON requests
 app.use(express.urlencoded({ extended: true }));
 app.use('/api', authRoutes); //mount auth routes
 
-//app.use(cors());
+//CORS
 app.use(cors({
   origin: 'http://localhost:3000',
   methods: ['GET', 'POST', 'DELETE', 'PATCH'],
@@ -30,23 +29,30 @@ app.use(cors({
   credentials: true,
 }));
 
-/* PURPOSE: Set up Multer for File Uploads */
+//ensure 'uploads' directory exists
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+//multer setup
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './files');
+  destination: (req, file, cb) => {
+    cb(null, uploadsDir); //save to ./uploads/
   },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
 });
+const upload = multer({ storage });
+app.use('/uploads', express.static(uploadsDir));
 
 /* PURPOSE: Fetches Registered User from Database */
 app.get('/users', async (req, res) => {
   try {
     const users = await User.find({})
-      .select('-password -__v -resetToken') // Exclude sensitive fields
-      .sort({ createdAt: -1 }); // Newest first
+      .select('-password -__v -resetToken') //exclude sensitive fields
+      .sort({ createdAt: -1 }); //newest first
     
     res.json(users);
   } catch (error) {
@@ -61,7 +67,7 @@ app.use('/files', express.static(path.join(__dirname, 'files')));
 app.get('/user/:id', async (req, res) => {
   try {
     const user = await User.findById(req.params.id)
-      .select('-password -googleId -__v'); // Exclude sensitive fields
+      .select('-password -googleId -__v'); //exclude sensitive fields
     
     if (!user) return res.status(404).send('User not found');
     
@@ -73,6 +79,8 @@ app.get('/user/:id', async (req, res) => {
       pronouns: user.pronouns,
       major: user.major,
       year: user.year,
+      points: user.points || 0,
+      attendedEvents: user.attendedEvents,
     });
   } catch (error) {
     res.status(500).send('Server error');
@@ -130,7 +138,6 @@ app.get('/user/gmail/:gmail', async (req, res) => {
     } //returns gmail ID without password
 
     //response object
-    //const { name, email, gmail, pronouns, major, year, } = user;
     const userProfile = {
       name: user.name,
       email: user.email || user.gmail,
@@ -161,48 +168,62 @@ app.get('/regularevents', async (req, res) => {
   }
 });
 
-/* PURPOSE: General Event Creation */
-app.post('/regularevents', async (req, res) => {
-  
+/* PURPOSE: Admin Event Creation */
+app.post('/regularevents', upload.single('poster'), async (req, res) => {
   try {
-    console.log("Received request:", req.body); //debugging
+    console.log("Received request:", {
+      body: req.body,
+      file: req.file ? `File received: ${req.file.originalname}` : 'No file received'
+    });
+
+    // Parse form data
     const {
       title,
       description,
       date,
       location,
-      appReq = false,
-      points = 0,
-      rsvpLimit = 0,
-      actualAttendees = []
+      appReq = 'false', // Default as string since FormData sends strings
+      points = '0'      // Default as string
     } = req.body;
 
+    // Handle file upload
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+
+    // Validate required fields
     if (!title || !description || !date || !location) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
-    if (points !== undefined && typeof points !== 'number') {
-      return res.status(400).json({ message: 'Points must be a number' });
+    // Convert values to proper types
+    const parsedAppReq = appReq === 'true';
+    const parsedPoints = parseInt(points);
+    
+    // Validate points is a valid number
+    if (isNaN(parsedPoints)) {
+      return res.status(400).json({ message: 'Points must be a valid number' });
     }
 
-    // Create new event
+    // Create new event (without any rsvp fields)
     const newEvent = new RegularEvent({
       title,
       description,
       date: new Date(date),
       location,
-      appReq,
-      points: Number(points),
-      rsvpLimit: Number(rsvpLimit),
-      actualAttendees
-  });
+      appReq: parsedAppReq,
+      points: parsedPoints,
+      actualAttendees: [], // Explicit empty array
+      imageUrl
+    });
 
     const savedEvent = await newEvent.save();
-    res.status(201).json(savedEvent); //returns saved event as json
+    res.status(201).json(savedEvent);
     
   } catch (error) {
-    console.error('Error creating event: ', error);
-    res.status(500).json({ message: 'Error saving event: ', error: error.message });
+    console.error('Error creating event:', error);
+    res.status(500).json({ 
+      message: 'Error saving event',
+      error: error.message
+    });
   }
 });
 
@@ -255,7 +276,7 @@ app.get('/rsvps', async (req, res) => {
           rsvpCount: { $size: "$rsvps" }
         }
       }
-      // Removed the $match filter to include all events, not just those with RSVPs
+      //removed the $match filter to include all events, not just those with RSVPs
     ]);
 
     res.json(eventsWithRsvps);
@@ -269,8 +290,7 @@ app.get('/rsvps', async (req, res) => {
 app.post('/regularevents/:eventId/rsvp', async (req, res) => {
   try {
     const { eventId } = req.params;
-    const { userName, isChecked } = req.body;
-    const userId = req.user._id; // From auth middleware
+    const { userId, userName, isChecked } = req.body;
 
     // Validate event and user
     const [event, user] = await Promise.all([
@@ -529,7 +549,8 @@ app.get('/api/events/attendance', async (req, res) => {
 
 /*  <------------  EVENTS TABLE  ------------>  */
 
-/* GORL idk why but i have to comment these out/back in all the time */
+/* GORL idk why but i have to comment
+these out/back in all the time */
 app.listen(4000, () => {
   console.log('Server is running on port 4000');
 });

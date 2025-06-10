@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Modal from './Modal'; //adjust the path to your modal component
-import './App.css';
 import { jwtDecode } from 'jwt-decode';
+import './css/RegularEvents.css';
+import { toZonedTime } from 'date-fns-tz';
 
 const RegularEventsPage = () => {
     const navigate = useNavigate(); //helps move between pages dynamically
@@ -12,7 +13,8 @@ const RegularEventsPage = () => {
         id: null,
         email: null,
         name: '',
-        _id: null //mongoDB ID
+        _id: null, //mongoDB ID
+        points: null
     });
     
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,8 +23,7 @@ const RegularEventsPage = () => {
     const [currentEvent, setCurrentEvent] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    
-    /* PURPOSE: Retrieves list of existing events from backend */
+    /* PURPOSE: Retrieves List of Existing Events from Backend */
     const fetchEvents = async (targetUser) => {
         try {
             console.log("fetching events for user: ", targetUser);
@@ -53,7 +54,6 @@ const RegularEventsPage = () => {
           }
     };
 
-
     /* PURPOSE: Get User Data from location OR localStorage */
     useEffect(() => {
         const loadUserData = async () => {
@@ -64,7 +64,7 @@ const RegularEventsPage = () => {
                 return;
               }
         
-              // Fetch COMPLETE user data from backend
+              //fetch COMPLETE user data from backend
               const response = await fetch(`http://localhost:4000/user/${storedUser._id}`, {
                 headers: {
                   'Authorization': `Bearer ${storedUser.token}`
@@ -87,13 +87,14 @@ const RegularEventsPage = () => {
           loadUserData();
     }, [navigate]);
 
+    /* PURPOSE: Shows Events if User is Authenticated */
     useEffect(() => {
         if (user._id) {
           fetchEvents(user); //pass the current user
         }
-      }, [user._id]);
+    }, [user._id]);
     
-    /* PURPOSE: RSVP handler with user verification */
+    /* PURPOSE: RSVP Handler with User Verification */
     const handleCheckboxChange = async (eventId) => {
         console.group(`RSVP update for event ${eventId}`);
         console.log("Current user state:", user);
@@ -176,6 +177,162 @@ const RegularEventsPage = () => {
         }
     };
 
+    /* PURPOSE: Button Rendering based on Event Timing */
+    const getEventButtons = (event, user, navigate, rsvpStatus, handleCheckboxChange) => {        
+        const now = new Date();
+        const eventDate = new Date(event.date);
+
+        //add 1 day to eventDate
+        //bc gorl
+        //its saving wrong
+        //and im blunt forcing my way through this lmao
+        eventDate.setDate(eventDate.getDate() + 1);
+        
+        //convert to CST
+        const nowCST = toZonedTime(now, 'America/Chicago');
+        const eventDateCST = toZonedTime(eventDate, 'America/Chicago');
+
+        //set check-in period end time
+        const checkInEnd = new Date(eventDateCST);
+        checkInEnd.setHours(12, 0, 0, 0); //12:00PM CST
+
+        /* DEBUG: Critical time values
+        console.log('TIME DEBUG:', {
+            currentTime: nowCST.toString(),
+            eventDate: eventDateCST.toString(),
+            checkInEnd: checkInEnd.toString(),
+            isSameDay: (
+                eventDateCST.getDate() === nowCST.getDate() &&
+                eventDateCST.getMonth() === nowCST.getMonth() &&
+                eventDateCST.getFullYear() === nowCST.getFullYear()
+            ),
+            isFuture: nowCST < eventDateCST,
+            isPast: nowCST > checkInEnd
+        }); */
+        
+        //check if event is in the past (after 8:00PM CST on event day)
+        if (nowCST > checkInEnd) {
+            return <p className="event-passed-message">Event has passed</p>;
+        }
+        
+        //check if event is today in CST
+        const isEventToday = 
+            eventDateCST.getDate() === nowCST.getDate() &&
+            eventDateCST.getMonth() === nowCST.getMonth() &&
+            eventDateCST.getFullYear() === nowCST.getFullYear();
+        
+        //check if current time is between 6:45PM and 8:00PM CST on event day
+        const isCheckInPeriod = isEventToday && (
+            (nowCST.getHours() === 6 && nowCST.getMinutes() >= 0) || // 6:00-6:59AM
+            (nowCST.getHours() >= 7 && nowCST.getHours() <= 11) ||    // 7:00-11:59AM
+            (nowCST.getHours() === 12 && nowCST.getMinutes() === 0)    // 12:00PM exactly
+        );
+
+        // ====== 1. during check-in period (ONLY show check-In) ======
+        if (isCheckInPeriod) {
+            return (
+                <button                     
+                    onClick={() => navigate('/eventcheckin', { 
+                        state: { 
+                            event: {
+                                eventId: event._id,
+                                eventTitle: event.title,
+                                date: event.date,
+                                location: event.location
+                            },
+                        user: {
+                            uid: user._id,
+                            name: user.name,
+                            utdEmail: user.utdEmail,
+                            token: user.token
+                        }
+                        }
+                    })}
+                    className="event-button event-button--primary"
+                >
+                    Check-In!
+                </button>
+            );
+        }
+    
+        // ====== 2. if event is in the future (NOT today) ======
+        if (!isEventToday && nowCST < eventDateCST) {
+            if (event.appReq) {
+                return (
+                    <button 
+                        onClick={() => navigate('/eventapplications', { 
+                            state: { 
+                                eventId: event._id,
+                                eventTitle: event.title,
+                                date: event.eventDate,
+                                userId: user._id,
+                                name: user.name,
+                                email: user.email,
+                            }
+                        })}
+                        className="event-button event-button--primary"
+                    >
+                        Apply!
+                    </button>
+                );
+            } else {
+                return (
+                    <>
+                        <label className="event-label">
+                            <input 
+                                type="checkbox" 
+                                checked={rsvpStatus[event._id] || false} 
+                                onChange={() => handleCheckboxChange(event._id)} 
+                                className="event-checkbox" 
+                            />
+                            RSVP
+                        </label>
+                        {rsvpStatus[event._id] && <p className="confirmation-message">You have RSVPed!</p>}
+                    </>
+                );
+            }
+        }
+    
+        // ====== 3. if it's event day but NOT check-in period (before 6:45 PM) ======
+        if (isEventToday && !isCheckInPeriod) {
+            if (event.appReq) {
+                return (
+                    <button 
+                        onClick={() => navigate('/eventapplications', { 
+                            state: { 
+                                eventId: event._id,
+                                eventTitle: event.title,
+                                date: event.eventDate,
+                                userId: user._id,
+                                name: user.name,
+                                email: user.email,
+                            }
+                        })}
+                        className="event-button event-button--primary"
+                    >
+                        Apply!
+                    </button>
+                );
+            } else {
+                return (
+                    <>
+                        <label className="event-label">
+                            <input 
+                                type="checkbox" 
+                                checked={rsvpStatus[event._id] || false} 
+                                onChange={() => handleCheckboxChange(event._id)} 
+                                className="event-checkbox" 
+                            />
+                            RSVP
+                        </label>
+                        {rsvpStatus[event._id] && <p className="confirmation-message">You have RSVPed!</p>}
+                    </>
+                );
+            }
+        }
+        return null;
+    };
+  
     /* PURPOSE: Generates a Google Calendar Event link */
     const handleAddToCalendar = () => {
         if (!currentEvent) return;
@@ -195,6 +352,7 @@ const RegularEventsPage = () => {
         setIsModalOpen(false);
     };
 
+    /* PURPOSE: Only Allows WWC Email into Admin Page */
     const handleClick = () => {
         if (user?.email === "utdwwc@gmail.com" ||
             user?.utdEmail === "utdwwc@gmail.com") {
@@ -208,24 +366,24 @@ const RegularEventsPage = () => {
         }
     };
 
-    // Sort events by date in descending order (newest first)
+    /* PURPOSE: Sorts Events by Date in Descending Order (Newest First) */
     const sortedEvents = [...events].sort((a, b) => new Date(b.date) - new Date(a.date));
 
     return (
-        <div>
-            <h1 style={styles.pageTitle}>Regular Events Page</h1>
+        <div className="regular-events">
+            <h1 className="page-title">Women Who Compute Events</h1>
             
             {/* Navigation buttons (moved outside event mapping) */}
-            <div style={styles.container}>
+            <div className="event-container">
                 <button
-                    style={styles.button}
-                    onClick={handleClick}
+                    className="event-button event-button--primary"
+                    onClick={() => navigate('/')}
                 >
-                    Go to Admin
+                    Homepage
                 </button>
                 
                 <button
-                    style={styles.button}
+                    className="event-button event-button--primary"
                     onClick={() => {
                         //ensure we have complete object
                         if (!user || !user._id) {
@@ -240,124 +398,58 @@ const RegularEventsPage = () => {
                             return;
                         }
                         
-                        navigate('/profile', {
-                            state: {
-                              user: {
-                                _id: user._id,
-                                name: user.name,
-                                email: user.email,
-                                utdEmail: user.utdEmail || '',  //fallback if missing
-                                pronouns: user.pronouns || '',  //fallback if missing
-                                major: user.major || '',        //fallback if missing
-                                year: user.year || ''           //fallback if missing
-                              }
-                            } 
-                          });
+                        navigate('/profile', { state: { user } });
                     }}
                 >
-                    Go to Profile
+                    User Profile
+                </button>
+
+                <button
+                    className="event-button event-button--primary"
+                    onClick={handleClick}
+                >
+                    Admin Dashboard
                 </button>
             </div>
-
+            
             {sortedEvents.map((event) => (
-                <div key={event._id} style={styles.container}>
-                    <h1 style={styles.title}>Event: {event.title}</h1>
-                    <p><strong>Description:</strong> {event.description}</p>
-                    <p><strong>Date:</strong> {new Date(event.date).toLocaleDateString()}</p>
-                    <p><strong>Location:</strong> {event.location}</p>
-                    
-                    {event.appReq ? (
-                        <button 
-                            onClick={() => navigate('/eventapplications', { 
-                                state: { 
-                                    eventId: event._id,
-                                    eventTitle: event.title,
-                                    userId: user._id,
-                                    name: user.name,
-                                    email: user.email,
-                                }
-                            })}
-                        style={styles.applyButton}
-                      >
-                        Apply for Event
-                      </button>
-                    ) : (
-                        <>
-                            <label style={styles.label}>
-                                <input 
-                                    type="checkbox" 
-                                    checked={rsvpStatus[event._id] || false} 
-                                    onChange={() => handleCheckboxChange(event._id)} 
-                                    style={styles.checkbox} 
-                                />
-                                RSVP
-                            </label>
-                            {rsvpStatus[event._id] && <p style={styles.confirmation}>You have RSVPed!</p>}
-                        </>
-                    )}
-                    
-                    <Modal 
-                        isOpen={isModalOpen} 
-                        onClose={() => setIsModalOpen(false)} 
-                        onAddToCalendar={handleAddToCalendar} 
-                        event={currentEvent}
-                    />
-                </div>
-            ))}
+            <div key={event._id} className="event-container">
+                <div className="event-content-wrapper">
+                    {/* Left Side: Event Info */}
+                    <div className="event-details">
+                        <h1 className="event-title">Event: {event.title}</h1>
+                            <p><strong>Description:</strong> {event.description}</p>
+                            <p><strong>Date:</strong> {`${String(new Date(event.date).getUTCMonth() + 1).padStart(2, '0')}/${String(new Date(event.date).getUTCDate()).padStart(2, '0')}/${new Date(event.date).getUTCFullYear()}`}</p>
+                            <p><strong>Location:</strong> {event.location}</p>
+
+                        {getEventButtons(event, user, navigate, rsvpStatus, handleCheckboxChange)}
+
+                        <Modal 
+                            isOpen={isModalOpen} 
+                            onClose={() => setIsModalOpen(false)} 
+                            onAddToCalendar={handleAddToCalendar} 
+                            event={currentEvent}
+                        />
+                    </div>
+
+                    {/* Right Side: Event Poster */}
+                    {event.imageUrl && (
+                        <div className="event-poster-container">
+                            <img 
+                                src={event.imageUrl} 
+                                alt={`${event.title} poster`} 
+                                className="event-poster"
+                                onError={(e) => {
+                                    e.target.style.display = 'none';
+                                }}
+                            />
+                        </div>
+            )}
+            </div>
+        </div>
+        ))}
         </div>
     );
-};
-
-const styles = {
-    pageTitle: {
-        textAlign: 'center',
-        margin: '20px 0',
-        fontSize: '2rem',
-    },
-    container: {
-        fontFamily: 'Arial, sans-serif',
-        margin: '20px',
-        padding: '20px',
-        border: '1px solid #ccc',
-        borderRadius: '5px',
-        maxWidth: '600px',
-    },
-    title: {
-        color: '#333',
-        marginBottom: '15px',
-    },
-    label: {
-        display: 'flex',
-        alignItems: 'center',
-        cursor: 'pointer',
-    },
-    checkbox: {
-        marginRight: '10px',
-    },
-    confirmation: {
-        color: 'green',
-        marginTop: '10px',
-    },  
-    button: {
-        padding: '10px 15px',
-        margin: '0 10px',
-        //backgroundColor: '#3498db',
-        //color: 'white',
-        //border: 'none',
-        borderRadius: '4px',
-        cursor: 'pointer',
-        marginTop: '10px',
-    },
-    applyButton: {
-        display: 'inline-block',
-        padding: '10px 15px',
-        //backgroundColor: '#27ae60',
-        //color: 'white',
-        textDecoration: 'none',
-        borderRadius: '4px',
-        marginTop: '10px',
-        cursor: 'pointer',
-    },
 };
 
 export default RegularEventsPage;
