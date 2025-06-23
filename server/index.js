@@ -553,6 +553,6 @@ app.get('/api/events/attendance', async (req, res) => {
 these out/back in all the time */
 app.listen(4000, () => {
   console.log('Server is running on port 4000');
-});
+}); 
 
 module.exports = app;

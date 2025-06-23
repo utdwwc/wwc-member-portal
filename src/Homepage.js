@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import EventsGrid from './components/EventsGrid';
+import './css/modules/EventCard.css';
 import './css/Homepage.css';
-import './css/team.module.css'; //import the team styles
+import './css/modules/team.module.css'; //team section css
 
-// Import social icons
-import './css/team.module.css';
+// Import Social Icons
 import Github from './images/github.png';
 import Linkedin from './images/linkedin.png';
 import Email from './images/email.png';
 
-// Import team images (you'll need to add these)
+// Import Team Images (you'll need to add these)
+/* planning to get rid of this once backend set up for officers */
 import Aishwarya from './images/team/aishwarya.jpg';
 import Nihita from './images/team/nihita.jpg';
 import Dheeptha from './images/team/dheeptha.jpg';
@@ -22,8 +24,49 @@ import Adeline from './images/team/adeline.jpg';
 import Khyati from './images/team/khyati.jpg';
 import Sameera from './images/team/sameera.jpg';
 
+/* Helper function to check if an event has passed
+const isEventPassed = (eventDate) => {
+    const now = new Date();
+    const date = new Date(eventDate);
+    
+    //convert to CST for comparison
+    const nowCST = toZonedTime(now, 'America/Chicago');
+    const eventDateCST = toZonedTime(date, 'America/Chicago');
+    
+    //set check-in period end time (12:00PM CST as in your original code)
+    // GORL CHANGE TF OUT OF THIS LATERRRRR
+    const checkInEnd = new Date(eventDateCST);
+    checkInEnd.setHours(12, 0, 0, 0);
+    
+    return nowCST > checkInEnd;
+}; */
+
 const Homepage = () => {
     const navigate = useNavigate();
+    const [events, setEvents] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    // Fetch events data
+    useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                const response = await fetch('http://localhost:4000/regularevents');
+                const data = await response.json();
+                
+                //sort events by date (newest first)
+                const sortedEvents = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                //get the 4 most recent events
+                setEvents(sortedEvents.slice(0, 4));
+            } catch (error) {
+                console.error("Fetch error:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchEvents();
+    }, []);
 
     //smooth scrolling for navigation
     const scrollTo = (id) => {
@@ -147,6 +190,7 @@ const Homepage = () => {
                 <div className="navbar__logo">Women Who Compute</div>
                 <div className="navbar__links">
                     <button onClick={() => scrollTo('header')}>Home</button>
+                    <button onClick={() => scrollTo('events')}>Events</button>
                     <button onClick={() => scrollTo('values')}>What We Offer</button>
                     <button onClick={() => scrollTo('team')}>Team</button>
                     <button onClick={() => scrollTo('partners')}>Partners</button>
@@ -166,6 +210,14 @@ const Homepage = () => {
                     <p>At Women Who Compute, we are dedicated to the empowerment and advancement of women in engineering and computer science.</p>
                 </div>
             </section>
+
+            {/* --- EVENTS --- */}
+            <EventsGrid 
+                events={events} 
+                title="Upcoming Events"
+                showViewAll={true}
+                onViewAllClick={() => navigate('/login')}
+            />
 
             {/* --- VALUES --- */}
             <section id="values" className="section section--values">
@@ -246,6 +298,7 @@ const Homepage = () => {
                     </div>
                     <div className="footer__links">
                         <a href="#header">Home</a>
+                        <a href="#events">Events</a>
                         <a href="#values">What We Offer</a>
                         <a href="#team">Team</a>
                         <a href="#partners">Partners</a>

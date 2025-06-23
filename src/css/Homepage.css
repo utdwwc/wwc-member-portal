@@ -31,7 +31,7 @@
   }
 
   /* ===== NAVBAR LOGIN BUTTON ===== */
-.navbar__login-button {
+  .navbar__login-button {
     background-color: #4285f4; /* google blue */
     color: black;
     padding: 0.5rem 1rem;
@@ -96,6 +96,75 @@
     text-align: center;
     background: #f8f9fa;
   }
+
+  /* Events Section */
+.events-section {
+  padding: 80px 5%;
+  background-color: #f9f9f9;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 40px;
+  color: #2d2d2d;
+}
+
+/* Grid layout for events */
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(300px, 1fr));
+  gap: 50px;
+  width: 100%;
+  margin: 0 auto;
+  max-width: 1400px;
+}
+
+/* View All button styling */
+.view-all-container {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.view-all-button {
+  background-color: #6a1b9a;
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.view-all-button:hover {
+  background-color: #8e24aa;
+  transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .events-grid {
+    gap: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .events-section {
+    padding: 60px 20px;
+  }
+  
+  .events-grid {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+    gap: 30px;
+  }
+  
+  .section-title {
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+  }
+}
   
   /* Values Section */
   .values__grid {
