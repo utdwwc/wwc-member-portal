@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import EventsGrid from './components/EventsGrid';
+import Modal from './Modal';
 import './css/modules/EventCard.css';
 import './css/Homepage.css';
 import './css/modules/team.module.css'; //team section css
@@ -24,29 +25,21 @@ import Adeline from './images/team/adeline.jpg';
 import Khyati from './images/team/khyati.jpg';
 import Sameera from './images/team/sameera.jpg';
 
-/* Helper function to check if an event has passed
-const isEventPassed = (eventDate) => {
-    const now = new Date();
-    const date = new Date(eventDate);
-    
-    //convert to CST for comparison
-    const nowCST = toZonedTime(now, 'America/Chicago');
-    const eventDateCST = toZonedTime(date, 'America/Chicago');
-    
-    //set check-in period end time (12:00PM CST as in your original code)
-    // GORL CHANGE TF OUT OF THIS LATERRRRR
-    const checkInEnd = new Date(eventDateCST);
-    checkInEnd.setHours(12, 0, 0, 0);
-    
-    return nowCST > checkInEnd;
-}; */
-
 const Homepage = () => {
     const navigate = useNavigate();
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Fetch events data
+    const [rsvpStatus, setRsvpStatus] = useState({});
+    const [currentEvent, setCurrentEvent] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const [upcomingEvents, setUpcomingEvents] = useState([]);
+    const [pastEvents, setPastEvents] = useState([]);
+    const user = null;
+
+
+    /* PURPOSE: Fetch Events Data */
     useEffect(() => {
         const fetchEvents = async () => {
             try {
@@ -56,6 +49,13 @@ const Homepage = () => {
                 //sort events by date (newest first)
                 const sortedEvents = data.sort((a, b) => new Date(b.date) - new Date(a.date));
                 
+                const now = new Date();
+                const upcoming = sortedEvents.filter(event => new Date(event.date) >= now);
+                const past = sortedEvents.filter(event => new Date(event.date) < now);
+                
+                setUpcomingEvents(upcoming);
+                setPastEvents(past);
+
                 //get the 4 most recent events
                 setEvents(sortedEvents.slice(0, 4));
             } catch (error) {
@@ -212,9 +212,17 @@ const Homepage = () => {
             </section>
 
             {/* --- EVENTS --- */}
-            <EventsGrid 
-                events={events} 
-                title="Upcoming Events"
+            <EventsGrid
+                title="Events"
+                events={events.slice(0, 4)}
+                user={user}
+                navigate={navigate}
+                rsvpStatus={rsvpStatus}
+                setRsvpStatus={setRsvpStatus}
+                setCurrentEvent={setCurrentEvent}
+                setIsModalOpen={setIsModalOpen}
+                showButtons={true}
+
                 showViewAll={true}
                 onViewAllClick={() => navigate('/login')}
             />

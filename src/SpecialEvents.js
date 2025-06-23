@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './css/SpecialEvents.css';
 
@@ -110,9 +110,11 @@ const EventApplicationForm = () => {
     return (
         <div className="form-container">
             <h2>Speed Mentoring Application</h2>
+
             {showSuccessMessage && (
                 <div className="form-success-message">{submissionMessage}</div>
             )}
+
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label>Name:</label>
