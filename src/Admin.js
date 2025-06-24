@@ -426,7 +426,10 @@ const Admin = () => {
                                                     <thead>
                                                         <tr>
                                                             <th>Name</th>
+                                                            <th>Pronouns</th>
                                                             <th>School Email</th>
+                                                            <th>Year</th>
+                                                            <th>Expected Grad</th>
                                                             <th>History</th>
                                                             <th>Reason</th>
                                                         </tr>
@@ -435,7 +438,10 @@ const Admin = () => {
                                                         {event.applications.map(application => (
                                                             <tr key={application._id}>
                                                                 <td>{application.name}</td>
+                                                                <td>{application.pronouns}</td>
                                                                 <td>{application.email}</td>
+                                                                <td>{application.year}</td>
+                                                                <td>{application.grad}</td>
                                                                 <td>{application.history}</td>
                                                                 <td>{application.reason}</td>
                                                             </tr>
