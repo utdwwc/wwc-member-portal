@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import Modal from './Modal'; //adjust the path to your modal component
+import Modal from './components/Modal'; //adjust the path to your modal component
 import { jwtDecode } from 'jwt-decode';
 import './css/RegularEvents.css';
 import { toZonedTime } from 'date-fns-tz';
+
+import EventsGrid from './components/EventsGrid';
+import './css/modules/EventCard.css';
+
 
 const RegularEventsPage = () => {
     const navigate = useNavigate(); //helps move between pages dynamically
@@ -35,7 +39,12 @@ const RegularEventsPage = () => {
 
             const data = await response.json();
             console.log("events response: ", data);
-            setEvents(data);
+            //setEvents(data);
+
+            //sort events by date (newest first)
+            const sortedEvents = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+            setEvents(sortedEvents);
             
             //initialize RSVP status
             const initialRsvpStatus = {};
@@ -413,10 +422,26 @@ const RegularEventsPage = () => {
             </div>
             
             <div className="events-grid-container">
+                            <EventsGrid
+                                title="Events"
+                                events={events}
+                                user={user}
+                                navigate={navigate}
+                                rsvpStatus={rsvpStatus}
+                                setRsvpStatus={setRsvpStatus}
+                                setCurrentEvent={setCurrentEvent}
+                                setIsModalOpen={setIsModalOpen}
+                                showButtons={true}
+            
+                                showViewAll={false}
+                                onViewAllClick={() => navigate('/login')}
+                            />
+            
+            {/*}
             {sortedEvents.map((event) => (
             <div key={event._id} className="event-container">
                 <div className="event-content-wrapper">
-                    {/* Left Side: Event Info */}
+
                     <div className="event-details">
                         <h1 className="event-title">Event: {event.title}</h1>
                             <p><strong>Description:</strong> {event.description}</p>
@@ -433,7 +458,6 @@ const RegularEventsPage = () => {
                         />
                     </div>
 
-                    {/* Right Side: Event Poster */}
                     {event.imageUrl && (
                         <div className="event-poster-container">
                             <img 
@@ -448,7 +472,7 @@ const RegularEventsPage = () => {
             )}
             </div>
         </div>
-        ))}
+        ))} */}
         </div>
         </div>
     );

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import EventsGrid from './components/EventsGrid';
-import Modal from './Modal';
-import './css/modules/EventCard.css';
 import './css/Homepage.css';
+import Modal from './components/Modal';
+
+import EventsGrid from './components/EventsGrid';
+import './css/modules/EventCard.css';
 import './css/modules/team.module.css'; //team section css
 
 // Import Social Icons
@@ -49,13 +50,6 @@ const Homepage = () => {
                 //sort events by date (newest first)
                 const sortedEvents = data.sort((a, b) => new Date(b.date) - new Date(a.date));
                 
-                const now = new Date();
-                const upcoming = sortedEvents.filter(event => new Date(event.date) >= now);
-                const past = sortedEvents.filter(event => new Date(event.date) < now);
-                
-                setUpcomingEvents(upcoming);
-                setPastEvents(past);
-
                 //get the 4 most recent events
                 setEvents(sortedEvents.slice(0, 4));
             } catch (error) {
