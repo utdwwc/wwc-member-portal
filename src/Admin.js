@@ -248,7 +248,7 @@ const Admin = () => {
 
                 <div style={{ margin: '10px 0' }}>
                   <label htmlFor="poster-upload" style={{ display: 'block', marginBottom: '5px' }}>
-                    Event Poster (optional):
+                    Event Poster (required):
                   </label>
                   <input
                     type="file"

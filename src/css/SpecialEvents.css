@@ -1,76 +1,104 @@
-/* Base Container */
+/* ============================================================================
+   SPECIALEVENTS.CSS — STYLING GUIDE FOR DESIGNERS
+   ----------------------------------------------------------------------------
+   this stylesheet controls the layout + visual design of:
+   the Event Form Application
+
+   ✅ u can totally:
+   - customize colors, fonts, font sizes, spacing (margin/padding)
+   - tweak buttons, hover states, borders, shadows, etc.
+   - add cute transitions or animations ✨
+   - add new styles if needed (just keep it organized pls)
+
+   🚫 but PLS PLS PLS do NOT:
+   - rename or remove any class names (JS/React uses these)
+   - change layout properties like display, position, flex stuff
+   - rearrange or remove form element wrappers unless u ask me/dheeptha first
+
+   contact me before making structural changes <3 ;p
+============================================================================ */
+
+
+/* BASE CONTAINER — main form wrapper */
 .form-container {
-    font-family: 'Arial, sans-serif';
-    margin: 20px auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    max-width: 500px;
+  font-family: 'Arial, sans-serif';
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  max-width: 500px; /* 🚫 controls form width */
 }
 
-/* Form Groups */
+
+/* FORM GROUPS — wrapper for each input/label */
 .form-group {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
-/* Input Fields */
+
+/* INPUT FIELDS — text, email, etc */
 .form-input {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+  width: 100%; /* 🚫 don’t change — ensures proper form alignment */
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
-/* Textarea Specific */
+
+/* TEXT AREA — for longer messages/descriptions */
 .form-textarea {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    height: 100px;
-    resize: vertical; /* Added for better UX */
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  height: 100px;
+  resize: vertical;
 }
 
-/* Buttons */
+
+/* BUTTONS — submit/cancel/etc */
 .form-button {
-    background-color: #6c497c;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    margin: 0 10px;
-    transition: background-color 0.3s ease; /* Added for hover effect */
+  background-color: #6c497c;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 0 10px;
+  transition: background-color 0.3s ease;
 }
 
 .form-button:hover {
-    background-color: #8e5fa3;
+  background-color: #8e5fa3;
 }
 
-/* Messages */
+
+/* SUCCESS MESSAGES — shows on form submit */
 .form-success-message {
-    background-color: #d4edda;
-    color: #155724;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #c3e6cb;
-    border-radius: 4px;
-    text-align: center;
+  background-color: #d4edda;
+  color: #155724;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #c3e6cb;
+  border-radius: 4px;
+  text-align: center;
 }
 
-/* Error States */
+
+/* ERROR STATES — validation fails, etc */
 .form-error {
-    color: red;
-    font-size: 12px;
-    margin-top: 5px;
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
 }
 
-/* Added for better form layout */
+
+/* BUTTON GROUP — wraps all buttons together */
 .form-button-group {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
+  display: flex;              /* 🚫 layout-critical! */
+  justify-content: center;
+  margin-top: 20px;
 }

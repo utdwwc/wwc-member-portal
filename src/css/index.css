@@ -1,3 +1,22 @@
+/* ============================================================================
+   GLOBAL.CSS — STYLING GUIDE FOR DESIGNERS
+   ----------------------------------------------------------------------------
+   this file contains default global styles applied across the entire website
+
+   ✅ u can totally:
+   - change default font stack if needed for branding
+   - tweak smoothing/anti-aliasing or reset properties
+   - add additional global resets or overrides if necessary
+
+   🚫 but pls DO NOT:
+   - remove font-smoothing props unless u test across browsers first
+   - mess with margins/paddings unless u understand global effects
+
+   be careful — this affects everything site-wide 
+============================================================================ */
+
+
+/* ===== GLOBAL BODY STYLES ===== */
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -7,6 +26,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+
+/* ===== MONOSPACE FONT STYLES (used in <code> tags) ===== */
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

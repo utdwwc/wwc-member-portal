@@ -1,33 +1,59 @@
-/* Profile container */
+/* ============================================================================
+   PROFILE.CSS — STYLING GUIDE FOR DESIGNERS
+   ----------------------------------------------------------------------------
+   this stylesheet controls the layout and visual presentation of:
+   the user Profile page (can be accessed via Events Page)
+
+   ✅ u can totally:
+   - edit colors, fonts, font sizes, margins, paddings, borders, shadows
+   - add hover/transition effects, animations, or font styles
+   - add new styles if needed
+
+   🚫 but PLS PLS PLS do NOT:
+   - rename or remove existing class names (used in React logic)
+   - modify structural layout properties (e.g., display, position, max-width)
+   - change element order or remove wrappers in JSX without my/dheeptha's approval
+
+   contact me before making structural changes pls <3 ;p
+============================================================================ */
+
+
+/* PROFILE CONTAINER */
 .profile-details {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 2rem;
-  }
-  
-  /* Detail cards */
-  .detail-card {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-  
-  .detail-label {
-    font-weight: 600;
-    color: #4a5568;
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  
-  .detail-value {
-    color: #2d3748;
-    font-size: 1.1rem;
-  }
-  
-  /* Spacing utilities */
-  .space-y-4 > * + * {
-    margin-top: 1rem;
-  }
+  max-width: 800px;      /* 🚫 -> controls content width */
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+
+/* DETAIL CARDS */
+.detail-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+/* DETAIL LABELS */
+.detail-label {
+  font-weight: 600;
+  color: #4a5568;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+
+/* DETAIL VALUES */
+.detail-value {
+  color: #2d3748;
+  font-size: 1.1rem;
+}
+
+
+/* SPACING UTILITIES */
+.space-y-4 > * + * {
+  margin-top: 1rem;
+}

@@ -1,7 +1,30 @@
+/* ============================================================================
+   REGULAREVENTS.CSS — STYLING GUIDE FOR DESIGNERS
+   ----------------------------------------------------------------------------
+   this stylesheet controls the layout and visual presentation of:
+   the Events page
+
+   ✅ u can totally:
+   - change all colors (purple accent = #6c497c)
+   - adjust shadows, rounded corners, hover effects
+   - modify typography (except mobile font sizes)
+   - add animations/transitions to buttons/cards
+   - edit poster container styling (aspect ratio locked)
+
+   🚫 but pls do NOT:
+   - change grid/flex structures (breaks responsive layout)
+   - modify aspect-ratio (4/6) on event posters
+   - remove any position/display properties
+   - alter the mobile breakpoints (768px/480px)
+
+   contact me before making structural changes pls <3 ;p
+   thx for making it pretty guys 🥹💖
+============================================================================ */
+
 /* ===== BASE STYLES ===== */
 .regular-events {
     font-family: 'Arial', sans-serif;
-    max-width: 1200px;
+    max-width: 1200px;          /* 🚫 -> content width constraint */
     margin: 0 auto;
     padding: 20px;
   }
@@ -10,20 +33,17 @@
   .page-title {
     text-align: center;
     margin: 20px 0;
-    font-size: 2rem;
+    font-size: 2rem;           /* 🚫 -> relative to card titles */
     color: #2c3e50;
     font-weight: 600;
   }
-
-  /* ===== GRID LAYOUT ===== */
-
   
   /* ===== EVENT CONTAINERS ===== */
   .event-container {
-    margin: 0; /* Remove previous margins */
-    width: 100%; /* Take full width of grid cell */
-    max-width: 100%; /* Remove previous max-width */
-    height: 100%; /* Make all cards equal height */
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
   }
@@ -35,7 +55,7 @@
   .event-title {
     color: #333;
     margin-bottom: 15px;
-    font-size: 1.5rem;
+    font-size: 1.5rem;        /* 🚫 -> hierarchy important */
     font-weight: 500;
     border-bottom: 2px solid #6c497c;
     padding-bottom: 8px;
@@ -61,15 +81,15 @@
   .event-poster-container {
     margin: 0 auto 1.5rem auto;
     text-align: center;
-    max-width: 400px; /* constrain maximum width */
+    max-width: 400px;
     width: 100%;
   }
 
   .event-poster {
     width: 100%;
     max-height: 500px;
-    aspect-ratio: 4/6;
-    object-fit: contain; /* shows full image without cropping */
+    aspect-ratio: 4/6;         /* 🚫 -> standard poster proportions */
+    object-fit: contain;       /* 🚫 -> shows full image uncropped */
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: block;
@@ -218,25 +238,25 @@
   
   /* ===== RESPONSIVE ADJUSTMENTS ===== */
   /* Responsive adjustments */
-  @media (max-width: 768px) {
+  @media (max-width: 768px) { /* 🚫 -> tablet breakpoint */
     .events-grid {
-        grid-template-columns: 1fr; /* Single column on smaller screens */
+        grid-template-columns: 1fr; 
     }
     
     .event-content-wrapper {
-        flex-direction: column; /* Stack image below text on mobile */
+        flex-direction: column;  /* 🚫 -> mobile stacking required */
     }
     
     .event-poster-container {
-        max-width: 100% !important; /* Full width for image on mobile */
+        max-width: 100% !important;
         margin-top: 15px;
     }
   }
   
-  @media (max-width: 480px) {
+  @media (max-width: 480px) {  /* 🚫 -> mobile breakpoint */
     .event-button {
       display: block;
-      width: 100%;
+      width: 100%;            /* 🚫 -> full-width buttons */
       margin: 10px 0;
     }
   }

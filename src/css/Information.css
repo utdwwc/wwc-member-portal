@@ -1,90 +1,116 @@
+/* ============================================================================
+   INFORMATIONFORM.CSS — STYLING GUIDE FOR DESIGNERS
+   ----------------------------------------------------------------------------
+   this stylesheet controls layout + styling for:
+   the Profile Update Form
+
+   ✅ u can totally:
+   - update colors, fonts, spacing, hover effects, etc.
+   - style cards/buttons/forms to fit theme
+   - add transitions or animations
+   - create new classes if needed
+
+   🚫 but PLS do NOT:
+   - rename or delete class names — tied to React functionality
+   - change layout-critical props (display, flex/grid stuff, width/max-width)
+   - remove or re-order form wrappers without my/dheeptha's approval
+
+   contact me before making structural changes pls <3 ;p
+============================================================================ */
+
+
+/* ===== BASE FORM CONTAINER ===== */
 .information-form {
-    max-width: 600px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-  
-  .form-group {
-    margin-bottom: 1.5rem;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-  }
-  
-  .form-group input[type="text"],
-  .form-group input[type="email"] {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
-  }
-  
-  .checkbox {
-    display: flex;
-    align-items: center;
-  }
-  
-  .checkbox input {
-    margin-right: 0.5rem;
-  }
-  
-  .error-message {
-    color: #d32f2f;
-    margin-bottom: 1rem;
-    padding: 0.5rem;
-    background: #fde0e0;
-    border-radius: 4px;
-  }
+  max-width: 600px;         /* 🚫 controls form width */
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 
-  .resume-section {
-    margin-bottom: 10px;
-  }
-  
-  .resume-link {
-    color: #6c497c;
-    text-decoration: underline;
-    font-weight: 500;
-  }
 
-  .error {
-    color: #d32f2f;
-    padding: 10px;
-    background: #fde0e0;
-    border-radius: 4px;
-    margin-bottom: 15px;
-  }
-  
-  .resume-actions {
-    margin-bottom: 8px;
-  }
-  
-  .resume-link {
-    color: #6c497c;
-    text-decoration: underline;
-  }
-  
-  input[type="file"] {
-    margin-top: 5px;
-    width: 100%;
-  }
-  
-  small {
-    display: block;
-    margin-top: 4px;
-    color: #666;
-    font-size: 0.8rem;
-  }
+/* ===== FORM GROUPS ===== */
+.form-group {
+  margin-bottom: 1.5rem;
+}
 
-/* ===== BASE CONTAINER ===== */
-.information-container {
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+
+/* ===== INPUT STYLES ===== */
+.form-group input[type="text"],
+.form-group input[type="email"] {
+  width: 100%;               /* 🚫 keep full width for alignment */
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+
+/* ===== CHECKBOX STYLES ===== */
+.checkbox {
   display: flex;
+  align-items: center; /* 🚫 layout critical */
+}
+
+.checkbox input {
+  margin-right: 0.5rem;
+}
+
+
+/* ===== ERROR + FEEDBACK MESSAGES ===== */
+.error-message {
+  color: #d32f2f;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background: #fde0e0;
+  border-radius: 4px;
+}
+
+.error {
+  color: #d32f2f;
+  padding: 10px;
+  background: #fde0e0;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+
+/* ===== RESUME SECTION ===== */
+.resume-section {
+  margin-bottom: 10px;
+}
+
+.resume-link {
+  color: #6c497c;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+
+/* ===== FILE INPUT + HELP TEXT ===== */
+input[type="file"] {
+  margin-top: 5px;
+  width: 100%;
+}
+
+small {
+  display: block;
+  margin-top: 4px;
+  color: #666;
+  font-size: 0.8rem;
+}
+
+
+/* ===== BASE LAYOUT CONTAINER ===== */
+.information-container {
+  display: flex;             /* 🚫 layout critical */
   justify-content: center;
   align-items: center;
   min-height: 100vh;
@@ -92,7 +118,8 @@
   padding: 20px;
 }
 
-/* ===== CARD STYLES ===== */
+
+/* ===== CARD STYLING ===== */
 .information-card {
   background: #fff;
   padding: 2rem;
@@ -100,7 +127,7 @@
   text-align: center;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 400px;
+  max-width: 400px;           /* 🚫 important for layout */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -109,11 +136,13 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
+
 /* ===== CARD CONTENT ===== */
 .information-title {
   color: #2c3e50;
   margin-bottom: 1.5rem;
   font-size: 1.8rem;
+  /* ✅ font styling can be customized */
 }
 
 .information-text {
@@ -121,6 +150,7 @@
   line-height: 1.6;
   margin-bottom: 1.5rem;
 }
+
 
 /* ===== BUTTON STYLES ===== */
 .information-button {
@@ -140,18 +170,19 @@
   background-color: #8e5fa3;
 }
 
-/* ===== RESPONSIVE ADJUSTMENTS ===== */
+
+/* ===== MOBILE RESPONSIVE ADJUSTMENTS ===== */
 @media (max-width: 480px) {
   .information-container {
     padding: 15px;
     align-items: flex-start;
     padding-top: 2rem;
   }
-  
+
   .information-card {
     padding: 1.5rem;
   }
-  
+
   .information-title {
     font-size: 1.5rem;
     margin-bottom: 1rem;

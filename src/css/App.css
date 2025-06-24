@@ -1,18 +1,55 @@
+/* ============================================================================
+   APP.CSS — STYLING GUIDE FOR DESIGNERS
+   ----------------------------------------------------------------------------
+   this stylesheet holds global styles & reusable components like:
+   app container, logo animation, card UI, and basic button styles
+
+   ✅ u can totally:
+   - update colors, fonts, shadows, paddings, etc.
+   - style buttons, cards, headers, links, etc.
+   - add cool transitions or animations
+
+   🚫 but pls do NOT:
+   - delete or rename .App-* classes (used in template render)
+   - remove keyframe animations unless we fully replace it
+   - mess with layout (like flex/grid stuff) unless u check with me first
+   
+   contact me before making structural changes pls <3 ;p
+   thx for making it pretty guys 🥹💖
+============================================================================ */
+
+
+/* ===== ROOT APP CONTAINER ===== */
 .App {
   text-align: center;
 }
 
+
+/* ===== REACT LOGO ANIMATION ===== */
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
 
+/* Only animate if user hasn’t enabled reduced motion */
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
 }
 
+/* Logo Spin Animation (don’t delete unless replacing w/ new motion) */
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* ===== HEADER SECTION ===== */
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -24,19 +61,14 @@
   color: white;
 }
 
+
+/* ===== LINKS (ex: logo link to React site) ===== */
 .App-link {
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
 
+/* ===== RESPONSIVE ADJUSTMENTS (MOBILE) ===== */
 @media (max-width: 600px) {
   .card {
     padding: 20px;
@@ -44,9 +76,10 @@
   }
 }
 
-/* Container Styles */
+
+/* ===== CONTAINER WRAPPER FOR CENTERED SECTIONS ===== */
 .container {
-  display: flex;
+  display: flex;              /* 🚫 layout critical */
   justify-content: center;
   align-items: center;
   height: 100vh;
@@ -54,7 +87,8 @@
   font-family: 'Arial', sans-serif;
 }
 
-/* Card Styles */
+
+/* ===== CARD COMPONENT STYLES ===== */
 .card {
   background: #fff;
   padding: 40px;
@@ -65,20 +99,23 @@
   width: 100%;
 }
 
-/* Heading Styles */
+
+/* ===== HEADING (used in cards/sections) ===== */
 .heading {
   color: #333;
   margin-bottom: 20px;
   font-size: 24px;
 }
 
-/* User Info Styles */
+
+/* ===== USER INFO TEXT (ex: name, email, etc) ===== */
 .user-info {
   font-size: 18px;
   margin-top: 20px;
 }
 
-/* Button Styles */
+
+/* ===== PRIMARY BUTTON STYLES ===== */
 .button {
   background: #4285F4;
   color: #fff;
@@ -89,9 +126,9 @@
   font-size: 16px;
   margin-top: 20px;
   margin-right: 10px;
-  transition: background 0.3s ease; /* optional: add hover effect */
+  transition: background 0.3s ease;
 }
 
 .button:hover {
-  background: #3367d6; /* darker shade on hover */
+  background: #3367d6; /* ✅ you can darken/lighten for hover vibes */
 }
