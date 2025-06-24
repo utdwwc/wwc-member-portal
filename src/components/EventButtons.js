@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { toZonedTime } from 'date-fns-tz';
 import PropTypes from 'prop-types';
+
+import Modal from './Modal';
+
 
 const EventButtons = ({ 
   event, 
@@ -9,8 +12,9 @@ const EventButtons = ({
   rsvpStatus, 
   setRsvpStatus,
   setCurrentEvent,
-  setIsModalOpen
+  //setIsModalOpen
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false); //local modal state
 
   // ====== Time Calculations ======
   const now = new Date();
@@ -209,7 +213,13 @@ const EventButtons = ({
       />
       RSVP
     </label>
-    {isRSVPed && (
+
+    <Modal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onAddToCalendar={handleAddToCalendar}
+      />
+    {/*isRSVPed && (
       <>
         <p className="confirmation-message">You have RSVPed!</p>
         <button 
@@ -219,7 +229,7 @@ const EventButtons = ({
           Add to Google Calendar
         </button>
       </>
-    )}
+    ) */}
   </>
 );
 };

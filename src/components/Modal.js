@@ -1,5 +1,5 @@
 import React from 'react';
-import '../css/Modal.css';
+import '../css/modules/Modal.css';
 
 const Modal = ({ isOpen, onClose, onAddToCalendar }) => {
     if (!isOpen) return null;
