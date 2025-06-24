@@ -212,20 +212,22 @@ const Homepage = () => {
             </section>
 
             {/* --- EVENTS --- */}
-            <EventsGrid
-                title="Events"
-                events={events.slice(0, 4)}
-                user={user}
-                navigate={navigate}
-                rsvpStatus={rsvpStatus}
-                setRsvpStatus={setRsvpStatus}
-                setCurrentEvent={setCurrentEvent}
-                setIsModalOpen={setIsModalOpen}
-                showButtons={true}
+            <section id="events" className="section section--events">
+                <EventsGrid
+                    title="Events"
+                    events={events.slice(0, 4)}
+                    user={user}
+                    navigate={navigate}
+                    rsvpStatus={rsvpStatus}
+                    setRsvpStatus={setRsvpStatus}
+                    setCurrentEvent={setCurrentEvent}
+                    setIsModalOpen={setIsModalOpen}
+                    showButtons={true}
 
-                showViewAll={true}
-                onViewAllClick={() => navigate('/login')}
-            />
+                    showViewAll={true}
+                    onViewAllClick={() => navigate('/login')}
+                />
+            </section>
 
             {/* --- VALUES --- */}
             <section id="values" className="section section--values">
