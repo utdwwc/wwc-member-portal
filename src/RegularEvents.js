@@ -412,6 +412,7 @@ const RegularEventsPage = () => {
                 </button>
             </div>
             
+            <div className="events-grid-container">
             {sortedEvents.map((event) => (
             <div key={event._id} className="event-container">
                 <div className="event-content-wrapper">
@@ -448,6 +449,7 @@ const RegularEventsPage = () => {
             </div>
         </div>
         ))}
+        </div>
         </div>
     );
 };
