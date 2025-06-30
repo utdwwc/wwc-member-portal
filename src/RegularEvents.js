@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import Modal from './components/Modal'; //adjust the path to your modal component
-import { jwtDecode } from 'jwt-decode';
 import './css/RegularEvents.css';
-import { toZonedTime } from 'date-fns-tz';
-
 import EventsGrid from './components/EventsGrid';
 import './css/modules/EventCard.css';
 
@@ -103,7 +99,7 @@ const RegularEventsPage = () => {
         }
     }, [user._id]);
     
-    /* PURPOSE: RSVP Handler with User Verification */
+    /* PURPOSE: RSVP Handler with User Verification 
     const handleCheckboxChange = async (eventId) => {
         console.group(`RSVP update for event ${eventId}`);
         console.log("Current user state:", user);
@@ -184,9 +180,9 @@ const RegularEventsPage = () => {
         } finally {
             console.groupEnd();
         }
-    };
+    }; */
 
-    /* PURPOSE: Button Rendering based on Event Timing */
+    /* PURPOSE: Button Rendering based on Event Timing 
     const getEventButtons = (event, user, navigate, rsvpStatus, handleCheckboxChange) => {        
         const now = new Date();
         const eventDate = new Date(event.date);
@@ -217,7 +213,7 @@ const RegularEventsPage = () => {
             ),
             isFuture: nowCST < eventDateCST,
             isPast: nowCST > checkInEnd
-        }); */
+        }); 
         
         //check if event is in the past (after 8:00PM CST on event day)
         if (nowCST > checkInEnd) {
@@ -340,9 +336,9 @@ const RegularEventsPage = () => {
             }
         }
         return null;
-    };
+    }; */
   
-    /* PURPOSE: Generates a Google Calendar Event link */
+    /* PURPOSE: Generates a Google Calendar Event link
     const handleAddToCalendar = () => {
         if (!currentEvent) return;
         
@@ -359,7 +355,7 @@ const RegularEventsPage = () => {
         
         window.open(calendarUrl, '_blank');
         setIsModalOpen(false);
-    };
+    }; */
 
     /* PURPOSE: Only Allows WWC Email into Admin Page */
     const handleClick = () => {
@@ -376,7 +372,7 @@ const RegularEventsPage = () => {
     };
 
     /* PURPOSE: Sorts Events by Date in Descending Order (Newest First) */
-    const sortedEvents = [...events].sort((a, b) => new Date(b.date) - new Date(a.date));
+    //const sortedEvents = [...events].sort((a, b) => new Date(b.date) - new Date(a.date));
 
     return (
         <div className="regular-events">
@@ -422,58 +418,21 @@ const RegularEventsPage = () => {
             </div>
             
             <div className="events-grid-container">
-                            <EventsGrid
-                                title="Events"
-                                events={events}
-                                user={user}
-                                navigate={navigate}
-                                rsvpStatus={rsvpStatus}
-                                setRsvpStatus={setRsvpStatus}
-                                setCurrentEvent={setCurrentEvent}
-                                setIsModalOpen={setIsModalOpen}
-                                showButtons={true}
+                <EventsGrid
+                    title="Events"
+                    events={events}
+                    user={user}
+                    navigate={navigate}
+                    rsvpStatus={rsvpStatus}
+                    setRsvpStatus={setRsvpStatus}
+                    setCurrentEvent={setCurrentEvent}
+                    setIsModalOpen={setIsModalOpen}
+                    showButtons={true}
             
-                                showViewAll={false}
-                                onViewAllClick={() => navigate('/login')}
-                            />
-            
-            {/*}
-            {sortedEvents.map((event) => (
-            <div key={event._id} className="event-container">
-                <div className="event-content-wrapper">
-
-                    <div className="event-details">
-                        <h1 className="event-title">Event: {event.title}</h1>
-                            <p><strong>Description:</strong> {event.description}</p>
-                            <p><strong>Date:</strong> {`${String(new Date(event.date).getUTCMonth() + 1).padStart(2, '0')}/${String(new Date(event.date).getUTCDate()).padStart(2, '0')}/${new Date(event.date).getUTCFullYear()}`}</p>
-                            <p><strong>Location:</strong> {event.location}</p>
-
-                        {getEventButtons(event, user, navigate, rsvpStatus, handleCheckboxChange)}
-
-                        <Modal 
-                            isOpen={isModalOpen} 
-                            onClose={() => setIsModalOpen(false)} 
-                            onAddToCalendar={handleAddToCalendar} 
-                            event={currentEvent}
-                        />
-                    </div>
-
-                    {event.imageUrl && (
-                        <div className="event-poster-container">
-                            <img 
-                                src={event.imageUrl} 
-                                alt={`${event.title} poster`} 
-                                className="event-poster"
-                                onError={(e) => {
-                                    e.target.style.display = 'none';
-                                }}
-                            />
-                        </div>
-            )}
+                    showViewAll={false}
+                    onViewAllClick={() => navigate('/login')}
+                />
             </div>
-        </div>
-        ))} */}
-        </div>
         </div>
     );
 };

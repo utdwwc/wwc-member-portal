@@ -24,8 +24,12 @@ const EventButtons = ({
   const nowCST = toZonedTime(now, 'America/Chicago');
   const eventDateCST = toZonedTime(eventDate, 'America/Chicago');
   
+  //set check-in window (10 AM to 10 PM CST)
+  const checkInStart = new Date(eventDateCST);
+  checkInStart.setHours(10, 0, 0, 0); // 10:00 AM CST
+
   const checkInEnd = new Date(eventDateCST);
-  checkInEnd.setHours(12, 0, 0, 0); //check-in ends at 12:00 PM CST
+  checkInEnd.setHours(22, 0, 0, 0); // 10:00 PM CST
 
   const isEventPassed = nowCST > checkInEnd;
   const isEventToday = 
@@ -33,11 +37,13 @@ const EventButtons = ({
     eventDateCST.getMonth() === nowCST.getMonth() &&
     eventDateCST.getFullYear() === nowCST.getFullYear();
   
-  const isCheckInPeriod = isEventToday && (
-    (nowCST.getHours() === 6 && nowCST.getMinutes() >= 0) || // 6:00-6:59AM
-    (nowCST.getHours() >= 7 && nowCST.getHours() <= 11) ||   // 7:00-11:59AM
-    (nowCST.getHours() === 12 && nowCST.getMinutes() === 0)  // 12:00PM exactly
-  );
+  const isCheckInPeriod = isEventToday && 
+  nowCST >= checkInStart && 
+  nowCST <= checkInEnd;
+
+  //helpful states for message displays
+  const isBeforeCheckIn = isEventToday && nowCST < checkInStart;
+  const isAfterCheckIn = isEventToday && nowCST > checkInEnd;
 
   // ====== RSVP Handler ======
   const handleCheckboxChange = async (eventId) => {
@@ -148,7 +154,7 @@ const EventButtons = ({
   if (isCheckInPeriod) {
     return (
       <button                     
-        onClick={() => navigate('/eventcheckin', { 
+        onClick={() => navigate(`/eventcheckin/${event._id}`, { 
           state: { 
             event: {
               eventId: event._id,
@@ -186,7 +192,7 @@ const EventButtons = ({
             eventId: event._id,
             eventTitle: event.title,
             date: event.date,
-            userId: user._id, // Now we can use user._id directly since we've checked it exists
+            userId: user._id,
             name: user.name,
             email: user.email,
           }
@@ -218,18 +224,7 @@ const EventButtons = ({
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onAddToCalendar={handleAddToCalendar}
-      />
-    {/*isRSVPed && (
-      <>
-        <p className="confirmation-message">You have RSVPed!</p>
-        <button 
-          onClick={handleAddToCalendar}
-          className="add-to-calendar-btn"
-        >
-          Add to Google Calendar
-        </button>
-      </>
-    ) */}
+    />
   </>
 );
 };

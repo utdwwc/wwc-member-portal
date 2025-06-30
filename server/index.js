@@ -339,13 +339,13 @@ app.post('/eventapplications/', async (req, res) => {
   console.log('Incoming application data:', req.body);
 
   //validation
-  if (!name || !email || !year || !history || !reason) {
+  if (!name || !pronouns || !email || !year || !grad || !history || !reason) {
       return res.status(400).json({ message: 'All fields except userId and eventId are required' });
   }
 
   try {
       const newApplication = new EventApplication({
-          userId: userId || null,  // Handle cases where userId might be undefined
+          userId: userId || null,  //handle cases where userId might be undefined
           eventId: eventId || null,
           name,
           pronouns,
@@ -479,9 +479,7 @@ app.get('/api/events/users/:userId/attendance', async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const userAttendance = await Attendance.find({ userId })
-      .sort({ checkInTime: -1 }) //newest first
-      .populate('eventId', 'title date location');
+    const userAttendance = await Attendance.exists({ userId })
 
     res.status(200).json(userAttendance);
   } catch (err) {

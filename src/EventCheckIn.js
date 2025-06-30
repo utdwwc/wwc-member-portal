@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { Button, Alert, Card, Spinner, Badge } from 'react-bootstrap';
 import './css/EventCheckIn.css';
 
 const EventCheckIn = () => {
+  const { eventID } = useParams(); //get eventID from URL
   const location = useLocation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -15,7 +16,8 @@ const EventCheckIn = () => {
   console.log('Raw location.state:', location.state);
   const [event, setEvent] = useState(
     location.state?.event || {
-      _id: location.state?.eventId,
+      _id: eventID || location.state?.eventId, //use URL param as fallback
+      eventId: eventID || location.state?.eventId, //ensure eventId is set
       title: location.state?.eventTitle,
       date: location.state?.eventDate,
       location: location.state?.location
@@ -25,13 +27,14 @@ const EventCheckIn = () => {
     location.state?.user || {
       uid: location.state?.userId,
       displayName: location.state?.name,
-      email: location.state?.email
+      email: location.state?.email,
+      token: location.state?.token
     }
   );
   console.log('Processed event:', event);
   console.log('Processed user:', currentUser);
 
-
+  
 useEffect(() => {
     console.log('Initial state:', {
       locationState: location.state,
@@ -48,7 +51,7 @@ useEffect(() => {
     const checkAttendance = async () => {
       try {
         const res = await fetch(
-          `http://localhost:4000/attendance/check?eventId=${event.eventId}&userId=${currentUser.uid}`
+          `/api/events/users/${currentUser.uid}/attendance`
         );
         
         if (res.ok) {
