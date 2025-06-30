@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
-import { Button, Alert, Card, Spinner, Badge } from 'react-bootstrap';
+import { Button, Alert, Card, Spinner, Badge, Modal } from 'react-bootstrap';
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import { useAuth } from './hooks/useAuth';
 import './css/EventCheckIn.css';
 
 const EventCheckIn = () => {
   const { eventID } = useParams(); //get eventID from URL
   const location = useLocation();
   const navigate = useNavigate();
+  const { user: currentUser, handleGoogleSuccess } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [alreadyCheckedIn, setAlreadyCheckedIn] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   //DEBUGGING: state passing
   console.log('Raw location.state:', location.state);
@@ -23,19 +27,55 @@ const EventCheckIn = () => {
       location: location.state?.location
     }
   );
-  const [currentUser, setCurrentUser] = useState(
+  /*const [currentUser, setCurrentUser] = useState(
     location.state?.user || {
       uid: location.state?.userId,
       displayName: location.state?.name,
       email: location.state?.email,
       token: location.state?.token
     }
-  );
+  );*/
   console.log('Processed event:', event);
   console.log('Processed user:', currentUser);
 
-  
-useEffect(() => {
+
+  // Show modal if no user detected
+  useEffect(() => {
+    if (!currentUser) {
+      setShowLoginModal(true);
+    }
+  }, [event, currentUser]);
+
+  // Enhanced Google success handler
+  const handleModalGoogleSuccess = async (credentialResponse) => {
+    try {
+      const userData = await handleGoogleSuccess(credentialResponse);
+      setShowLoginModal(false);
+      
+      // Update attendance check with new user
+      if (event?.eventId) {
+        checkAttendance(userData._id, event.eventId);
+      }
+    } catch (err) {
+      setError('Failed to authenticate. Please try again.');
+    }
+  };
+
+  // Your existing check attendance function
+  const checkAttendance = async (userId, eventId) => {
+    try {
+      const res = await fetch(`/api/events/users/${userId}/attendance`);
+      if (res.ok) {
+        const data = await res.json();
+        setAlreadyCheckedIn(data.exists);
+      }
+    } catch (err) {
+      console.error('Attendance check error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+/*useEffect(() => {
     console.log('Initial state:', {
       locationState: location.state,
       processedEvent: event,
@@ -69,9 +109,65 @@ useEffect(() => {
 
     checkAttendance();
   }, [event, currentUser]);
-
+  */
 
   const handleCheckIn = async () => {
+  try {
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    // Debugging: Log the request payload
+    const requestBody = {
+      userId: currentUser._id,  // Changed from uid to _id for consistency
+      userName: currentUser.name || currentUser.email,
+      userEmail: currentUser.email
+    };
+    console.log('Request payload:', requestBody);
+
+    const res = await fetch(`/api/events/${event.eventId}/check-in`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentUser.token}`
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    // Debugging: Log raw response
+    const responseText = await res.text();
+    console.log('Raw response:', responseText);
+    
+    let responseData;
+    try {
+      responseData = responseText ? JSON.parse(responseText) : {};
+    } catch (e) {
+      console.error('Failed to parse JSON response:', e);
+      throw new Error('Invalid server response');
+    }
+
+    if (!res.ok) {
+      console.error('API Error:', {
+        status: res.status,
+        statusText: res.statusText,
+        error: responseData.error
+      });
+      throw new Error(responseData.error || `Check-in failed with status ${res.status}`);
+    }
+
+    setSuccess('Successfully checked in!');
+    setAlreadyCheckedIn(true);
+    
+    setTimeout(() => navigate('/regularevents'), 3000);
+  } catch (err) {
+    console.error('Check-in error:', err);
+    setError(err.message || 'An unexpected error occurred');
+  } finally {
+    setLoading(false);
+  }
+};
+  /*const handleCheckIn = async () => {
     try {
       setLoading(true);
       setError('');
@@ -107,10 +203,10 @@ useEffect(() => {
     } finally {
       setLoading(false);
     }
-  };
+  };*/
 
 
-  if (loading) {
+  /*if (loading) {
     return (
       <div className="loading-container">
         <Spinner animation="border" role="status">
@@ -119,11 +215,30 @@ useEffect(() => {
         <p>Verifying your check-in status...</p>
       </div>
     );
-  }
+  }*/
 
 
   return (
     <div className="event-checkin-container">
+      <Modal show={showLoginModal} onHide={() => setShowLoginModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Sign In to Check In</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="text-center">
+          <GoogleOAuthProvider clientId="998314684026-iq3l5tljgpk95lco3t959jc8aq4mpcu0.apps.googleusercontent.com">
+            <GoogleLogin
+              onSuccess={handleModalGoogleSuccess}
+              onError={() => setError('Google login failed')}
+              useOneTap
+              auto_select
+              theme="filled_blue"
+              size="large"
+            />
+          </GoogleOAuthProvider>
+          <p className="mt-3">Or <Button variant="link" onClick={() => navigate('/login')}>use email login</Button></p>
+        </Modal.Body>
+      </Modal>
+
       <Card className="checkin-card">
         <Card.Header className="checkin-header">
           <h2>Event Check-In</h2>
