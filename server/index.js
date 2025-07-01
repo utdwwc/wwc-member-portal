@@ -13,6 +13,7 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const authRoutes = require('./auth');
+const officersRouter = require('./routes/officers.route');
 
 require('./db/connection');
 
@@ -20,7 +21,10 @@ require('./db/connection');
 const app = express();
 app.use(express.json()); //middleware to parse JSON requests
 app.use(express.urlencoded({ extended: true }));
-app.use('/api', authRoutes); //mount auth routes
+
+//routes
+app.use('/api', authRoutes);
+app.use('/api/officers', officersRouter);
 
 //CORS
 app.use(cors({
@@ -516,7 +520,7 @@ app.get('/api/events/users/:userId/attendance', async (req, res) => {
 });
 
 // PURPOSE: Retrieves Attendance
-app.get('/api/events/attendance', async (req, res) => {
+app.get('/events/attendance', async (req, res) => {
   try {
     const eventsWithAttendance = await RegularEvent.aggregate([
       {

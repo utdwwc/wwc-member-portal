@@ -4,6 +4,9 @@ import { Table, Button, Badge, ButtonGroup } from 'react-bootstrap';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './css/Admin.css';
 
+import OfficersTable from './components/AdminPage/OfficersTable';
+import OfficerForm from './components/AdminPage/OfficerForm';
+
 const Admin = () => {
     const navigate = useNavigate(); //helps move between pages dynamically
     const location = useLocation(); //extracts user data (ID, GMail, Name) passed from previous page
@@ -104,7 +107,7 @@ const Admin = () => {
         const [eventsRes, rsvpsRes, attendancesRes] = await Promise.all([
           fetch('http://localhost:4000/regularevents'),
           fetch('http://localhost:4000/rsvps'),
-          fetch('/api/events/attendance')
+          fetch('http://localhost:4000/events/attendance')
         ]);
 
         const [events, rsvps, attendances] = await Promise.all([
@@ -532,6 +535,10 @@ const Admin = () => {
         ) : (
             <p>No users found.</p>
         )}
+
+        <OfficersTable />
+        <OfficerForm />
+
     </div>
     );
 };
