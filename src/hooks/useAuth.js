@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 export const useAuth = () => {
   const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -11,6 +12,7 @@ export const useAuth = () => {
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
+    setAuthLoading(false);
   }, []);
 
   const handleGoogleSuccess = async (credentialResponse) => {
@@ -55,5 +57,10 @@ export const useAuth = () => {
     navigate('/');
   };
 
-  return { user, handleGoogleSuccess, handleLogout };
+  return { 
+    user,
+    loading: authLoading,
+    handleGoogleSuccess,
+    handleLogout
+  };
 };

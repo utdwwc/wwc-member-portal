@@ -9,15 +9,15 @@ const EventCheckIn = () => {
   const { eventID } = useParams(); //get eventID from URL
   const location = useLocation();
   const navigate = useNavigate();
-  const { user: currentUser, handleGoogleSuccess } = useAuth();
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [alreadyCheckedIn, setAlreadyCheckedIn] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const { 
+    user: currentUser, 
+    handleGoogleSuccess 
+  } = useAuth();
 
-  //DEBUGGING: state passing
-  console.log('Raw location.state:', location.state);
   const [event, setEvent] = useState(
     location.state?.event || {
       _id: eventID || location.state?.eventId, //use URL param as fallback
@@ -27,200 +27,148 @@ const EventCheckIn = () => {
       location: location.state?.location
     }
   );
-  /*const [currentUser, setCurrentUser] = useState(
-    location.state?.user || {
-      uid: location.state?.userId,
-      displayName: location.state?.name,
-      email: location.state?.email,
-      token: location.state?.token
-    }
-  );*/
-  console.log('Processed event:', event);
-  console.log('Processed user:', currentUser);
 
 
-  // Show modal if no user detected
+  /* guys i am genuinely gonna go out of my mind */
+  /* lemme go fall asleep on the road already */
+  /* also: section for CONSOLIDATED EFFECTS */
+
+
+  /* PURPOSE: Retrieves Specific Event for Check-In */
   useEffect(() => {
-    if (!currentUser) {
-      setShowLoginModal(true);
-    }
-  }, [event, currentUser]);
+    const fetchEventData = async () => {
+      try {
+        setError('');
+      
+        const res = await fetch(`/api/events/${eventID}`);
+        if (!res.ok) {
+          throw new Error(res.status === 404 ? 'Event not found' : 'Failed to fetch event');
+        }
+      
+        const eventData = await res.json();
+        setEvent({
+          _id: eventData._id,
+          eventId: eventData._id,
+          title: eventData.title,
+          date: eventData.date,
+          location: eventData.location
+        });
+      } catch (err) {
+        console.error('❌ Event fetch error:', err);
+        setError(err.message);
+      }
+    };
 
-  // Enhanced Google success handler
+    //only fetch if we don't have complete event data
+    if (eventID && !event?.title) {
+      fetchEventData();
+    }
+  }, [eventID]);
+
+  /* PURPOSE: Verifies User Auth & Checks Attendance History */
+  useEffect(() => {
+    //handle auth state
+    const shouldShowModal = !currentUser;
+    setShowLoginModal(shouldShowModal);
+
+    //check attendance if authenticated
+    if (currentUser && event?.eventId) {
+      const checkAttendance = async () => {
+        try {
+          const res = await fetch(`/api/events/users/${currentUser._id}/attendance`);
+          if (res.ok) {
+            const data = await res.json();
+            setAlreadyCheckedIn(data.exists);
+          }
+        } catch (err) {
+          console.error('Attendance check error:', err);
+        }
+      };
+      
+      checkAttendance();
+    }
+  }, [currentUser, event?.eventId]);
+
+  /* PURPOSE: Logs User and Event Objects in Dev Mode */
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Current user:', currentUser);
+      console.log('Current event:', event);
+    }
+  }, [currentUser, event]);
+
+
+  /* hi so i am so tired of this freaking pg already */
+  /* this is literally so stupid guys kmskmskms */
+  /* dis the section for HANDLER FUNCTIONS */
+
+
+  /* PURPOSE: Google Success Handler */
   const handleModalGoogleSuccess = async (credentialResponse) => {
     try {
       const userData = await handleGoogleSuccess(credentialResponse);
       setShowLoginModal(false);
       
-      // Update attendance check with new user
       if (event?.eventId) {
-        checkAttendance(userData._id, event.eventId);
+        // Recheck attendance after auth
+        const res = await fetch(`/api/events/users/${userData._id}/attendance`);
+        if (res.ok) {
+          const data = await res.json();
+          setAlreadyCheckedIn(data.exists);
+        }
       }
     } catch (err) {
       setError('Failed to authenticate. Please try again.');
     }
   };
 
-  // Your existing check attendance function
-  const checkAttendance = async (userId, eventId) => {
-    try {
-      const res = await fetch(`/api/events/users/${userId}/attendance`);
-      if (res.ok) {
-        const data = await res.json();
-        setAlreadyCheckedIn(data.exists);
-      }
-    } catch (err) {
-      console.error('Attendance check error:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-/*useEffect(() => {
-    console.log('Initial state:', {
-      locationState: location.state,
-      processedEvent: event,
-      processedUser: currentUser
-    });
-
-    if (!event?.eventId || !currentUser?.uid) {
-      setError('Missing required event or user data');
-      setLoading(false);
-      return;
-    }
-
-    const checkAttendance = async () => {
-      try {
-        const res = await fetch(
-          `/api/events/users/${currentUser.uid}/attendance`
-        );
-        
-        if (res.ok) {
-          const data = await res.json();
-          setAlreadyCheckedIn(data.exists);
-        } else {
-          throw new Error('Failed to check attendance');
-        }
-      } catch (err) {
-        console.error('Attendance check error:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkAttendance();
-  }, [event, currentUser]);
-  */
-
+  /* PURPOSE: Responsible for User Check-In */
   const handleCheckIn = async () => {
-  try {
-    setLoading(true);
-    setError('');
-    setSuccess('');
-
-    // Debugging: Log the request payload
-    const requestBody = {
-      userId: currentUser._id,  // Changed from uid to _id for consistency
-      userName: currentUser.name || currentUser.email,
-      userEmail: currentUser.email
-    };
-    console.log('Request payload:', requestBody);
-
-    const res = await fetch(`/api/events/${event.eventId}/check-in`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${currentUser.token}`
-      },
-      body: JSON.stringify(requestBody)
-    });
-
-    // Debugging: Log raw response
-    const responseText = await res.text();
-    console.log('Raw response:', responseText);
-    
-    let responseData;
     try {
-      responseData = responseText ? JSON.parse(responseText) : {};
-    } catch (e) {
-      console.error('Failed to parse JSON response:', e);
-      throw new Error('Invalid server response');
-    }
-
-    if (!res.ok) {
-      console.error('API Error:', {
-        status: res.status,
-        statusText: res.statusText,
-        error: responseData.error
-      });
-      throw new Error(responseData.error || `Check-in failed with status ${res.status}`);
-    }
-
-    setSuccess('Successfully checked in!');
-    setAlreadyCheckedIn(true);
-    
-    setTimeout(() => navigate('/regularevents'), 3000);
-  } catch (err) {
-    console.error('Check-in error:', err);
-    setError(err.message || 'An unexpected error occurred');
-  } finally {
-    setLoading(false);
-  }
-};
-  /*const handleCheckIn = async () => {
-    try {
-      setLoading(true);
       setError('');
+      setSuccess('');
 
       const res = await fetch(`/api/events/${event.eventId}/check-in`, {
-      method: 'POST',
-      credentials: 'include', //required if using cookies/sessions
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${currentUser.token}`
-      },
-      body: JSON.stringify({
-        userId: currentUser.uid,
-        userName: currentUser.displayName || currentUser.email,
-        userEmail: currentUser.email,
-        //these will be available in req.body on backend
-      })
-    });
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${currentUser.token}`
+        },
+        body: JSON.stringify({
+          userId: currentUser._id,
+          userName: currentUser.name || currentUser.email,
+          userEmail: currentUser.email
+        })
+      });
 
-    const responseData = await res.json();
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Check-in failed');
+      }
 
-    if (!res.ok) {
-      throw new Error(responseData.error || 'Check-in failed');
-    }
-
-    setSuccess('Successfully checked in!');
-    setAlreadyCheckedIn(true);
-    
-    //optional: update local state if needed
-    setTimeout(() => navigate('/regularevents'), 3000);
+      setSuccess('Successfully checked in!');
+      setAlreadyCheckedIn(true);
+      setTimeout(() => navigate('/regularevents'), 3000);
     } catch (err) {
       setError(err.message);
-    } finally {
-      setLoading(false);
     }
-  };*/
-
-
-  /*if (loading) {
-    return (
-      <div className="loading-container">
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
-        <p>Verifying your check-in status...</p>
-      </div>
-    );
-  }*/
+  };
 
 
   return (
     <div className="event-checkin-container">
-      <Modal show={showLoginModal} onHide={() => setShowLoginModal(false)} centered>
+      
+      <Modal
+        show={showLoginModal}
+        onHide={() => {
+          if (currentUser) {
+            setShowLoginModal(false);
+          } else {
+            navigate('/');
+          }
+        }}
+        centered
+      >
         <Modal.Header closeButton>
           <Modal.Title>Sign In to Check In</Modal.Title>
         </Modal.Header>
@@ -258,7 +206,7 @@ const EventCheckIn = () => {
                 <Button 
                   className="checkin-button"
                   variant="primary"
-                  onClick={() => navigate('/homepage', { state: { from: location.pathname } })}
+                  onClick={() => navigate('/login', { state: { from: location.pathname } })}
                 >
                   Go to Login
                 </Button>
@@ -277,7 +225,7 @@ const EventCheckIn = () => {
           {event ? (
             <>
               <div className="event-details">
-                <h3 className="event-title">{event.eventTitle}</h3>
+                <h3 className="event-title">{event.title}</h3>
 
                 <div className="detail-row">
                   <span className="detail-label">Date:</span>
@@ -312,24 +260,16 @@ const EventCheckIn = () => {
                     variant={alreadyCheckedIn ? "secondary" : "primary"}
                     size="lg"
                     onClick={handleCheckIn}
-                    disabled={loading || success || alreadyCheckedIn}
+                    disabled={success || alreadyCheckedIn}
                   >
-                    {loading ? (
-                      <>
-                        <Spinner as="span" size="sm" animation="border" /> Processing...
-                      </>
-                    ) : alreadyCheckedIn ? (
-                      "Already Checked In!"
-                    ) : (
                       "Confirm Check-In"
-                    )}
                   </Button>
                 ) : (
                   <Button
                     className="checkin-button"
                     variant="warning"
                     size="lg"
-                    onClick={() => navigate('/homepage', { state: { from: location.pathname } })}
+                    onClick={() => navigate('/login', { state: { from: location.pathname } })}
                   >
                     Sign In to Check In
                   </Button>
@@ -338,7 +278,7 @@ const EventCheckIn = () => {
                 <Button
                   className="checkin-button"
                   variant="outline-secondary"
-                  onClick={() => navigate(-1)}
+                  onClick={() => navigate('/')}
                 >
                   Back to Events
                 </Button>
@@ -349,6 +289,7 @@ const EventCheckIn = () => {
               No event data available. Please return to the events page and try again.
             </Alert>
           )}
+
         </Card.Body>
       </Card>
     </div>
