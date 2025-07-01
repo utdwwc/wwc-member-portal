@@ -12,33 +12,16 @@ import Github from './images/github.png';
 import Linkedin from './images/linkedin.png';
 import Email from './images/email.png';
 
-// Import Team Images (you'll need to add these)
-/* planning to get rid of this once backend set up for officers */
-import Aishwarya from './images/team/aishwarya.jpg';
-import Nihita from './images/team/nihita.jpg';
-import Dheeptha from './images/team/dheeptha.jpg';
-import Esha from './images/team/esha.jpg';
-import Julia from './images/team/julia.jpg';
-import Aarya from './images/team/aarya.jpg';
-import Waverly from './images/team/waverly.jpg';
-import Nandini from './images/team/nandini.jpg';
-import Adeline from './images/team/adeline.jpg';
-import Khyati from './images/team/khyati.jpg';
-import Sameera from './images/team/sameera.jpg';
-
 const Homepage = () => {
     const navigate = useNavigate();
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
-
     const [rsvpStatus, setRsvpStatus] = useState({});
     const [currentEvent, setCurrentEvent] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const [upcomingEvents, setUpcomingEvents] = useState([]);
-    const [pastEvents, setPastEvents] = useState([]);
+    const [team, setTeam] = useState([]);
+    const [error, setError] = useState(null);
     const user = null;
-
 
     /* PURPOSE: Fetch Events Data */
     useEffect(() => {
@@ -68,97 +51,24 @@ const Homepage = () => {
     };
 
     /* TEAM DATA */
-    const team = [
-        {
-            name: "Aishwarya Sudarshan",
-            position: "President",
-            image: Aishwarya,
-            github: "https://github.com/AishwaryaSudarshan",
-            linkedin: "https://linkedin.com/in/aishwarya-sudarshan",
-            email: "mailto:aishwaryasudarshan18@gmail.com",
-        },
-        {
-            name: "Dheeptha Kadiam",
-            position: "Vice President",
-            image: Dheeptha,
-            github: "https://github.com/dheepsk",
-            linkedin: "https://linkedin.com/in/dheeptha-kadiam",
-            email: "mailto:dheeps0702@gmail.com",
-        },
-        {
-            name: "Waverly Souvannachack",
-            position: "Marketing",
-            image: Waverly,
-            github: "https://github.com/waverlys04",
-            linkedin: "https://linkedin.com/in/wsouvannachack",
-            email: "mailto:waverly.souvannachack@gmail.com",
-        },
-        {
-            name: "Nihita Soma",
-            position: "Secretary",
-            image: Nihita,
-            github: "https://github.com/nihitasoma",
-            linkedin: "https://linkedin.com/in/nihitasoma",
-            email: "mailto:soma.nihita@gmail.com",
-        },
-        {
-            name: "Julia Marie Bacud",
-            position: "Backend Developer",
-            image: Julia,
-            github: "https://github.com/waactics",
-            linkedin: "https://linkedin.com/in/julia-marie-bacud-a16b70241",
-            email: "mailto:juliabacudswe@gmail.com",
-        },
-        {
-            name: "Aaryaa Moharir",
-            position: "Event Planner",
-            image: Aarya,
-            github: "https://github.com/aaryaamoharir",
-            linkedin: "https://linkedin.com/in/aaryaamoharir",
-            email: "mailto:aaryaamoharir@gmail.com",
-        },
-        {
-            name: "Adeline Nenzou",
-            position: "Event Planner",
-            image: Adeline,
-            github: "https://github.com/ades101",
-            linkedin: "https://linkedin.com/in/adelinenenzou",
-            email: "mailto:adeline.nen21@gmail.com",
-        },
-        {
-            name: "Esha Gupta",
-            position: "Treasurer",
-            image: Esha,
-            github: "https://google.com",
-            linkedin: "https://linkedin.com/in/eshagupta825",
-            email: "mailto:eshalagupta@gmail.com",
-        },
-        {
-            name: "Khyati Chandra",
-            position: "Designer",
-            image: Khyati,
-            github: "https://google.com",
-            linkedin: "https://linkedin.com/khyatichandra",
-            email: "mailto:khyatichandra@gmail.com",
-        },
-        {
-            name: "Nandini Paidesetty",
-            position: "Photographer",
-            image: Nandini,
-            github: "https://github.com/nxp-22",
-            linkedin: "https://linkedin.com/in/nandini-paidesetty-9b997220a",
-            email: "mailto:nxp220069@utdallas.edu",
-        },
-        {
-            name: "Sameera Kandalgaonkar",
-            position: "UX Designer",
-            image: Sameera,
-            github: "https://github.com/SameeraaGKan",
-            linkedin: "https://linkedin.com/in/sameeraakan118",
-            email: "mailto:sameeraagk883@gmail.com",
-        }
-    ];
-
+    useEffect(() => {
+        const fetchOfficers = async () => {
+            try {
+                const response = await fetch('/api/officers');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch officers');
+                }
+                const data = await response.json();
+                setTeam(data);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchOfficers();
+    }, []);
+    
     /* PARTNERS DATA */
     const partners = [
         { name: 'JPMorgan Chase', logo: '#' },
@@ -254,30 +164,46 @@ const Homepage = () => {
                     <div className="bottom-line"></div>
                 </div>
 
-                <div className="team-grid-container">
-                    {team.map((officer, index) => (
-                        <div key={index} className="team-card">
-                            <div className="team-image-container">
-                                <img src={officer.image} alt={officer.name} className="team-image"/>
-                                <div className="team-social-links">
-                                    <a href={officer.github || "#"} target="_blank" rel="noopener noreferrer">
-                                        <img src={Github} className="social-icon" alt="github"/>
-                                    </a>
-                                    <a href={officer.linkedin || "#"} target="_blank" rel="noopener noreferrer">
-                                        <img src={Linkedin} className="social-icon" alt="linkedin"/>
-                                    </a>
-                                    <a href={officer.email || "#"} target="_blank" rel="noopener noreferrer">
-                                        <img src={Email} className="social-icon" alt="email"/>
-                                    </a>
+                {loading ? (
+                    <div className="loading-message">Loading team members...</div>
+                ) : error ? (
+                    <div className="error-message">Error: {error}</div>
+                ) : (
+                    <div className="team-grid-container">
+                        {team.map((officer, index) => (
+                            <div key={officer._id || index} className="team-card">
+                                <div className="team-image-container">
+                                    <img 
+                                        src={officer.imageUrl || 'default-officer-image.jpg'} 
+                                        alt={officer.name} 
+                                        className="team-image"
+                                    />
+                                    <div className="team-social-links">
+                                        {officer.github && (
+                                            <a href={officer.github} target="_blank" rel="noopener noreferrer">
+                                                <img src={Github} className="social-icon" alt="github"/>
+                                            </a>
+                                        )}
+                                        {officer.linkedin && (
+                                            <a href={officer.linkedin} target="_blank" rel="noopener noreferrer">
+                                                <img src={Linkedin} className="social-icon" alt="linkedin"/>
+                                            </a>
+                                        )}
+                                        {officer.email && (
+                                            <a href={`mailto:${officer.email}`} target="_blank" rel="noopener noreferrer">
+                                                <img src={Email} className="social-icon" alt="email"/>
+                                            </a>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="team-info">
+                                    <h3 className="team-name">{officer.name}</h3>
+                                    <p className="team-position">{officer.position}</p>
                                 </div>
                             </div>
-                            <div className="team-info">
-                                <h3 className="team-name">{officer.name}</h3>
-                                <p className="team-position">{officer.position}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                )}
             </section>
 
             {/* --- PARTNERS --- */}
