@@ -25,6 +25,20 @@
   border-bottom: 2px solid var(--primary-color);
 }
 
+/* Search Bar */
+.search-input {
+  max-width: 400px;
+  margin: 0 auto;
+  border-radius: 20px;
+  padding: 10px 20px;
+  border: 2px solid var(--primary-color);
+}
+
+.search-input:focus {
+  border-color: var(--primary-hover);
+  box-shadow: 0 0 0 0.25rem rgba(108, 73, 124, 0.25);
+}
+
 /* Main table styling */
 .users-table-container .admin-table {
   width: 100%;

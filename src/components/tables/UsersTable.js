@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Spinner, Pagination } from 'react-bootstrap';
+import { Table, Button, Spinner, Pagination, Form } from 'react-bootstrap';
 import '../../css/components-css/UsersTable.css';
 
 const UsersTable = () => {
@@ -7,6 +7,7 @@ const UsersTable = () => {
   const [expandedUser, setExpandedUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 10;
 
@@ -29,6 +30,16 @@ const UsersTable = () => {
     }
   };
 
+  const filteredUsers = users.filter(user => {
+    const term = searchTerm.toLowerCase();
+    return (
+        user.name?.toLowerCase().includes(term) ||
+        user.email?.toLowerCase().includes(term) ||
+        user.utdEmail?.toLowerCase().includes(term) ||
+        user.points?.toString().includes(term)
+    );
+  });
+
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -40,7 +51,7 @@ const UsersTable = () => {
   // Get current users for pagination
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+  const filteredCurrentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
   const totalPages = Math.ceil(users.length / usersPerPage);
 
   // Change page
@@ -59,8 +70,20 @@ const UsersTable = () => {
 
   return (
     <div className="users-table-container">
-      <h2 className="mb-4">User Information</h2>
+      <h2 className="mb-4">Users</h2>
       
+      <div className="mb-4">
+        <Form.Group controlId="userSearch">
+            <Form.Control
+                type="text"
+                placeholder="Search by name, email, or points..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-input"
+            />
+        </Form.Group>
+      </div>
+
       {users.length > 0 ? (
         <>
           <Table striped bordered hover className="admin-table">
@@ -73,7 +96,7 @@ const UsersTable = () => {
               </tr>
             </thead>
             <tbody>
-              {currentUsers.map(user => (
+              {filteredCurrentUsers.map(user => (
                 <React.Fragment key={user._id}>
                   <tr>
                     <td>{user.name || '—'}</td>
@@ -181,7 +204,8 @@ const UsersTable = () => {
           )}
 
           <div className="text-center text-muted mt-2">
-            Showing users {indexOfFirstUser + 1}-{Math.min(indexOfLastUser, users.length)} of {users.length}
+            Showing {indexOfFirstUser + 1}-{Math.min(indexOfLastUser, filteredUsers.length)} of {filteredUsers.length} users
+            {searchTerm && ` matching "${searchTerm}"`}
           </div>
         </>
       ) : (
