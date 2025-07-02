@@ -14,7 +14,16 @@ const EventTable = ({ events: initialEvents, onRefresh }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [eventToDelete, setEventToDelete] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [editedEvent, setEditedEvent] = useState(null);
+  //const [editedEvent, setEditedEvent] = useState(null);
+  const [editedEvent, setEditedEvent] = useState({
+    title: '',
+    description: '',
+    date: '',
+    location: '',
+    appReq: false,
+    points: 0,
+    imageUrl: null  // Important initial value
+  });
 
   useEffect(() => {
     if (initialEvents) {
@@ -137,42 +146,50 @@ const EventTable = ({ events: initialEvents, onRefresh }) => {
     }));
   };
 
-  const saveEditedEvent = async () => {
-    try {
-      const formData = new FormData();
-      formData.append('title', editedEvent.title);
-      formData.append('description', editedEvent.description);
-      formData.append('date', editedEvent.date);
-      formData.append('location', editedEvent.location);
-      formData.append('appReq', editedEvent.appReq.toString());
-      formData.append('points', editedEvent.points.toString());
-
-      if (editedEvent.imageUrl instanceof File) {
-        formData.append('poster', editedEvent.imageUrl);
-      }
-
-      const response = await fetch(`http://localhost:4000/regularevents/${editedEvent._id}`, {
-        method: 'PATCH',
-        body: formData
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update event');
-      }
-
-      // Refresh the data
-      if (onRefresh) {
-        onRefresh();
-      } else {
-        fetchCombinedEventData();
-      }
-      
-      setShowEditModal(false);
-    } catch (error) {
-      console.error('Error updating event:', error);
-      setError(error.message);
-    }
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setEditedEvent(prev => ({
+        ...prev,
+        imageUrl: file // Store the File object directly
+    }));
   };
+
+  const saveEditedEvent = async () => {
+  try {
+    const formData = new FormData();
+    formData.append('title', editedEvent.title);
+    formData.append('description', editedEvent.description);
+    formData.append('date', editedEvent.date);
+    formData.append('location', editedEvent.location);
+    formData.append('appReq', editedEvent.appReq.toString());
+    formData.append('points', editedEvent.points.toString());
+
+    // Handle image updates
+    if (editedEvent.imageUrl === null) {
+      formData.append('removeImage', 'true');
+    } else if (editedEvent.imageUrl instanceof File) {
+      formData.append('poster', editedEvent.imageUrl);
+    }
+    // (No else case means keep existing image)
+
+    const response = await fetch(`http://localhost:4000/regularevents/${editedEvent._id}`, {
+      method: 'PATCH',
+      body: formData
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to update event');
+    }
+
+    // Refresh data
+    if (onRefresh) onRefresh();
+    setShowEditModal(false);
+  } catch (error) {
+    console.error('Error updating event:', error);
+    setError(error.message);
+  }
+};
 
   return (
     <div className="event-table-container">
@@ -393,38 +410,47 @@ const EventTable = ({ events: initialEvents, onRefresh }) => {
               />
               
               <Form.Group className="mb-3">
-                <Form.Label>Event Poster</Form.Label>
-                <Form.Control
-                  type="file"
-                  name="imageUrl"
-                  onChange={(e) => handleEditChange({
-                    target: {
-                      name: 'imageUrl',
-                      type: 'file',
-                      files: e.target.files
-                    }
-                  })}
-                  accept="image/*"
-                />
-                {editedEvent.imageUrl && (
-                  <div className="mt-2">
-                    <p>Current: {editedEvent.imageUrl instanceof File ? editedEvent.imageUrl.name : 'Existing poster'}</p>
-                    {editedEvent.imageUrl instanceof File ? (
-                      <img 
-                        src={URL.createObjectURL(editedEvent.imageUrl)} 
-                        alt="Preview" 
-                        style={{ maxWidth: '200px' }} 
-                      />
-                    ) : (
-                      <img 
-                        src={editedEvent.imageUrl} 
-                        alt="Preview" 
-                        style={{ maxWidth: '200px' }} 
-                      />
-                    )}
-                  </div>
-                )}
-              </Form.Group>
+
+  <Form.Label>Event Poster</Form.Label>
+  <Form.Control
+    type="file"
+    name="imageUrl"
+    onChange={handleImageChange}  // Connect the handler
+    accept="image/*"
+  />
+  {editedEvent.imageUrl && (
+    <div className="mt-2">
+      {editedEvent.imageUrl instanceof File ? (
+        <>
+          <p>New image: {editedEvent.imageUrl.name}</p>
+          <img 
+            src={URL.createObjectURL(editedEvent.imageUrl)} 
+            alt="Preview" 
+            style={{ maxWidth: '200px' }} 
+          />
+        </>
+      ) : (
+        <>
+          <p>Current image</p>
+          <img 
+            src={`http://localhost:4000/${editedEvent.imageUrl}`} 
+            alt="Preview" 
+            style={{ maxWidth: '200px' }} 
+          />
+          <Button
+            variant="danger"
+            size="sm"
+            onClick={() => setEditedEvent(prev => ({ ...prev, imageUrl: null }))}
+            className="mt-2"
+          >
+            Remove Image
+          </Button>
+        </>
+      )}
+    </div>
+  )}
+</Form.Group>
+
             </Form>
           )}
         </Modal.Body>

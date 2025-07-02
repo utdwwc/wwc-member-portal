@@ -55,7 +55,9 @@ const storage = multer.diskStorage({
   }
 });
 const upload = multer({ storage });
-app.use('/uploads', express.static(uploadsDir));
+
+//app.use('/uploads', express.static(uploadsDir));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 //serving static files from files directory
 app.use('/files', express.static(path.join(__dirname, 'files')));
@@ -244,6 +246,55 @@ app.post('/regularevents', upload.single('poster'), async (req, res) => {
   }
 });
 
+// DELETE event
+app.delete('/regularevents/:id', async (req, res) => {
+  try {
+    const event = await RegularEvent.findByIdAndDelete(req.params.id);
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+    
+    // Optionally delete associated RSVPs and attendances
+    await RSVP.deleteMany({ eventId: req.params.id });
+    await Attendance.deleteMany({ eventId: req.params.id });
+    
+    res.json({ message: 'Event deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting event:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// PATCH event (for updates from admin side)
+app.patch('/regularevents/:id', upload.single('poster'), async (req, res) => {
+  try {
+    const updates = {
+      title: req.body.title,
+      description: req.body.description,
+      date: req.body.date,
+      location: req.body.location,
+      appReq: req.body.appReq === 'true',
+      points: parseInt(req.body.points) || 0
+    };
+
+    if (req.file) {
+      // Store relative path starting from 'uploads/'
+      updates.imageUrl = `uploads/${req.file.filename}`;
+    }
+
+    const updatedEvent = await RegularEvent.findByIdAndUpdate(
+      req.params.id,
+      updates,
+      { new: true }
+    );
+
+    res.json(updatedEvent);
+  } catch (error) {
+    console.error('Error updating event:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // PURPOSE: Fetches Events (for event check-in page)
 app.get('/api/events/:eventId', async (req, res) => {
   try {
@@ -268,58 +319,6 @@ app.get('/api/events/:eventId', async (req, res) => {
     res.status(500).json({ 
       error: process.env.NODE_ENV === 'development' ? err.message : 'Server error' 
     });
-  }
-});
-
-// DELETE event
-app.delete('/regularevents/:id', async (req, res) => {
-  try {
-    const event = await RegularEvent.findByIdAndDelete(req.params.id);
-    if (!event) {
-      return res.status(404).json({ message: 'Event not found' });
-    }
-    
-    // Optionally delete associated RSVPs and attendances
-    await RSVP.deleteMany({ eventId: req.params.id });
-    await Attendance.deleteMany({ eventId: req.params.id });
-    
-    res.json({ message: 'Event deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting event:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// PATCH event (for updates)
-app.patch('/regularevents/:id', upload.single('poster'), async (req, res) => {
-  try {
-    const updates = {
-      title: req.body.title,
-      description: req.body.description,
-      date: req.body.date,
-      location: req.body.location,
-      appReq: req.body.appReq === 'true',
-      points: parseInt(req.body.points) || 0
-    };
-
-    if (req.file) {
-      updates.imageUrl = req.file.path; // or your preferred way to store the file path
-    }
-
-    const updatedEvent = await RegularEvent.findByIdAndUpdate(
-      req.params.id,
-      updates,
-      { new: true }
-    );
-
-    if (!updatedEvent) {
-      return res.status(404).json({ message: 'Event not found' });
-    }
-
-    res.json(updatedEvent);
-  } catch (error) {
-    console.error('Error updating event:', error);
-    res.status(500).json({ message: 'Server error' });
   }
 });
 

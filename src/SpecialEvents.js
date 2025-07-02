@@ -206,14 +206,6 @@ const EventApplicationForm = () => {
                 </div>
 
                 <button
-                    type="submit"
-                    className="form-button"
-                    disabled={isSubmitting}
-                >
-                    {isSubmitting ? 'Submitting...' : 'Submit Application'}
-                </button>
-
-                <button
                     className="form-button"
                     onClick={() => navigate('/regularEvents', {
                         state: {
@@ -224,6 +216,14 @@ const EventApplicationForm = () => {
                     })}
                 >
                     Back to Events
+                </button>
+
+                <button
+                    type="submit"
+                    className="form-button"
+                    disabled={isSubmitting}
+                >
+                    {isSubmitting ? 'Submitting...' : 'Submit Application'}
                 </button>
             </form>
         </div>
