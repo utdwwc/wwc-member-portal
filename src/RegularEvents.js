@@ -120,13 +120,6 @@ const RegularEventsPage = () => {
             <div className="event-container">
                 <button
                     className="event-button event-button--primary"
-                    onClick={() => navigate('/')}
-                >
-                    Homepage
-                </button>
-                
-                <button
-                    className="event-button event-button--primary"
                     onClick={() => {
                         //ensure we have complete object
                         if (!user || !user._id) {
@@ -144,7 +137,7 @@ const RegularEventsPage = () => {
                         navigate('/profile', { state: { user } });
                     }}
                 >
-                    User Profile
+                    Your Profile
                 </button>
 
                 <button
@@ -152,6 +145,13 @@ const RegularEventsPage = () => {
                     onClick={handleClick}
                 >
                     Admin Dashboard
+                </button>
+
+                <button
+                    className="event-button event-button--primary"
+                    onClick={() => navigate('/')}
+                >
+                    Back to Homepage
                 </button>
             </div>
             
