@@ -1,8 +1,8 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import EventButtons from './EventButtons'; // Import the buttons component
-import '../css/modules/EventCard.css';
+import EventButtons from './EventButtons';
+import '../../css/components-css/EventCard.css';
 
 const EventCard = ({ 
   event, 

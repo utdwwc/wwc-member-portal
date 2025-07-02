@@ -117,7 +117,7 @@
 
 /* ===== PRIMARY BUTTON STYLES ===== */
 .button {
-  background: #4285F4;
+  background: #6c497c;
   color: #fff;
   border: none;
   padding: 10px 20px;
@@ -130,5 +130,5 @@
 }
 
 .button:hover {
-  background: #3367d6; /* ✅ you can darken/lighten for hover vibes */
+  background: #8e5fa3; /* ✅ you can darken/lighten for hover vibes */
 }

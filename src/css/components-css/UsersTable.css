@@ -1,0 +1,202 @@
+/* ===== USERS TABLE STYLES ===== */
+.users-table-container {
+  --primary-color: #6c497c;
+  --primary-hover: #8e5fa3;
+  --info-color: #17a2b8;
+  --light-color: #f8f9fa;
+  --dark-color: #343a40;
+  --border-color: #dee2e6;
+  --text-color: #212529;
+  
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+/* Header styling */
+.users-table-container h2 {
+  color: var(--dark-color);
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--primary-color);
+}
+
+/* Main table styling */
+.users-table-container .admin-table {
+  width: 100%;
+  margin: 1.5rem 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px var(--border-color);
+}
+
+.users-table-container .admin-table th {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 1rem;
+  font-weight: 500;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.users-table-container .admin-table td {
+  padding: 0.75rem;
+  vertical-align: middle;
+  border-top: 1px solid var(--border-color);
+}
+
+.users-table-container .admin-table tr:hover td {
+  background-color: rgba(108, 73, 124, 0.05);
+}
+
+/* Action button */
+.users-table-container .btn-info {
+  background-color: var(--info-color);
+  border-color: var(--info-color);
+  color: white;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.users-table-container .btn-info:hover {
+  background-color: #138496;
+  border-color: #117a8b;
+  transform: translateY(-1px);
+}
+
+/* Expanded user details */
+.users-table-container .user-details {
+  background-color: var(--light-color);
+  padding: 1.5rem;
+  border-radius: 0 0 8px 8px;
+}
+
+/* Nested details table */
+.users-table-container .details-table {
+  width: 100%;
+  margin: 0;
+  background-color: white;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px var(--border-color);
+}
+
+.users-table-container .details-table td {
+  padding: 0.75rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.users-table-container .details-table tr:first-child td {
+  border-top: none;
+}
+
+/* Email link styling */
+.users-table-container a[href^="mailto:"] {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.users-table-container a[href^="mailto:"]:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
+}
+
+/* List styling in details */
+.users-table-container .user-details ul {
+  padding-left: 1.25rem;
+  margin: 0.5rem 0;
+}
+
+.users-table-container .user-details li {
+  margin-bottom: 0.25rem;
+}
+
+/* Pagination styling */
+.users-table-container .pagination {
+  margin: 1.5rem 0;
+  justify-content: center;
+}
+
+.users-table-container .page-item.active .page-link {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.users-table-container .page-link {
+  color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  margin: 0 0.25rem;
+  border-radius: 4px;
+}
+
+.users-table-container .page-link:hover {
+  color: var(--primary-hover);
+  background-color: var(--light-color);
+}
+
+/* Empty state message */
+.users-table-container .text-muted {
+  color: #6c757d;
+  font-style: italic;
+  padding: 1rem;
+  text-align: center;
+}
+
+/* Monospace for IDs */
+.users-table-container .text-monospace {
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.9em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .users-table-container .admin-table {
+    display: block;
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .users-table-container {
+    padding: 0 0.5rem;
+  }
+  
+  .users-table-container h2 {
+    font-size: 1.5rem;
+  }
+  
+  .users-table-container .admin-table th,
+  .users-table-container .admin-table td {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+  
+  .users-table-container .user-details {
+    padding: 1rem;
+  }
+  
+  .users-table-container .details-table td {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .users-table-container .admin-table {
+    display: block;
+    overflow-x: auto;
+  }
+  
+  .users-table-container .btn-info {
+    display: block;
+    width: 100%;
+  }
+}

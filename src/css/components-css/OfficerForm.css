@@ -1,0 +1,142 @@
+/* ===== OFFICER FORM STYLES ===== */
+/* Matches event form styling with table adaptations */
+
+.admin-form-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.admin-form {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+
+.admin-form h2 {
+  margin-bottom: 1.5rem;
+  color: #333;
+  font-size: 1.75rem;
+}
+
+.admin-alert {
+  margin-bottom: 1.5rem;
+}
+
+/* Table styling - matches form layout */
+.admin-table {
+  width: 100%;
+  margin-bottom: 1.5rem;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.admin-table td {
+  padding: 1rem;
+  vertical-align: top;
+  border-color: #e0e0e0;
+}
+
+/* Form elements */
+.admin-label {
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.admin-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+  background-color: white;
+}
+
+.admin-input:focus {
+  outline: none;
+  border-color: #8e5fa3;
+  box-shadow: 0 0 0 2px rgba(142, 95, 163, 0.2);
+}
+
+/* File upload styling */
+.admin-file-input {
+  padding: 0.5rem;
+  border: 1px dashed #ccc;
+  border-radius: 6px;
+  background: white;
+}
+
+.admin-image-preview {
+  border: 2px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Form actions */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.details-button {
+  background-color: #8e5fa3;
+  color: white;
+  padding: 0.6rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.details-button:hover {
+  background-color: #6c497c;
+  transform: translateY(-1px);
+}
+
+.details-button:active {
+  transform: translateY(0);
+}
+
+.details-button:disabled {
+  background-color: #b39ebf;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .admin-form {
+    padding: 1.5rem;
+  }
+  
+  .admin-table {
+    display: block;
+    overflow-x: auto;
+  }
+  
+  .admin-table tr {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .admin-table td {
+    padding: 0.75rem;
+  }
+  
+  .form-actions {
+    justify-content: center;
+  }
+  
+  .details-button {
+    width: 100%;
+  }
+}

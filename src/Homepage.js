@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './css/Homepage.css';
-import Modal from './components/Modal';
-
-import EventsGrid from './components/EventsGrid';
-import './css/modules/EventCard.css';
-import './css/modules/team.module.css'; //team section css
+import EventsGrid from './components/grid/EventsGrid';
+import './css/components-css/EventCard.css';
+import './css/components-css/team.module.css'; //team section css
 
 // Import Social Icons
 import Github from './images/github.png';

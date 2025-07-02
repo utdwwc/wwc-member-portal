@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import EventCard from './EventCard';
-import '../css/modules/EventCard.css';
-import '../css/Homepage.css';
+import '../../css/components-css/EventCard.css';
+import '../../css/Homepage.css';
 
 const EventsGrid = ({
   events,

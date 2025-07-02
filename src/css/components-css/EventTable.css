@@ -1,0 +1,206 @@
+/* ===== EVENT TABLE STYLES ===== */
+.event-table-container {
+  --primary-color: #6c497c;
+  --primary-hover: #8e5fa3;
+  --secondary-color: #6c757d;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
+  --light-color: #f8f9fa;
+  --dark-color: #343a40;
+  --border-color: #dee2e6;
+  --text-color: #212529;
+  
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+/* Header section */
+.event-table-container h2 {
+  color: var(--dark-color);
+  margin-bottom: 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+/* Refresh button */
+.event-table-container .btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.event-table-container .btn-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+/* Main table styling */
+.event-table-container .admin-table {
+  width: 100%;
+  margin: 1.5rem 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px var(--border-color);
+}
+
+.event-table-container .admin-table th {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 1rem;
+  font-weight: 500;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.event-table-container .admin-table td {
+  padding: 0.75rem;
+  vertical-align: middle;
+  border-top: 1px solid var(--border-color);
+}
+
+.event-table-container .admin-table tr:hover td {
+  background-color: rgba(108, 73, 124, 0.05);
+}
+
+/* Action buttons */
+.event-table-container .btn {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.3rem;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.event-table-container .btn-success {
+  background-color: var(--success-color);
+}
+
+.event-table-container .btn-warning {
+  background-color: var(--warning-color);
+  color: var(--dark-color);
+}
+
+.event-table-container .btn-danger {
+  background-color: var(--danger-color);
+}
+
+.event-table-container .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Expanded details sections */
+.event-table-container .applicant-details,
+.event-table-container .user-details {
+  background-color: var(--light-color);
+  padding: 1.5rem;
+  border-radius: 0 0 8px 8px;
+}
+
+.event-table-container .applicant-details h5,
+.event-table-container .user-details h5 {
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+
+/* Nested tables */
+.event-table-container .admin-table .admin-table {
+  background-color: white;
+  box-shadow: none;
+  margin: 0;
+}
+
+/* Pagination */
+.event-table-container .pagination {
+  margin: 1.5rem 0;
+  justify-content: center;
+}
+
+.event-table-container .page-item.active .page-link {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.event-table-container .page-link {
+  color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  margin: 0 0.25rem;
+  border-radius: 4px;
+}
+
+.event-table-container .page-link:hover {
+  color: var(--primary-hover);
+  background-color: var(--light-color);
+}
+
+/* Modal styling */
+.event-table-container .modal-header {
+  background-color: var(--primary-color);
+  color: white;
+  border-bottom: none;
+}
+
+.event-table-container .modal-footer {
+  border-top: none;
+  background-color: var(--light-color);
+}
+
+/* Status indicators */
+.event-table-container .status-indicator {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .event-table-container .admin-table {
+    display: block;
+    overflow-x: auto;
+  }
+  
+  .event-table-container .btn {
+    display: block;
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  
+  .event-table-container .d-flex {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .event-table-container h2 {
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .event-table-container {
+    padding: 0 0.5rem;
+  }
+  
+  .event-table-container .admin-table th,
+  .event-table-container .admin-table td {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .event-table-container .btn {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
+  }
+}

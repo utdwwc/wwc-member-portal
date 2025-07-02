@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './css/RegularEvents.css';
-import EventsGrid from './components/EventsGrid';
-import './css/modules/EventCard.css';
+import EventsGrid from './components/grid/EventsGrid';
+import './css/components-css/EventCard.css';
 
 
 const RegularEventsPage = () => {

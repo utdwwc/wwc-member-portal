@@ -34,6 +34,11 @@ app.use(cors({
   credentials: true,
 }));
 
+
+/*  ==========================================  */
+/*  =============  UPLOAD SETUP  =============  */
+/*  ==========================================  */
+
 //ensure 'uploads' directory exists
 const uploadsDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) {
@@ -52,7 +57,15 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 app.use('/uploads', express.static(uploadsDir));
 
-/* PURPOSE: Fetches Registered User from Database */
+//serving static files from files directory
+app.use('/files', express.static(path.join(__dirname, 'files')));
+
+
+/*  ==========================================  */
+/*  =============  USER ROUTES  ==============  */
+/*  ==========================================  */
+
+// PURPOSE: Fetches Registered User from Database
 app.get('/users', async (req, res) => {
   try {
     const users = await User.find({})
@@ -64,9 +77,6 @@ app.get('/users', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-/* PURPOSE: Serving Static Files from Files Directory */
-app.use('/files', express.static(path.join(__dirname, 'files')));
 
 /* PURPOSE: Fetches Existing User Profile in the Database */
 app.get('/user/:id', async (req, res) => {
@@ -161,7 +171,9 @@ app.get('/user/gmail/:gmail', async (req, res) => {
 });
 
 
-/*  <------------  EVENTS TABLE  ------------>  */
+/*  ==========================================  */
+/*  ============== EVENT ROUTES ==============  */
+/*  ==========================================  */
 
 /* PURPOSE: Retrieve All Existing Events from Database */
 app.get('/regularevents', async (req, res) => {
@@ -231,6 +243,90 @@ app.post('/regularevents', upload.single('poster'), async (req, res) => {
     });
   }
 });
+
+// PURPOSE: Fetches Events (for event check-in page)
+app.get('/api/events/:eventId', async (req, res) => {
+  try {
+    const { eventId } = req.params;
+
+    // 1. Validate eventId format (MongoDB ObjectId)
+    if (!isValidObjectId(eventId)) {
+      return res.status(400).json({ error: 'Invalid event ID format' });
+    }
+
+    // 2. Fetch event with only the required fields (security & performance)
+    const event = await RegularEvent.findById(eventId).select('_id title date location');
+
+    if (!event) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
+
+    // 3. Return the event data
+    res.json(event);
+  } catch (err) {
+    console.error('Error fetching event:', err);
+    res.status(500).json({ 
+      error: process.env.NODE_ENV === 'development' ? err.message : 'Server error' 
+    });
+  }
+});
+
+// DELETE event
+app.delete('/regularevents/:id', async (req, res) => {
+  try {
+    const event = await RegularEvent.findByIdAndDelete(req.params.id);
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+    
+    // Optionally delete associated RSVPs and attendances
+    await RSVP.deleteMany({ eventId: req.params.id });
+    await Attendance.deleteMany({ eventId: req.params.id });
+    
+    res.json({ message: 'Event deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting event:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// PATCH event (for updates)
+app.patch('/regularevents/:id', upload.single('poster'), async (req, res) => {
+  try {
+    const updates = {
+      title: req.body.title,
+      description: req.body.description,
+      date: req.body.date,
+      location: req.body.location,
+      appReq: req.body.appReq === 'true',
+      points: parseInt(req.body.points) || 0
+    };
+
+    if (req.file) {
+      updates.imageUrl = req.file.path; // or your preferred way to store the file path
+    }
+
+    const updatedEvent = await RegularEvent.findByIdAndUpdate(
+      req.params.id,
+      updates,
+      { new: true }
+    );
+
+    if (!updatedEvent) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    res.json(updatedEvent);
+  } catch (error) {
+    console.error('Error updating event:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
+/*  ==========================================  */
+/*  ==============  RSVP ROUTES ==============  */
+/*  ==========================================  */
 
 /* PURPOSE: Retrieves RSVP Data */
 app.get('/rsvps', async (req, res) => {
@@ -327,6 +423,11 @@ app.post('/regularevents/:eventId/rsvp', async (req, res) => {
   }
 });
 
+
+/*  ==========================================  */
+/*  =========== APPLICATION ROUTES ===========  */
+/*  ==========================================  */
+
 /* PURPOSE: Saves Speed Mentoring Applications to Database*/
 app.post('/eventapplications/', async (req, res) => {
   const {
@@ -407,6 +508,11 @@ app.get('/eventapplications/with-events', async (req, res) => {
   }
 });
 
+
+/*  ==========================================  */
+/*  ============ ATTENDANCE ROUTES ===========  */
+/*  ==========================================  */
+
 // PURPOSE: Records a User's Attendance + Updates their Profile
 app.post('/api/events/:eventId/check-in', async (req, res) => {
   try {
@@ -476,33 +582,6 @@ app.get('/api/events/:eventId/attendees', async (req, res) => {
     res.status(200).json(attendees);
   } catch (err) {
     res.status(500).json({ error: err.message });
-  }
-});
-
-// PURPOSE: Fetches Events (for event check-in page)
-app.get('/api/events/:eventId', async (req, res) => {
-  try {
-    const { eventId } = req.params;
-
-    // 1. Validate eventId format (MongoDB ObjectId)
-    if (!isValidObjectId(eventId)) {
-      return res.status(400).json({ error: 'Invalid event ID format' });
-    }
-
-    // 2. Fetch event with only the required fields (security & performance)
-    const event = await RegularEvent.findById(eventId).select('_id title date location');
-
-    if (!event) {
-      return res.status(404).json({ error: 'Event not found' });
-    }
-
-    // 3. Return the event data
-    res.json(event);
-  } catch (err) {
-    console.error('Error fetching event:', err);
-    res.status(500).json({ 
-      error: process.env.NODE_ENV === 'development' ? err.message : 'Server error' 
-    });
   }
 });
 
@@ -577,7 +656,10 @@ app.get('/events/attendance', async (req, res) => {
   }
 });
 
-/*  <------------  EVENTS TABLE  ------------>  */
+
+/*  ==========================================  */
+/*  ============ SERVER CONNECTION ===========  */
+/*  ==========================================  */
 
 /* GORL idk why but i have to comment
 these out/back in all the time */
