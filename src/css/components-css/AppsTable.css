@@ -1,4 +1,31 @@
-/* ===== SPEED MENTORING APPLICATIONS TABLE ===== */
+/* ============================================================================
+   APPSTABLE.CSS — STYLING GUIDE FOR DESIGNERS
+   ----------------------------------------------------------------------------
+   this stylesheet controls the layout and visual presentation of:
+   Speed Mentoring Application Table in the Admin Page
+
+   ✅ u can totally modify:
+   - colors
+   - font sizes
+   - padding/margins
+   - border radii
+   - box shadows
+   - transition durations
+
+   🚫 but pls do NOT:
+   - modify the core structural styles (table layout, overflow handling)
+   - change the CSS variable names (--primary-color, etc.)
+   - alter the z-index values or positioning logic
+   - modify media query breakpoints without testing
+
+   contact me before making structural changes pls <3 ;p
+   thx for making it pretty guys 🥹💖
+============================================================================ */
+
+/* ===== GLOBAL STYLE VARIABLES =====
+  these variables control the component's color scheme and should be
+  the primary way to make visual adjustments
+*/
 .speed-mentoring-container {
   --primary-color: #6c497c;
   --primary-hover: #8e5fa3;
@@ -8,6 +35,7 @@
   --border-color: #dee2e6;
   --text-color: #212529;
   
+  /* 🚫 do not modify structural styles below */
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
@@ -15,7 +43,7 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
-/* Header styling */
+/* ===== HEADER STYLES ===== */
 .speed-mentoring-container h2 {
   color: var(--dark-color);
   font-size: 1.75rem;
@@ -25,43 +53,49 @@
   border-bottom: 2px solid var(--primary-color);
 }
 
-/* Main table styling */
+/* ===== MAIN TABLE STYLES =====
+  core table structure - DO NOT MODIFY display properties
+  or overflow handling without consulting development
+*/
 .speed-mentoring-container .admin-table {
   width: 100%;
   margin: 1.5rem 0;
   border-collapse: separate;
   border-spacing: 0;
   border-radius: 8px;
-  overflow: hidden;
+  overflow: hidden;                             /* 🚫 */
   box-shadow: 0 0 0 1px var(--border-color);
 }
 
+/* Table header cells */
 .speed-mentoring-container .admin-table th {
   background-color: var(--primary-color);
-  color: white;
+  color: white; 
   padding: 1rem;
   font-weight: 500;
-  text-align: left;
-  vertical-align: middle;
+  text-align: left;              /* 🚫 */
+  vertical-align: middle;        /* 🚫 */
 }
 
+/* Table body cells */
 .speed-mentoring-container .admin-table td {
   padding: 0.75rem;
-  vertical-align: middle;
+  vertical-align: middle;                       /* 🚫 */
   border-top: 1px solid var(--border-color);
 }
 
+/* Row hover effect */
 .speed-mentoring-container .admin-table tr:hover td {
   background-color: rgba(108, 73, 124, 0.05);
 }
 
-/* Action button */
+/* ===== ACTION BUTTONS ===== */
 .speed-mentoring-container .btn-info {
   background-color: var(--info-color);
   border-color: var(--info-color);
   color: white;
   padding: 0.5rem 1rem;
-  font-size: 0.9rem;
+  font-size: 0.9rem; 
   transition: all 0.2s ease;
 }
 
@@ -71,65 +105,44 @@
   transform: translateY(-1px);
 }
 
-/* Expanded applicant details */
+/* ===== EXPANDED DETAILS SECTION ===== */
 .speed-mentoring-container .applicant-details {
-  background-color: var(--light-color);
-  padding: 1.5rem;
+  background-color: var(--light-color); 
+  padding: 1.5rem; 
   border-radius: 0 0 8px 8px;
 }
 
-.speed-mentoring-container .applicant-details h5 {
-  color: var(--primary-color);
-  margin-bottom: 1.25rem;
-  font-size: 1.25rem;
-}
-
-/* Nested applicant table */
+/* ===== NESTED APPLICANT TABLE =====
+  this is a secondary table within the expanded row -
+  maintain same styling approach as main table
+*/
 .speed-mentoring-container .applicant-table {
   width: 100%;
   margin: 0;
   background-color: white;
-  border-radius: 6px;
-  overflow: hidden;
+  border-radius: 6px;                  /* note: slightly smaller than main table */
+  overflow: hidden;                    /* 🚫 */
   box-shadow: 0 0 0 1px var(--border-color);
 }
 
-.speed-mentoring-container .applicant-table th {
-  background-color: var(--primary-color);
-  color: white;
-  padding: 0.75rem;
-  font-weight: 500;
+/* Special handling for text-heavy columns */
+.speed-mentoring-container .applicant-table td:nth-child(6),
+.speed-mentoring-container .applicant-table td:nth-child(7) {
+  white-space: normal !important;      /* 🚫 */
+  max-width: none !important;          /* 🚫 */
+  overflow: visible !important;        /* 🚫 */
+  word-wrap: break-word;
+  padding: 0.75rem 1rem;
 }
 
-.speed-mentoring-container .applicant-table td {
-  padding: 0.75rem;
-  border-top: 1px solid var(--border-color);
-}
-
-.speed-mentoring-container .applicant-table tr:hover td {
-  background-color: rgba(108, 73, 124, 0.03);
-}
-
-.speed-mentoring-container .applicant-table td:nth-child(6), /* History column */
-.speed-mentoring-container .applicant-table td:nth-child(7) { /* Reason column */
-  white-space: normal !important; /* Override any text truncation */
-  max-width: none !important; /* Remove max-width restriction */
-  overflow: visible !important; /* Ensure content isn't hidden */
-  word-wrap: break-word; /* Handle long words */
-  padding: 0.75rem 1rem; /* Add more padding for readability */
-}
-
-/* Add a min-width to prevent columns from becoming too narrow */
-.speed-mentoring-container .applicant-table th:nth-child(6),
-.speed-mentoring-container .applicant-table th:nth-child(7) {
-  min-width: 200px;
-}
-
-/* Modal */
+/* ===== MODAL STYLES =====
+  these styles affect the popup modal when viewing long text -
+  maintain consistent padding and overflow handling
+*/
 .long-text-content {
-  white-space: pre-wrap;
+  white-space: pre-wrap;              /* 🚫 */
   max-height: 300px;
-  overflow-y: auto;
+  overflow-y: auto;                   /* 🚫 */
   line-height: 1.6;
   padding: 1rem;
   background: white;
@@ -137,54 +150,21 @@
   border: 1px solid #eee;
 }
 
-.modal-body {
-  max-height: 70vh;
-  overflow-y: auto;
-}
+/* ===== RESPONSIVE ADJUSTMENTS =====
+  media queries are carefully tuned to maintain usability -
+  breakpoints should not be changed without testing -
+  only modify internal styles within these queries
+*/
 
-/* Email link styling */
-.speed-mentoring-container a[href^="mailto:"] {
-  color: var(--primary-color);
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.speed-mentoring-container a[href^="mailto:"]:hover {
-  color: var(--primary-hover);
-  text-decoration: underline;
-}
-
-/* Truncated text with tooltip effect */
-.speed-mentoring-container .text-truncate {
-  display: inline-block;
-  max-width: 200px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  vertical-align: middle;
-}
-
-/* Empty state message */
-.speed-mentoring-container .text-muted {
-  color: #6c757d;
-  font-style: italic;
-  padding: 1rem;
-  text-align: center;
-}
-
-/* Responsive adjustments */
+/* Tablet view adjustments */
 @media (max-width: 992px) {
   .speed-mentoring-container .admin-table {
-    display: block;
-    overflow-x: auto;
-  }
-  
-  .speed-mentoring-container .btn-info {
-    display: block;
-    width: 100%;
+    display: block;                   /* 🚫 */
+    overflow-x: auto;                 /* 🚫 */
   }
 }
 
+/* Mobile view adjustments */
 @media (max-width: 768px) {
   .speed-mentoring-container {
     padding: 0 0.5rem;
@@ -193,34 +173,10 @@
   .speed-mentoring-container h2 {
     font-size: 1.5rem;
   }
-  
-  .speed-mentoring-container .admin-table th,
-  .speed-mentoring-container .admin-table td {
-    padding: 0.6rem;
-    font-size: 0.9rem;
-  }
-  
-  .speed-mentoring-container .applicant-details {
-    padding: 1rem;
-  }
-  
-  .speed-mentoring-container .applicant-table th,
-  .speed-mentoring-container .applicant-table td {
-    padding: 0.5rem;
-    font-size: 0.85rem;
-  }
-  
-  .speed-mentoring-container .text-truncate {
-    max-width: 120px;
-  }
 }
 
+/* Small mobile view adjustments */
 @media (max-width: 576px) {
-  .speed-mentoring-container .applicant-table {
-    display: block;
-    overflow-x: auto;
-  }
-  
   .speed-mentoring-container .text-truncate {
     max-width: 80px;
   }

@@ -1,4 +1,27 @@
-/* ===== USERS TABLE STYLES ===== */
+/* ============================================================================
+   USERSTABLE.CSS — STYLING GUIDE FOR DESIGNERS
+   ----------------------------------------------------------------------------
+   this stylesheet controls the layout and visual presentation of:
+   the Users Info Table in the admins page 
+
+   ✅ u can totally modify:
+    - color values through CSS variables
+    - font sizes (maintaining REM units)
+    - spacing/padding values
+    - border radii and box shadows
+    - transition durations and easing
+
+   🚫 but pls do NOT:
+   - modify table structure or overflow properties
+   - change CSS variable names or remove them
+   - alter the search input's focus states
+   - modify media query breakpoints without testing
+
+   contact me before making structural changes pls <3 ;p
+   thx for making it pretty guys 🥹💖
+============================================================================ */
+
+/* ===== GLOBAL VARIABLES & CONTAINER ===== */
 .users-table-container {
   --primary-color: #6c497c;
   --primary-hover: #8e5fa3;
@@ -8,6 +31,7 @@
   --border-color: #dee2e6;
   --text-color: #212529;
   
+  /* 🚫 do not modify structural styles below */
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
@@ -15,7 +39,7 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
-/* Header styling */
+/* ===== HEADER STYLING ===== */
 .users-table-container h2 {
   color: var(--dark-color);
   font-size: 1.75rem;
@@ -25,10 +49,10 @@
   border-bottom: 2px solid var(--primary-color);
 }
 
-/* Search Bar */
+/* ===== SEARCH BAR ===== */
 .search-input {
   max-width: 400px;
-  margin: 0 auto;
+  margin: 0 auto;                               /* 🚫 */
   border-radius: 20px;
   padding: 10px 20px;
   border: 2px solid var(--primary-color);
@@ -39,37 +63,40 @@
   box-shadow: 0 0 0 0.25rem rgba(108, 73, 124, 0.25);
 }
 
-/* Main table styling */
+/* ===== MAIN TABLE STYLING ===== */
 .users-table-container .admin-table {
-  width: 100%;
+  width: 100%;                                  /* 🚫 */
   margin: 1.5rem 0;
-  border-collapse: separate;
-  border-spacing: 0;
+  border-collapse: separate;                    /* 🚫 */
+  border-spacing: 0;                            /* 🚫 */
   border-radius: 8px;
-  overflow: hidden;
+  overflow: hidden;                             /* 🚫 */
   box-shadow: 0 0 0 1px var(--border-color);
 }
 
+/* Table Header Cells */
 .users-table-container .admin-table th {
   background-color: var(--primary-color);
   color: white;
   padding: 1rem;
   font-weight: 500;
-  text-align: left;
-  vertical-align: middle;
+  text-align: left;                             /* 🚫 */
+  vertical-align: middle;                       /* 🚫 */
 }
 
+/* Table Body Cells */
 .users-table-container .admin-table td {
   padding: 0.75rem;
-  vertical-align: middle;
+  vertical-align: middle;                       /* 🚫 */
   border-top: 1px solid var(--border-color);
 }
 
+/* Row Hover Effect */
 .users-table-container .admin-table tr:hover td {
   background-color: rgba(108, 73, 124, 0.05);
 }
 
-/* Action button */
+/* ===== ACTION BUTTON ===== */
 .users-table-container .btn-info {
   background-color: var(--info-color);
   border-color: var(--info-color);
@@ -85,33 +112,24 @@
   transform: translateY(-1px);
 }
 
-/* Expanded user details */
+/* ===== EXPANDED USER DETAILS ===== */
 .users-table-container .user-details {
   background-color: var(--light-color);
   padding: 1.5rem;
   border-radius: 0 0 8px 8px;
 }
 
-/* Nested details table */
+/* ===== NESTED DETAILS TABLE ===== */
 .users-table-container .details-table {
-  width: 100%;
+  width: 100%;                                  /* 🚫 */
   margin: 0;
   background-color: white;
   border-radius: 6px;
-  overflow: hidden;
+  overflow: hidden;                             /* 🚫 */
   box-shadow: 0 0 0 1px var(--border-color);
 }
 
-.users-table-container .details-table td {
-  padding: 0.75rem;
-  border-top: 1px solid var(--border-color);
-}
-
-.users-table-container .details-table tr:first-child td {
-  border-top: none;
-}
-
-/* Email link styling */
+/* ===== EMAIL LINK STYLING ===== */
 .users-table-container a[href^="mailto:"] {
   color: var(--primary-color);
   text-decoration: none;
@@ -123,7 +141,7 @@
   text-decoration: underline;
 }
 
-/* List styling in details */
+/* ===== LIST STYLING IN DETAILS ===== */
 .users-table-container .user-details ul {
   padding-left: 1.25rem;
   margin: 0.5rem 0;
@@ -133,10 +151,10 @@
   margin-bottom: 0.25rem;
 }
 
-/* Pagination styling */
+/* ===== PAGINATION STYLING ===== */
 .users-table-container .pagination {
   margin: 1.5rem 0;
-  justify-content: center;
+  justify-content: center;                          /* 🚫 */
 }
 
 .users-table-container .page-item.active .page-link {
@@ -151,33 +169,22 @@
   border-radius: 4px;
 }
 
-.users-table-container .page-link:hover {
-  color: var(--primary-hover);
-  background-color: var(--light-color);
-}
-
-/* Empty state message */
-.users-table-container .text-muted {
-  color: #6c757d;
-  font-style: italic;
-  padding: 1rem;
-  text-align: center;
-}
-
-/* Monospace for IDs */
+/* ===== MONOSPACE TEXT FOR IDs ===== */
 .users-table-container .text-monospace {
   font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 0.9em;
 }
 
-/* Responsive adjustments */
+/* ===== RESPONSIVE ADJUSTMENTS ===== */
+/* Tablet View (992px and below) */
 @media (max-width: 992px) {
   .users-table-container .admin-table {
-    display: block;
-    overflow-x: auto;
+    display: block;                             /* 🚫 */
+    overflow-x: auto;                           /* 🚫 */
   }
 }
 
+/* Mobile View (768px and below) */
 @media (max-width: 768px) {
   .users-table-container {
     padding: 0 0.5rem;
@@ -203,14 +210,10 @@
   }
 }
 
+/* Small Mobile View (576px and below) */
 @media (max-width: 576px) {
-  .users-table-container .admin-table {
-    display: block;
-    overflow-x: auto;
-  }
-  
   .users-table-container .btn-info {
-    display: block;
-    width: 100%;
+    display: block;                         /* 🚫 */
+    width: 100%;                            /* 🚫 */
   }
 }

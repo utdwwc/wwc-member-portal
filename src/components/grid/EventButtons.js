@@ -41,10 +41,6 @@ const EventButtons = ({
   nowCST >= checkInStart && 
   nowCST <= checkInEnd;
 
-  //helpful states for message displays
-  const isBeforeCheckIn = isEventToday && nowCST < checkInStart;
-  const isAfterCheckIn = isEventToday && nowCST > checkInEnd;
-
   // ====== RSVP Handler ======
   const handleCheckboxChange = async (eventId) => {
     console.group(`RSVP update for event ${eventId}`);
