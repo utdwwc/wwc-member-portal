@@ -1,0 +1,200 @@
+/* ============================================================================
+   OFFICERSTABLE.CSS — STYLING GUIDE FOR DESIGNERS
+   ----------------------------------------------------------------------------
+   this stylesheet controls the layout and visual presentation of:
+   the Officer Info Table in the admins page 
+
+   ✅ u can totally modify:
+    - color values through CSS variables
+    - font sizes (maintaining REM units)
+    - spacing/padding values
+    - border radii and box shadows
+    - transition durations and easing
+
+   🚫 but pls do NOT:
+   - modify table structure or overflow properties
+   - change CSS variable names or remove them
+   - alter z-index values or positioning logic
+   - modify media query breakpoints without testing
+
+   contact me before making structural changes pls <3 ;p
+   thx for making it pretty guys 🥹💖
+============================================================================ */
+
+/* ===== GLOBAL VARIABLES & CONTAINER ===== */
+.officers-table-container {
+  --primary-color: #6c497c;
+  --primary-hover: #8e5fa3;
+  --info-color: #17a2b8;
+  --warning-color: #ffc107; 
+  --danger-color: #dc3545;
+  --light-color: #f8f9fa;
+  --dark-color: #343a40; 
+  --border-color: #dee2e6;
+  --text-color: #212529;
+  
+  /* 🚫 do not modify structural styles below */
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+/* ===== HEADER STYLING ===== */
+.officers-table-container h2 {
+  color: var(--dark-color);
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--primary-color);
+}
+
+/* ===== MAIN TABLE STYLING ===== */
+.officers-table-container .admin-table {
+  width: 100%;                   /* 🚫 */
+  margin: 1.5rem 0;
+  border-collapse: separate;     /* 🚫 */
+  border-spacing: 0;             /* 🚫 */
+  border-radius: 8px;
+  overflow: hidden;              /* 🚫 */
+  box-shadow: 0 0 0 1px var(--border-color);
+}
+
+/* Table Header Cells */
+.officers-table-container .admin-table th {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 1rem;
+  font-weight: 500;
+  text-align: left;              /* 🚫 */
+  vertical-align: middle;        /* 🚫 */
+}
+
+/* Table Body Cells */
+.officers-table-container .admin-table td {
+  padding: 0.75rem;
+  vertical-align: middle;        /* 🚫 */
+  border-top: 1px solid var(--border-color);
+}
+
+/* Row Hover Effect */
+.officers-table-container .admin-table tr:hover td {
+  background-color: rgba(108, 73, 124, 0.05);
+}
+
+/* ===== ACTION BUTTONS ===== */
+.officers-table-container .btn-info {
+  background-color: var(--info-color);
+  border-color: var(--info-color);
+  color: white;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  margin-right: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.officers-table-container .btn-warning {
+  background-color: var(--warning-color);
+  border-color: var(--warning-color);
+  color: var(--dark-color);
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.officers-table-container .btn-danger {
+  background-color: var(--danger-color);
+  border-color: var(--danger-color);
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+/* Button Hover States */
+.officers-table-container .btn-info:hover,
+.officers-table-container .btn-warning:hover,
+.officers-table-container .btn-danger:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* ===== EXPANDED OFFICER DETAILS ===== */
+.officers-table-container .officer-details {
+  background-color: var(--light-color);
+  padding: 1.5rem;
+  border-radius: 0 0 8px 8px;
+}
+
+/* ===== OFFICER IMAGE STYLING ===== */
+.officers-table-container .officer-image {
+  max-width: 100px;
+  max-height: 100px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+}
+
+/* ===== LINK STYLING ===== */
+.officers-table-container .officer-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.officers-table-container .officer-link:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
+}
+
+/* ===== EMPTY STATE MESSAGE ===== */
+.officers-table-container .text-muted {
+  color: #6c757d;
+  font-style: italic;
+  padding: 1rem;
+  text-align: center;                /* 🚫 */
+}
+
+/* ===== RESPONSIVE ADJUSTMENTS ===== */
+/* Tablet View (992px and below) */
+@media (max-width: 992px) {
+  .officers-table-container .admin-table {
+    display: block;                 /* 🚫 */
+    overflow-x: auto;               /* 🚫 */
+  }
+  
+  .officers-table-container .btn {
+    display: block;                 /* 🚫 */
+    width: 100%;                    /* 🚫 */
+  }
+}
+
+/* Mobile View (768px and below) */
+@media (max-width: 768px) {
+  .officers-table-container {
+    padding: 0 0.5rem;
+  }
+  
+  .officers-table-container h2 {
+    font-size: 1.5rem;
+  }
+  
+  .officers-table-container .admin-table th,
+  .officers-table-container .admin-table td {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+  
+  .officers-table-container .officer-details {
+    padding: 1rem;
+  }
+}
+
+/* Small Mobile View (576px and below) */
+@media (max-width: 576px) {
+  .officers-table-container .officer-image {
+    max-width: 80px;
+    max-height: 80px;
+  }
+}

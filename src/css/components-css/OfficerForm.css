@@ -1,0 +1,178 @@
+/* ============================================================================
+   OFFICERFORM.CSS — STYLING GUIDE FOR DESIGNERS
+   ----------------------------------------------------------------------------
+   this stylesheet controls the layout and visual presentation of:
+   the Create Officer Form in the admins page 
+
+   ✅ u can totally modify:
+    - colors (except those affecting accessibility)
+    - padding/margin values
+    - border radii and box shadows
+    - font sizes and weights
+    - transition durations
+
+   🚫 but pls do NOT:
+   - modify core form structure or layout properties
+   - change form input accessibility features
+   - alter the responsive breakpoints without testing
+   - remove or modify focus states on interactive elements
+
+   contact me before making structural changes pls <3 ;p
+   thx for making it pretty guys 🥹💖
+============================================================================ */
+
+/* ===== FORM CONTAINER ===== */
+.admin-form-container {
+  width: 100%;                    /* 🚫 */
+  max-width: 1200px;              /* 🚫 */
+  margin: 0 auto;                 /* 🚫 */
+  padding: 0 1rem;
+}
+
+/* ===== FORM STYLING ===== */
+.admin-form {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+
+/* Form heading */
+.admin-form h2 {
+  margin-bottom: 1.5rem;
+  color: #333;
+  font-size: 1.75rem;
+}
+
+/* Alert messages */
+.admin-alert {
+  margin-bottom: 1.5rem;
+}
+
+/* ===== TABLE ADAPTATIONS ===== */
+.admin-table {
+  width: 100%;                    /* 🚫 */
+  margin-bottom: 1.5rem;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;               /* 🚫 */
+}
+
+/* Table cells */
+.admin-table td {
+  padding: 1rem;
+  vertical-align: top;            /* 🚫 */
+  border-color: #e0e0e0;
+}
+
+/* ===== FORM ELEMENTS ===== */
+
+/* Labels */
+.admin-label {
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 0.5rem;
+  display: block;                 /* 🚫 */
+}
+
+/* Input fields */
+.admin-input {
+  width: 100%;                    /* 🚫 */
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+  background-color: white;
+}
+
+/* Input focus state - CRITICAL for accessibility */
+.admin-input:focus {
+  outline: none;                    /* 🚫 */
+  border-color: #8e5fa3;
+  box-shadow: 0 0 0 2px rgba(142, 95, 163, 0.2);
+}
+
+/* ===== FILE UPLOAD STYLING ===== */
+.admin-file-input {
+  padding: 0.5rem;
+  border: 1px dashed #ccc;
+  border-radius: 6px;
+  background: white;
+}
+
+/* Image preview */
+.admin-image-preview {
+  border: 2px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* ===== FORM ACTIONS ===== */
+.form-actions {
+  display: flex;                  /* 🚫 */
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+/* Primary form button */
+.details-button {
+  background-color: #8e5fa3;
+  color: white;                 /* 🚫 */
+  padding: 0.6rem 1.5rem;
+  border: none;                   /* 🚫 */
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  cursor: pointer;                /* 🚫 */
+}
+
+/* Button states */
+.details-button:hover {
+  background-color: #6c497c;
+  transform: translateY(-1px);
+}
+
+.details-button:active {
+  transform: translateY(0);
+}
+
+.details-button:disabled {
+  background-color: #b39ebf;
+  cursor: not-allowed;            /* 🚫 */
+  transform: none;                /* 🚫 */
+}
+
+/* ===== RESPONSIVE ADJUSTMENTS ===== */
+
+/* Tablet and below (768px) */
+@media (max-width: 768px) {
+  .admin-form {
+    padding: 1.5rem;
+  }
+  
+  /* Responsive table behavior */
+  .admin-table {
+    display: block;               /* 🚫 */
+    overflow-x: auto;             /* 🚫 */
+  }
+  
+  .admin-table tr {
+    display: flex;                /* 🚫 */
+    flex-direction: column;       /* 🚫 */
+  }
+  
+  .admin-table td {
+    padding: 0.75rem;
+  }
+  
+  /* Form actions adjustment */
+  .form-actions {
+    justify-content: center;
+  }
+  
+  .details-button {
+    width: 100%;                  /* 🚫 */
+  }
+}

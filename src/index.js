@@ -18,12 +18,12 @@ root.render(
   <React.StrictMode>
     <GoogleOAuthProvider clientId="998314684026-iq3l5tljgpk95lco3t959jc8aq4mpcu0.apps.googleusercontent.com">
       <Router>
-      <Routes>
+        <Routes>
           <Route path="/" element={<Homepage />} />
           <Route path="/login" element={<App />} />
           <Route path="/regularEvents" element={<RegularEventsPage />} />
           <Route path="/eventapplications" element={<EventApplicationForm />} />
-          <Route path="/eventCheckIn" element = {<EventCheckIn/>} />
+          <Route path="/eventCheckIn/:eventID" element = {<EventCheckIn/>} />
           <Route path="/profile" element = {<Profile/>} />
           <Route path="/information" element={<Information />} />
           <Route path="/admin" element = {<Admin/>} />

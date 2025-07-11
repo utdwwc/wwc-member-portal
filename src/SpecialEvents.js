@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './css/SpecialEvents.css';
 
@@ -110,9 +110,11 @@ const EventApplicationForm = () => {
     return (
         <div className="form-container">
             <h2>Speed Mentoring Application</h2>
+
             {showSuccessMessage && (
                 <div className="form-success-message">{submissionMessage}</div>
             )}
+
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label>Name:</label>
@@ -204,14 +206,6 @@ const EventApplicationForm = () => {
                 </div>
 
                 <button
-                    type="submit"
-                    className="form-button"
-                    disabled={isSubmitting}
-                >
-                    {isSubmitting ? 'Submitting...' : 'Submit Application'}
-                </button>
-
-                <button
                     className="form-button"
                     onClick={() => navigate('/regularEvents', {
                         state: {
@@ -222,6 +216,14 @@ const EventApplicationForm = () => {
                     })}
                 >
                     Back to Events
+                </button>
+
+                <button
+                    type="submit"
+                    className="form-button"
+                    disabled={isSubmitting}
+                >
+                    {isSubmitting ? 'Submitting...' : 'Submit Application'}
                 </button>
             </form>
         </div>

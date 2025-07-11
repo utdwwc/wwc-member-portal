@@ -112,7 +112,7 @@ const Profile = () => {
   <div>
     <button
       onClick={() => navigate('/regularEvents', { state: { user } })}>
-        Events Page
+        Back to Events
     </button>
 
     <button

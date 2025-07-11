@@ -1,0 +1,44 @@
+/* ============================================================================
+   EVENTCARD.CSS — STYLING GUIDE FOR DESIGNERS
+   ----------------------------------------------------------------------------
+   this stylesheet controls the layout and visual presentation of:
+   the Event Card Containers
+
+   ✅ u can totally:
+   - change gradient colors
+   - adjust aspect ratio
+   - modify max-width
+   - add hover effects/transitions
+   - update the "passed" message color
+
+   🚫 but pls do NOT:
+   - remove the object-fit: cover property
+   - change the flex container structure
+   - modify overflow: hidden
+   - alter the auto margin centering
+
+   contact me before making structural changes pls <3 ;p
+   thx for making it pretty guys 🥹💖
+============================================================================ */
+
+.event-poster-container {
+  aspect-ratio: 4 / 5;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+  overflow: hidden;          /* 🚫 -> prevents image bleed */
+  display: flex;             /* 🚫 -> required for centering */
+  justify-content: center;
+  align-items: center;
+}
+
+.event-poster {
+  width: 100%;              /* 🚫 -> responsive width */
+  height: 100%;             /* 🚫 -> fills container */
+  object-fit: cover;         /* 🚫 -> ensures proper cropping */
+}
+
+.event-passed-message {
+  color: rgb(231, 106, 106);
+}

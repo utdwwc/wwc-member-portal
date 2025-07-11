@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from './hooks/useAuth';
 import { GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode'; // Using jwtDecode
+import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import './css/App.css';
 

@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const mongoose = require('mongoose');
+const { isValidObjectId } = require('mongoose');
 const User = require('./Models/User');
 const RegularEvent = require('./Models/RegularEvent');
 const EventApplication = require('./Models/EventApplication'); 
@@ -12,6 +13,7 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const authRoutes = require('./auth');
+const officersRouter = require('./routes/officers.route');
 
 require('./db/connection');
 
@@ -19,7 +21,10 @@ require('./db/connection');
 const app = express();
 app.use(express.json()); //middleware to parse JSON requests
 app.use(express.urlencoded({ extended: true }));
-app.use('/api', authRoutes); //mount auth routes
+
+//routes
+app.use('/api', authRoutes);
+app.use('/api/officers', officersRouter);
 
 //CORS
 app.use(cors({
@@ -28,6 +33,11 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 }));
+
+
+/*  ==========================================  */
+/*  =============  UPLOAD SETUP  =============  */
+/*  ==========================================  */
 
 //ensure 'uploads' directory exists
 const uploadsDir = path.join(__dirname, 'uploads');
@@ -45,9 +55,19 @@ const storage = multer.diskStorage({
   }
 });
 const upload = multer({ storage });
-app.use('/uploads', express.static(uploadsDir));
 
-/* PURPOSE: Fetches Registered User from Database */
+//app.use('/uploads', express.static(uploadsDir));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+//serving static files from files directory
+app.use('/files', express.static(path.join(__dirname, 'files')));
+
+
+/*  ==========================================  */
+/*  =============  USER ROUTES  ==============  */
+/*  ==========================================  */
+
+// PURPOSE: Fetches Registered User from Database
 app.get('/users', async (req, res) => {
   try {
     const users = await User.find({})
@@ -59,9 +79,6 @@ app.get('/users', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-/* PURPOSE: Serving Static Files from Files Directory */
-app.use('/files', express.static(path.join(__dirname, 'files')));
 
 /* PURPOSE: Fetches Existing User Profile in the Database */
 app.get('/user/:id', async (req, res) => {
@@ -156,7 +173,9 @@ app.get('/user/gmail/:gmail', async (req, res) => {
 });
 
 
-/*  <------------  EVENTS TABLE  ------------>  */
+/*  ==========================================  */
+/*  ============== EVENT ROUTES ==============  */
+/*  ==========================================  */
 
 /* PURPOSE: Retrieve All Existing Events from Database */
 app.get('/regularevents', async (req, res) => {
@@ -226,6 +245,87 @@ app.post('/regularevents', upload.single('poster'), async (req, res) => {
     });
   }
 });
+
+// DELETE event
+app.delete('/regularevents/:id', async (req, res) => {
+  try {
+    const event = await RegularEvent.findByIdAndDelete(req.params.id);
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+    
+    // Optionally delete associated RSVPs and attendances
+    await RSVP.deleteMany({ eventId: req.params.id });
+    await Attendance.deleteMany({ eventId: req.params.id });
+    
+    res.json({ message: 'Event deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting event:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// PATCH event (for updates from admin side)
+app.patch('/regularevents/:id', upload.single('poster'), async (req, res) => {
+  try {
+    const updates = {
+      title: req.body.title,
+      description: req.body.description,
+      date: req.body.date,
+      location: req.body.location,
+      appReq: req.body.appReq === 'true',
+      points: parseInt(req.body.points) || 0
+    };
+
+    if (req.file) {
+      // Store relative path starting from 'uploads/'
+      updates.imageUrl = `uploads/${req.file.filename}`;
+    }
+
+    const updatedEvent = await RegularEvent.findByIdAndUpdate(
+      req.params.id,
+      updates,
+      { new: true }
+    );
+
+    res.json(updatedEvent);
+  } catch (error) {
+    console.error('Error updating event:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// PURPOSE: Fetches Events (for event check-in page)
+app.get('/api/events/:eventId', async (req, res) => {
+  try {
+    const { eventId } = req.params;
+
+    // 1. Validate eventId format (MongoDB ObjectId)
+    if (!isValidObjectId(eventId)) {
+      return res.status(400).json({ error: 'Invalid event ID format' });
+    }
+
+    // 2. Fetch event with only the required fields (security & performance)
+    const event = await RegularEvent.findById(eventId).select('_id title date location');
+
+    if (!event) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
+
+    // 3. Return the event data
+    res.json(event);
+  } catch (err) {
+    console.error('Error fetching event:', err);
+    res.status(500).json({ 
+      error: process.env.NODE_ENV === 'development' ? err.message : 'Server error' 
+    });
+  }
+});
+
+
+/*  ==========================================  */
+/*  ==============  RSVP ROUTES ==============  */
+/*  ==========================================  */
 
 /* PURPOSE: Retrieves RSVP Data */
 app.get('/rsvps', async (req, res) => {
@@ -322,6 +422,11 @@ app.post('/regularevents/:eventId/rsvp', async (req, res) => {
   }
 });
 
+
+/*  ==========================================  */
+/*  =========== APPLICATION ROUTES ===========  */
+/*  ==========================================  */
+
 /* PURPOSE: Saves Speed Mentoring Applications to Database*/
 app.post('/eventapplications/', async (req, res) => {
   const {
@@ -339,13 +444,13 @@ app.post('/eventapplications/', async (req, res) => {
   console.log('Incoming application data:', req.body);
 
   //validation
-  if (!name || !email || !year || !history || !reason) {
+  if (!name || !pronouns || !email || !year || !grad || !history || !reason) {
       return res.status(400).json({ message: 'All fields except userId and eventId are required' });
   }
 
   try {
       const newApplication = new EventApplication({
-          userId: userId || null,  // Handle cases where userId might be undefined
+          userId: userId || null,  //handle cases where userId might be undefined
           eventId: eventId || null,
           name,
           pronouns,
@@ -401,6 +506,11 @@ app.get('/eventapplications/with-events', async (req, res) => {
       res.status(500).json({ message: 'Error fetching applications' });
   }
 });
+
+
+/*  ==========================================  */
+/*  ============ ATTENDANCE ROUTES ===========  */
+/*  ==========================================  */
 
 // PURPOSE: Records a User's Attendance + Updates their Profile
 app.post('/api/events/:eventId/check-in', async (req, res) => {
@@ -479,9 +589,7 @@ app.get('/api/events/users/:userId/attendance', async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const userAttendance = await Attendance.find({ userId })
-      .sort({ checkInTime: -1 }) //newest first
-      .populate('eventId', 'title date location');
+    const userAttendance = await Attendance.exists({ userId })
 
     res.status(200).json(userAttendance);
   } catch (err) {
@@ -490,7 +598,7 @@ app.get('/api/events/users/:userId/attendance', async (req, res) => {
 });
 
 // PURPOSE: Retrieves Attendance
-app.get('/api/events/attendance', async (req, res) => {
+app.get('/events/attendance', async (req, res) => {
   try {
     const eventsWithAttendance = await RegularEvent.aggregate([
       {
@@ -547,12 +655,15 @@ app.get('/api/events/attendance', async (req, res) => {
   }
 });
 
-/*  <------------  EVENTS TABLE  ------------>  */
+
+/*  ==========================================  */
+/*  ============ SERVER CONNECTION ===========  */
+/*  ==========================================  */
 
 /* GORL idk why but i have to comment
 these out/back in all the time */
 app.listen(4000, () => {
   console.log('Server is running on port 4000');
-});
+}); 
 
 module.exports = app;

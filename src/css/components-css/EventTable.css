@@ -1,0 +1,197 @@
+/* ============================================================================
+   EVENTTABLE.CSS — STYLING GUIDE FOR DESIGNERS
+   ----------------------------------------------------------------------------
+   this stylesheet controls the layout and visual presentation of:
+   the Event Information Table in the admins page 
+
+   ✅ u can totally modify:
+   - color values
+   - font sizes
+   - spacing/padding values
+   - border radii and box shadows
+   - transition durations and easing
+
+   🚫 but pls do NOT:
+   - modify table structure or overflow properties
+   - change CSS variable names or remove them
+   - alter z-index values or positioning logic
+   - modify media query breakpoints without testing
+
+   contact me before making structural changes pls <3 ;p
+   thx for making it pretty guys 🥹💖
+============================================================================ */
+
+/* ===== GLOBAL VARIABLES & CONTAINER ===== */
+.event-table-container {
+  --primary-color: #6c497c;
+  --primary-hover: #8e5fa3;
+  --secondary-color: #6c757d;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
+  --light-color: #f8f9fa;
+  --dark-color: #343a40;
+  --border-color: #dee2e6;
+  --text-color: #212529;
+  
+  /* 🚫 do not modify structural styles below */
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+/* ===== HEADER SECTION ===== */
+.event-table-container h2 {
+  color: var(--dark-color);
+  margin-bottom: 0;               /* 🚫 */
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+/* ===== REFRESH BUTTON ===== */
+.event-table-container .btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color); 
+  color: white;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.event-table-container .btn-primary:hover {
+  background-color: var(--primary-hover); 
+  transform: translateY(-1px);
+}
+
+/* ===== MAIN TABLE STYLES ===== */
+.event-table-container .admin-table {
+  width: 100%;
+  margin: 1.5rem 0;
+  border-collapse: separate;      /* 🚫 */
+  border-spacing: 0;              /* 🚫 */
+  border-radius: 8px;
+  overflow: hidden;               /* 🚫 */
+  box-shadow: 0 0 0 1px var(--border-color);
+}
+
+/* Table Header Cells */
+.event-table-container .admin-table th {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 1rem;
+  font-weight: 500;
+  text-align: left;              /* 🚫 */
+  vertical-align: middle;        /* 🚫 */
+}
+
+/* Table Body Cells */
+.event-table-container .admin-table td {
+  padding: 0.75rem;
+  vertical-align: middle;        /* 🚫 */
+  border-top: 1px solid var(--border-color);
+}
+
+/* Row Hover Effect */
+.event-table-container .admin-table tr:hover td {
+  background-color: rgba(108, 73, 124, 0.05);
+}
+
+/* ===== ACTION BUTTONS ===== */
+.event-table-container .btn {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.3rem;
+  transition: all 0.2s ease;
+  border: none;                  /* 🚫 */
+}
+
+/* Button Variants */
+.event-table-container .btn-success {
+  background-color: var(--success-color); 
+}
+.event-table-container .btn-warning {
+  background-color: var(--warning-color);
+  color: var(--dark-color); 
+}
+.event-table-container .btn-danger {
+  background-color: var(--danger-color);
+}
+
+/* Button Hover States */
+.event-table-container .btn:hover {
+  transform: translateY(-1px); 
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* ===== EXPANDED DETAILS SECTIONS ===== */
+.event-table-container .applicant-details,
+.event-table-container .user-details {
+  background-color: var(--light-color);
+  padding: 1.5rem;
+  border-radius: 0 0 8px 8px;
+}
+
+/* ===== PAGINATION ===== */
+.event-table-container .pagination {
+  margin: 1.5rem 0;
+  justify-content: center;            /* 🚫 */
+}
+
+.event-table-container .page-item.active .page-link {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.event-table-container .page-link {
+  color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  margin: 0 0.25rem;
+  border-radius: 4px;
+}
+
+/* ===== MODAL STYLING ===== */
+.event-table-container .modal-header {
+  background-color: var(--primary-color);
+  color: white;
+  border-bottom: none;                   /* 🚫 */
+}
+
+/* ===== STATUS INDICATORS ===== */
+.event-table-container .status-indicator {
+  display: inline-block;            /* 🚫 */
+  width: 1rem;                      /* 🚫 */
+  height: 1rem;                     /* 🚫 */
+  border-radius: 50%;               /* 🚫 */
+  margin-right: 0.5rem;
+}
+
+/* ===== RESPONSIVE ADJUSTMENTS ===== */
+
+/* Tablet View (992px and below) */
+@media (max-width: 992px) {
+  .event-table-container .admin-table {
+    display: block;                 /* 🚫 */
+    overflow-x: auto;               /* 🚫 */
+  }
+  
+  .event-table-container .btn {
+    display: block;                 /* 🚫 */
+    width: 100%;                    /* 🚫 */
+  }
+}
+
+/* Mobile View (768px and below) */
+@media (max-width: 768px) {
+  .event-table-container {
+    padding: 0 0.5rem;
+  }
+  
+  .event-table-container .admin-table th,
+  .event-table-container .admin-table td {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+}

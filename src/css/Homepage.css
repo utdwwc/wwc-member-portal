@@ -1,8 +1,32 @@
+/* ============================================================================
+   HOMEPAGE.CSS — STYLING GUIDE FOR DESIGNERS
+   ----------------------------------------------------------------------------
+   this stylesheet controls the layout and visual presentation of:
+   the main Homepage
+
+   ✅ u can totally:
+   - change all colors
+   - adjust shadows, rounded corners, hover effects
+   - modify typography (except mobile font sizes)
+   - add animations/transitions to interactive elements
+   - edit spacing between sections/components
+
+   🚫 but pls do NOT:
+   - change grid/flex structures (breaks responsive layout)
+   - modify the Google login button SVG icon
+   - remove any position/display properties
+   - alter the mobile breakpoints (768px/480px)
+
+   contact me before making structural changes pls <3 ;p
+   thx for making it pretty guys 🥹💖
+============================================================================ */
+
+
 /* ===== BASE STYLES ===== */
 .homepage {
     font-family: 'Arial', sans-serif;
     color: #333;
-    max-width: 1200px;
+    max-width: 1200px;          /* 🚫 -> content width constraint */
     margin: 0 auto;
   }
   
@@ -13,9 +37,9 @@
     padding: 1rem 2rem;
     background: white;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    position: sticky;
+    position: sticky;          /* 🚫 -> must stay fixed at top */
     top: 0;
-    z-index: 100;
+    z-index: 100;             /* 🚫 -> ensures navbar stays on top */
   }
   
   .navbar__logo {
@@ -31,8 +55,8 @@
   }
 
   /* ===== NAVBAR LOGIN BUTTON ===== */
-.navbar__login-button {
-    background-color: #4285f4; /* google blue */
+  .navbar__login-button {
+    background-color: #4285f4;  /* 🚫 -> Google brand blue */
     color: black;
     padding: 0.5rem 1rem;
     border-radius: 4px;
@@ -79,7 +103,7 @@
   /* ===== SECTIONS ===== */
   .section {
     padding: 4rem 2rem;
-    min-height: 100vh;
+    min-height: 100vh;        /* 🚫 -> full-viewport sections */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -96,15 +120,84 @@
     text-align: center;
     background: #f8f9fa;
   }
+
+  /* Events Section */
+.events-section {
+  padding: 80px 5%;
+  background-color: #f9f9f9;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 40px;
+  color: #2d2d2d;
+}
+
+/* Grid layout for events */
+.events-grid {
+  display: grid;            /* 🚫 -> core layout system */
+  grid-template-columns: repeat(2, minmax(300px, 1fr));
+  gap: 50px;
+  width: 100%;
+  margin: 0 auto;
+  max-width: 1400px;
+}
+
+/* View All button styling */
+.view-all-container {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.view-all-button {
+  background-color: #6a1b9a;
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.view-all-button:hover {
+  background-color: #8e24aa;
+  transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .events-grid {
+    gap: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .events-section {
+    padding: 60px 20px;
+  }
+  
+  .events-grid {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+    gap: 30px;
+  }
+  
+  .section-title {
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+  }
+}
   
   /* Values Section */
   .values__grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 columns */
-    grid-template-rows: repeat(2, 1fr);    /* 2 rows (equal height) */
+    grid-template-columns: repeat(2, 1fr); 
+    grid-template-rows: repeat(2, 1fr);
     gap: 2rem;
     width: 100%;
-    aspect-ratio: 1 / 1; /* optional: makes the entire grid square */
+    aspect-ratio: 1 / 1;     /* 🚫 -> square grid on desktop */
   }
   
   .value-card {
@@ -112,21 +205,19 @@
     border-radius: 8px;
     background: white;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    
-    /* Ensures each card is a square */
-    aspect-ratio: 1 / 1; /* width = height */
-    width: 100%;        /* fills grid cell width */
-    height: 100%;       /* fills grid cell height */
+    aspect-ratio: 1 / 1;     /* 🚫 -> square cards */
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* centers content vertically */
-    align-items: center;     /* centers content horizontally */
+    justify-content: center;
+    align-items: center;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 768px) {  /* 🚫 -> tablet breakpoint */
     .values__grid {
-      grid-template-columns: 1fr; /* single column on mobile */
-      aspect-ratio: auto;         /* disable square grid on small screens */
+      grid-template-columns: 1fr; /* 🚫 -> mobile stacking */
+      aspect-ratio: auto;
     }
   }
   
@@ -216,7 +307,7 @@
 
 .team-image-container {
     position: relative;
-    height: 250px;
+    height: 250px;           /* 🚫 -> fixed height for consistency */
     overflow: hidden;
 }
 
@@ -311,19 +402,19 @@
 .footer {
     background: #333;
     color: white;
-    padding: 2rem 0; /* changed from 2rem to 2rem 0 to remove horizontal padding */
+    padding: 2rem 0;
     text-align: center;
-    width: 100%; /* ensure full width */
-    margin: 0; /* remove any default margins */
+    width: 100%;            /* 🚫 -> must span full width */
+    margin: 0;
 }
 
 .footer__content {
     display: flex;
     justify-content: space-around;
     margin-bottom: 1rem;
-    max-width: 1200px; /* optional: constrain content width */
-    margin: 0 auto; /* center the content */
-    padding: 0 20px; /* add some padding on sides */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
 .footer__links a {
