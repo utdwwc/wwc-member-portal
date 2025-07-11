@@ -10,6 +10,7 @@ const OfficerForm = ({ onOfficerAdded }) => {
     email: '',
     github: '',
     linkedin: '',
+    grad: '',
     imageFile: null,
     imagePreview: null
   });
@@ -46,6 +47,7 @@ const OfficerForm = ({ onOfficerAdded }) => {
   data.append('email', formData.email);
   data.append('github', formData.github);
   data.append('linkedin', formData.linkedin);
+  data.append('grad', formData.grad);
   if (formData.imageFile) {
     data.append('image', formData.imageFile);
   }
@@ -70,6 +72,7 @@ const OfficerForm = ({ onOfficerAdded }) => {
       email: '',
       github: '',
       linkedin: '',
+      grad: '',
       imageFile: null,
       imagePreview: null
     });
@@ -166,6 +169,20 @@ const OfficerForm = ({ onOfficerAdded }) => {
                     type="text"
                     name="linkedin"
                     value={formData.linkedin}
+                    onChange={handleChange}
+                    className="admin-input"
+                  />
+                </Form.Group>
+              </td>
+            </tr>
+            <tr>
+              <td colSpan="2">
+                <Form.Group controlId="grad" className="mb-3">
+                  <Form.Label className="admin-label">Grad Year</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="grad"
+                    value={formData.grad}
                     onChange={handleChange}
                     className="admin-input"
                   />

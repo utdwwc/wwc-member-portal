@@ -27,7 +27,8 @@ app.post('/', upload.single('image'), async (req, res) => {
       imageUrl: imageUrl,
       github: req.body.github,
       linkedin: req.body.linkedin,
-      email: req.body.email
+      email: req.body.email,
+      grad: req.body.grad
     });
 
     const newOfficer = await officer.save();
@@ -60,6 +61,7 @@ app.patch('/:id', getOfficer, async (req, res) => {
   if (req.body.github != null) res.officer.github = req.body.github;
   if (req.body.linkedin != null) res.officer.linkedin = req.body.linkedin;
   if (req.body.email != null) res.officer.email = req.body.email;
+  if (req.body.grad != null) res.officer.grad = req.body.grad;
 
   try {
     const updatedOfficer = await res.officer.save();

@@ -7,7 +7,8 @@ const officerSchema = new mongoose.Schema({
   github: { type: String, required: false },
   linkedin: { type: String, required: false },
   email: { type: String, required: true, lowercase: true,
-    match: [/.+\@.+\..+/, 'Please enter a valid email address'] }
+    match: [/.+\@.+\..+/, 'Please enter a valid email address'] },
+  grad: { type: String, required: true }
 });
 
 const Officer = mongoose.model('Officer', officerSchema);

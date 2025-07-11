@@ -63,16 +63,16 @@ const OfficersTable = () => {
   };
 
   const saveEditedOfficer = async () => {
-    try {
-      const response = await axios.put(`/api/officers/${editedOfficer._id}`, editedOfficer);
-      setOfficers(officers.map(officer => 
-        officer._id === editedOfficer._id ? response.data : officer
-      ));
-      setEditMode(false);
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+  try {
+    const response = await axios.patch(`/api/officers/${editedOfficer._id}`, editedOfficer);
+    setOfficers(officers.map(officer => 
+      officer._id === editedOfficer._id ? response.data : officer
+    ));
+    setEditMode(false);
+  } catch (err) {
+    setError(err.message);
+  }
+};
 
   if (loading) return <div>Loading officers...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -169,6 +169,17 @@ const OfficersTable = () => {
                                   />
                                 </td>
                               </tr>
+                              <tr>
+                                <th>Grad Year</th>
+                                <td>
+                                  <input
+                                    type="text"
+                                    name="grad"
+                                    value={editedOfficer.grad || ''}
+                                    onChange={handleInputChange}
+                                  />
+                                </td>
+                              </tr>
                             </tbody>
                           </Table>
                           <div className="edit-actions">
@@ -220,6 +231,16 @@ const OfficersTable = () => {
                                       rel="noopener noreferrer"
                                     >
                                       {officer.linkedin}
+                                    </a>
+                                  ) : 'Not provided'}
+                                </td>
+                              </tr>
+                              <tr>
+                                <th>Grad Year</th>
+                                <td>
+                                  {officer.grad ? (
+                                    <a>
+                                      {officer.grad}
                                     </a>
                                   ) : 'Not provided'}
                                 </td>
