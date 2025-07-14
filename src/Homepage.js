@@ -31,8 +31,8 @@ const Homepage = () => {
                 //sort events by date (newest first)
                 const sortedEvents = data.sort((a, b) => new Date(b.date) - new Date(a.date));
                 
-                //get the 4 most recent events
-                setEvents(sortedEvents.slice(0, 4));
+                //get the 3 most recent events
+                setEvents(sortedEvents.slice(0, 3));
             } catch (error) {
                 console.error("Fetch error:", error);
             } finally {
@@ -122,7 +122,7 @@ const Homepage = () => {
             <section id="events" className="section section--events">
                 <EventsGrid
                     title="Events"
-                    events={events.slice(0, 4)}
+                    events={events.slice(0, 3)}
                     user={user}
                     navigate={navigate}
                     rsvpStatus={rsvpStatus}
