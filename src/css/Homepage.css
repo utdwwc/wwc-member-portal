@@ -25,38 +25,60 @@
 /* ===== BASE STYLES ===== */
 .homepage {
     font-family: 'Arial', sans-serif;
-    color: #333;
-    max-width: 1200px;          /* 🚫 -> content width constraint */
+    color: #000000;
     margin: 0 auto;
+    max-width: 1550px;          /* 🚫 -> content width constraint  -> changed from 1200 to 1550px*/
   }
   
   /* ===== NAVBAR ===== */
   .navbar {
     display: flex;
     justify-content: space-between;
-    padding: 1rem 2rem;
-    background: white;
+    align-items: center;
+    padding: 1.2rem 2rem;
+    background: linear-gradient(90deg, #ffe5ea, #f2bdc7);
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    position: sticky;          /* 🚫 -> must stay fixed at top */
+    font-family: 'Raleway', sans-serif;
     top: 0;
+    position: sticky;          /* 🚫 -> must stay fixed at top */
     z-index: 100;             /* 🚫 -> ensures navbar stays on top */
   }
   
   .navbar__logo {
     font-weight: bold;
     font-size: 1.25rem;
+    margin-left: 3rem;
   }
   
+  .navbar__links {
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* better than margin-left on individual buttons */
+    flex-wrap: nowrap; /* prevent wrapping */
+  }
   .navbar__links button {
+    /* background: rgb(255, 205, 222);
+    border-radius: 5px; */
     background: none;
+    text-decoration: underline;
     border: none;
     margin-left: 1rem;
+    margin-right: 1rem;
     cursor: pointer;
   }
+  
+    .navbar__links button:hover {
+    /* color: #164f73; */
+    transform: scale(1.0);
+    transition: all 0.01s ease;
+    text-decoration: underline;
+    /* margin-right: 1rem; */
+  }
 
+
+  
   /* ===== NAVBAR LOGIN BUTTON ===== */
   .navbar__login-button {
-    background-color: #4285f4;  /* 🚫 -> Google brand blue */
     color: black;
     padding: 0.5rem 1rem;
     border-radius: 4px;
@@ -68,6 +90,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    background-color: #4285f4;  /* 🚫 -> Google brand blue */
   }
   
   .navbar__login-button:hover {
@@ -113,36 +136,103 @@
     margin-bottom: 2rem;
     text-align: center;
   }
-  
+
+  /* Import Google Fonts */
+  /* @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@700&display=swap'); */
+  @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lobster&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Lobster&family=Raleway:wght@300;400;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Lobster&family=Lora:wght@400;600&display=swap');
+
+
   /* Header Section */
   .section--header {
     justify-content: center;
     text-align: center;
-    background: #f8f9fa;
+    margin-top: -100px;
+    position: relative;
+    /* background: #ffe5ea; */
+    height: 100%;
+    border-radius: 0 0 50% 50% / 0 0 100px 100px;
+    padding: 2rem;
+    /* Marbling Background */
+    background: url('/src/pngs/pink_marble.png') center/cover no-repeat;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .section--header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.3); /* ← adjust this opacity */
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .section--header > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .glass-panel {
+    width: 100%;
+    max-width: 1000px;
+    padding: 4rem;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+  }
+
+  .header__title {
+  font-family: 'Lobster', cursive;
+  font-size: 6rem;
+  color: #2d3c4d;
+  margin-bottom: 0.5rem;
+}
+
+  .header__subtitle {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 700;
+    font-size: 3rem;
+    color: #2d3c4d;
+    margin-bottom: 1rem;
+  }
+
+  .header__description {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    color: #5a5a5a;
+    max-width: 600px;
+    margin: 0 auto;
+    font-weight:600;
   }
 
   /* Events Section */
-.events-section {
-  padding: 80px 5%;
-  background-color: #f9f9f9;
-}
+  .events-section {
+    padding: 80px 5%;
+    background-color: #f9f9f9;
+  }
 
-.section-title {
-  text-align: center;
-  font-size: 2rem;
-  margin-bottom: 40px;
-  color: #2d2d2d;
-}
+  .section-title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 40px;
+    color: #2d2d2d;
+  }
 
-/* Grid layout for events */
-.events-grid {
-  display: grid;            /* 🚫 -> core layout system */
-  grid-template-columns: repeat(2, minmax(300px, 1fr));
-  gap: 50px;
-  width: 100%;
-  margin: 0 auto;
-  max-width: 1400px;
-}
+  /* Grid layout for events */
+  .events-grid {
+    display: grid;            /* 🚫 -> core layout system */
+    grid-template-columns: repeat(3, minmax(250px, 1fr)); /*made it 3 instead of 3*/
+    gap: 25px;
+    width: 100%;
+    margin: 0 auto;
+    max-width: 950px;  /*changed this from 1400px to 950px*/
+  }
 
 /* View All button styling */
 .view-all-container {
@@ -192,9 +282,11 @@
   
   /* Values Section */
   .values__grid {
+    justify-content: center;
     display: grid;
-    grid-template-columns: repeat(2, 1fr); 
-    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 500px); /*changed this */
+    grid-template-rows: repeat(2, 500px); /*changed this */
+    /* margin-bottom: -300px; */
     gap: 2rem;
     width: 100%;
     aspect-ratio: 1 / 1;     /* 🚫 -> square grid on desktop */
@@ -285,7 +377,7 @@
 
 .team-grid-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(4, minmax(280px, 1fr)); /*changed this from auto-fit to 4*/
     gap: 2rem;
     max-width: 1200px;
     margin: 0 auto;

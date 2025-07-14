@@ -107,9 +107,14 @@ const Homepage = () => {
 
             {/* --- HEADER --- */}
             <section id="header" className="section section--header">
-                <div className="header__content">
-                    <h1>Empowering the Future of Tech</h1>
-                    <p>At Women Who Compute, we are dedicated to the empowerment and advancement of women in engineering and computer science.</p>
+                <div className="glass-panel">
+                    <div className="header__content">
+                    <h1 className="header__title">Women Who Compute</h1>
+                    <h1 className="header__subtitle">Empowering the Future of Tech</h1>
+                    <p className="header__description">
+                        At Women Who Compute, we are dedicated to the empowerment and advancement of women in engineering and computer science.
+                    </p>
+                    </div>
                 </div>
             </section>
 
