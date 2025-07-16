@@ -229,7 +229,7 @@
   /* Grid layout for events */
   .events-grid {
     display: grid;            /* 🚫 -> core layout system */
-    grid-template-columns: repeat(3, minmax(250px, 1fr)); /*made it 3 instead of 3*/
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /*made it 3 instead of 3*/
     gap: 25px;
     width: 100%;
     margin: 0 auto;
@@ -411,7 +411,7 @@
 
 .team-grid-container {
     display: grid;
-    grid-template-columns: repeat(4, minmax(280px, 1fr)); /*changed this from auto-fit to 4*/
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /*changed this from auto-fit to 4*/
     gap: 2rem;
     width: 100%;
     margin: 0 auto;
@@ -500,6 +500,7 @@
 @media (max-width: 768px) {
     .team-grid-container {
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        padding: 0 2rem;
     }
     
     .team-image-container {
