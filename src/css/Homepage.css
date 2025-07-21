@@ -37,12 +37,15 @@
     justify-content: space-between;
     align-items: center;
     padding: 1.2rem 2rem;
-    background: linear-gradient(90deg, #ffe5ea, #f2bdc7);
+    
+    background: #fce6e2;
+    /* linear-gradient(90deg, #f59fb0, #f2bdc7); */
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     font-family: 'Raleway', sans-serif;
     top: 0;
     position: sticky;          /* 🚫 -> must stay fixed at top */
     z-index: 100;             /* 🚫 -> ensures navbar stays on top */
+    color: #93564e;;
   }
   
   .navbar__logo {
@@ -61,11 +64,12 @@
     /* background: rgb(255, 205, 222);
     border-radius: 5px; */
     background: none;
-    text-decoration: underline;
+    text-decoration: underline #E6B0C0;
     border: none;
     margin-left: 1rem;
     margin-right: 1rem;
     cursor: pointer;
+    color: #800020;
   }
   
     .navbar__links button:hover {
@@ -74,13 +78,14 @@
     transition: all 0.01s ease;
     text-decoration: underline;
     /* margin-right: 1rem; */
+    color: #F7CAC9;
   }
 
 
   
   /* ===== NAVBAR LOGIN BUTTON ===== */
   .navbar__login-button {
-    color: black;
+    color: #800020;
     padding: 0.5rem 1rem;
     border-radius: 4px;
     border: none;
@@ -107,7 +112,7 @@
     display: inline-block;
     width: 18px;
     height: 18px;
-    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMTcuNiA5LjJsLS4xLTEuOEg5djMuNGg0LjhDMTMuNiAxMiAxMyAxMyAxMiAxMy42djIuMmgzYTguOCA4LjggMCAwIDAgMi42LTYuNnoiIGZpbGw9IiM0Mjg1RjQiIGZpbGwtcnVsZT0ibm9uemVybyIvPjxwYXRoIGQ9Ik05IDE4YzIuNCAwIDQuNS0uOCA2LTIuMmwtMy0yLjJhNS40IDUuNCAwIDAgMS04LTIuOUgxVjEzYTkgOSAwIDAgMCA4IDV6IiBmaWxsPSIjMzRBODUzIiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNNCAxMC43YTUuNCA1LjQgMCAwIDEgMC0zLjRWNUgxYTkgOSAwIDAgMCAwIDhsMy0yLjN6IiBmaWxsPSIjRkJCQzA1IiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNOSAzLjZjMS4zIDAgMi41LjQgMy40IDEuM0wxNSAyLjNBOSA5IDAgMCAwIDEgNWwzIDIuNGE1LjQgNS40IDAgMCAxIDUtMy43eiIgZmlsbD0iI0VBNDMzNSIgZmlsbC1ydWxlPSJub256ZXJvIi8+PHBhdGggZD0iTTAgMGgxOHYxOEgweiIvPjwvZz48L3N2Zz4=');
+    /* background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMTcuNiA5LjJsLS4xLTEuOEg5djMuNGg0LjhDMTMuNiAxMiAxMyAxMyAxMiAxMy42djIuMmgzYTguOCA4LjggMCAwIDAgMi42LTYuNnoiIGZpbGw9IiM0Mjg1RjQiIGZpbGwtcnVsZT0ibm9uemVybyIvPjxwYXRoIGQ9Ik05IDE4YzIuNCAwIDQuNS0uOCA2LTIuMmwtMy0yLjJhNS40IDUuNCAwIDAgMS04LTIuOUgxVjEzYTkgOSAwIDAgMCA4IDV6IiBmaWxsPSIjMzRBODUzIiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNNCAxMC43YTUuNCA1LjQgMCAwIDEgMC0zLjRWNUgxYTkgOSAwIDAgMCAwIDhsMy0yLjN6IiBmaWxsPSIjRkJCQzA1IiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNOSAzLjZjMS4zIDAgMi41LjQgMy40IDEuM0wxNSAyLjNBOSA5IDAgMCAwIDEgNWwzIDIuNGE1LjQgNS40IDAgMCAxIDUtMy43eiIgZmlsbD0iI0VBNDMzNSIgZmlsbC1ydWxlPSJub256ZXJvIi8+PHBhdGggZD0iTTAgMGgxOHYxOEgweiIvPjwvZz48L3N2Zz4='); */
     background-size: contain;
   }
   
@@ -144,7 +149,7 @@
   @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lobster&display=swap');
   @import url('https://fonts.googleapis.com/css2?family=Lobster&family=Raleway:wght@300;400;700&display=swap');
   @import url('https://fonts.googleapis.com/css2?family=Lobster&family=Lora:wght@400;600&display=swap');
-
+  @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap');
 
   /* Header Section */
   .section--header {
@@ -156,8 +161,10 @@
     height: 100%;
     border-radius: 0 0 50% 50% / 0 0 100px 100px;
     padding: 2rem;
+    /* padding-top: 100px; */
     /* Marbling Background */
     background: url('/src/pngs/pink_marble.png') center/cover no-repeat;
+    /* background-color: linear-gradient(to bottom, #ffe5ea, white); */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
 
@@ -165,7 +172,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(255, 255, 255, 0.3); /* ← adjust this opacity */
+    background: rgba(255, 255, 255, 0); /* ← adjust this opacity - control if the swirl jpg is deeper or richer in color or softer */
     z-index: 0;
     pointer-events: none;
   }
@@ -205,7 +212,7 @@
   }
 
   .header__description {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Quicksand', sans-serif;
     font-size: 1rem;
     color: #5a5a5a;
     max-width: 600px;
@@ -214,31 +221,101 @@
   }
 
   /* Events Section */
-  .events-section {
-    padding: 80px 5%;
-    width: 100%;
-  }
+.section--events {
+    background: linear-gradient(to bottom, #e5afb0, #feedee,#f8cdca);
+    padding: 4rem 2rem; /* Keep existing padding */
+    /* margin-top: -20px; Keep existing margin */
+    /* Add padding bottom to give space for the View All Events button */
+    padding-top: 12rem;
+    padding-bottom: 6rem;
+    margin-top: -100px; 
+}
 
-  .section-title {
+.section-title { /* Assuming this class exists for the "Events" title */
+    font-family: 'Raleway', sans-serif;
+    font-weight: 500;
     text-align: center;
-    font-size: 2rem;
+    font-size: 3rem;
     margin-bottom: 40px;
     color: #2d2d2d;
-  }
+}
+
+
+  /* .section-title {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 500;
+    text-align: center;
+    font-size: 3rem;
+    margin-bottom: 40px;
+    color: #2d2d2d;
+  } */
 
   /* Grid layout for events */
-  .events-grid {
-    display: grid;            /* 🚫 -> core layout system */
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /*made it 3 instead of 3*/
+.events-grid {
+    display: grid;
+    /* Responsive columns: at least 300px wide, fills space */
+    grid-template-columns: repeat( auto-fit, minmax(300px, 1fr)); /* Increased minmax from 250px to 300px for larger cards */
+    gap: 30px; /* Slightly increased gap for better spacing */
+    width: 100%;
+    margin: 0 auto;
+    max-width: 1300px; /* Adjust this max-width for the entire grid of cards */
+    padding: 0 2rem; /* Keep existing padding */
+
+    align-items: stretch; /* CRUCIAL: Ensures all cards in the grid stretch to the same height */
+    justify-content: center; /* Centers the grid items if they don't fill the entire row */
+}
+
+  /* Grid layout for events */
+  /* .events-grid {
+    display: grid;            /* 🚫 -> core layout system 
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /*made it 3 instead of 3
     gap: 25px;
     width: 100%;
     margin: 0 auto;
-    /*max-width: 950px;  /*changed this from 1400px to 950px*/
+    /*max-width: 950px;  /*changed this from 1400px to 950px
     padding: 0 2rem;
-  }
+  } */
+
+  /* View All button container (no changes here, just for context) */
+.view-all-container {
+    text-align: center;
+    margin-top: 50px;
+}
+
+/* The "View All" Button: Now extra cute! */
+.view-all-events-button {
+    background-color: #8c564e7f; /* Soft lavender background */
+    color: #000000; /* A gentle, soft dark gray for text */
+    border: 2px solid #8c564e; /* A matching, slightly darker lavender border */
+    padding: 14px 32px; /* Slightly more generous padding for a softer feel */
+    border-radius: 30px; /* Much more rounded, pill-like shape */
+    font-size: 1.05rem; /* A little larger for readability and presence */
+    font-weight: 600; /* Slightly bolder */
+    cursor: pointer;
+    transition: all 0.3s ease-in-out; /* Smooth and pleasant transitions */
+    box-shadow: 0 5px 15px rgba(224, 187, 228, 0.4); /* A soft, dreamy shadow */
+    font-family: 'Quicksand', sans-serif; /* Using the cute Quicksand font */
+    letter-spacing: 0.5px; /* A touch of letter spacing */
+    /* text-transform: uppercase; Subtle uppercase for a refined look */
+}
+
+.view-all-events-button:hover {
+    background-color: #fee4ef; /* Changes to a soft pink on hover */
+    color: #000000; /* Text turns white for contrast on hover */
+    border-color: #f79ac0; /* Border also changes to a matching pink */
+    transform: translateY(-3px) scale(1); /* Lifts and slightly enlarges more noticeably */
+    box-shadow: 0 8px 20px rgba(255, 180, 200, 0.3); /* A more prominent, rosy shadow on hover */
+}
+
+/* Optional: Add a subtle active state for click feedback */
+.view-all-button:active {
+    transform: translateY(0); /* Sinks back down on click */
+    box-shadow: 0 3px 8px rgba(224, 187, 228, 0.4); /* Smaller shadow */
+    background-color: #D3A7E3; /* Slightly darker lavender on active */
+}
 
 /* View All button styling */
-.view-all-container {
+/* .view-all-container {
   text-align: center;
   margin-top: 50px;
 }
@@ -257,7 +334,7 @@
 .view-all-button:hover {
   background-color: #8e24aa;
   transform: translateY(-2px);
-}
+} */
 
 /* Responsive adjustments */
 @media (max-width: 1024px) {
@@ -294,7 +371,8 @@
     min-height: 0 !important; /* overrides any inherited 100vh */
     height: auto;
     overflow: visible; /* prevents content clipping */
-    background: rgba(255,0,0,0.1);
+    /* background: linear-gradient(to bottom, white, #fee3e9, white); */
+    background: linear-gradient(to bottom, #f8cdca, #feedee,#f8cdca);
   }
 
   .values__grid {
@@ -309,6 +387,52 @@
   }
   
   .value-card {
+  padding: 1.5rem;
+  border-radius: 12px; /* Slightly more rounded corners */
+  background: white;
+  /* Subtle inner shadow for depth */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 400px;
+  min-height: 300px;
+  margin: 0 auto;
+  position: relative; /* Needed for the pseudo-element border */
+  overflow: hidden; /* Ensures content respects rounded corners */
+  transition: all 0.3s ease-in-out; /* Smooth transitions for all changes */
+}
+
+  /* Gradient border effect using a pseudo-element */
+  .value-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    padding: 2px; /* Thickness of the border */
+    background: linear-gradient(45deg, #8c564e, #fefefe); /* Your choice of vibrant colors */
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none; /* Don't interfere with clicks on the card */
+    opacity: 0.7; /* Make the gradient a bit more subtle */
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  .value-card:hover {
+    transform: translateY(-4px) rotateZ(1deg); /* More dynamic lift and slight rotation */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.08); /* More prominent shadow */
+  }
+
+  .value-card:hover::before {
+    opacity: 1; /* Make the gradient border fully visible on hover */
+  }
+
+
+  /* .value-card {
     padding: 1.5rem;
     border-radius: 8px;
     background: white;
@@ -318,7 +442,7 @@
     justify-content: center;
     align-items: center;
     /* New sizing properties: */
-    max-width: 400px;
+    /* max-width: 400px;
     height: 100%; 
     min-height: 300px;
     margin: 0 auto;
@@ -328,7 +452,7 @@
   .value-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-}
+} */ 
 
   @media (max-width: 768px) {  /* 🚫 -> tablet breakpoint */
     .values__grid {
@@ -358,34 +482,13 @@
     background: #ddd;
   }
   
-  /* Partners Section */
-    .section--partners {
-    padding: 4rem 2rem;
-    width: 100%;
-    min-height: 0 !important; /* overrides any inherited 100vh */
-    height: auto;
-    overflow: visible; /* prevents content clipping */
-    background: rgba(255,0,0,0.1);
-  }
-
-  .partners__grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 2rem;
-    padding: 0 5rem;
-  }
   
-  .partner-logo {
-    padding: 1.5rem;
-    border: 1px solid #eee;
-    background-color: white;
-    border-radius: 4px;
-  }
-
 /* ===== TEAM GRID STYLES ===== */
 .section--team {
     padding: 4rem 2rem;
+    /* background: linear-gradient(to bottom, white, #fcdae2, white); */
+    background: linear-gradient(to bottom, #f8cdca, #feedee,#fad6d3);
+
 }
 
 .team-header {
@@ -438,10 +541,13 @@
 }
 
 .team-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
+    width: 100%; /* Or a fixed width like 150px */
+    height: 100%; /* Or a fixed height like 150px */
+    object-fit: cover; /* Ensures the image fills the container, cropping excess */
+    object-position:0px -80px; /* This is the key! Positions the image from the top. */
+    /* border-radius: 50%; Still makes it circular or rounded */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .team-card:hover .team-image {
@@ -524,11 +630,37 @@
         grid-template-columns: 1fr;
     }
 }
+
+  /* Partners Section */
+    .section--partners {
+    padding: 4rem 2rem;
+    width: 100%;
+    min-height: 0 !important; /* overrides any inherited 100vh */
+    height: auto;
+    overflow: visible; /* prevents content clipping */
+    background: rgba(255,0,0,0.1);
+    background: linear-gradient(to bottom, #fad6d3, #feedee,#f8cdca);
+  }
+
+  .partners__grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    padding: 0 5rem;
+  }
   
+  .partner-logo {
+    padding: 1.5rem;
+    border: 1px solid #eee;
+    background-color: white;
+    border-radius: 4px;
+  }
+
   /* ===== FOOTER ===== */
 .footer {
-    background: #333;
-    color: white;
+    background-color: #152e4b;
+    color: rgb(255, 255, 255);
     padding: 2rem 0;
     text-align: center;
     width: 100%;            /* 🚫 -> must span full width */
@@ -544,7 +676,7 @@
 }
 
 .footer__links a {
-    color: white;
+    color: rgb(255, 255, 255);
     display: block;
     margin: 0.5rem 0;
     text-decoration: none; /* optional: remove underline */

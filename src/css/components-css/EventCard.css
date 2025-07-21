@@ -1,44 +1,214 @@
 /* ============================================================================
-   EVENTCARD.CSS — STYLING GUIDE FOR DESIGNERS
-   ----------------------------------------------------------------------------
-   this stylesheet controls the layout and visual presentation of:
-   the Event Card Containers
+    EVENTCARD.CSS — STYLING GUIDE FOR DESIGNERS
+    ----------------------------------------------------------------------------
+    this stylesheet controls the layout and visual presentation of:
+    the ENTIRE Event Card, including image and details
 
-   ✅ u can totally:
-   - change gradient colors
-   - adjust aspect ratio
-   - modify max-width
-   - add hover effects/transitions
-   - update the "passed" message color
+    ✅ u can totally:
+    - change gradient colors
+    - adjust card aspect ratio / min-height
+    - modify max-width
+    - add hover effects/transitions
+    - update the "passed" message color
+    - customize all text styles (font, color, size, weight, shadow etc.)
+    - customize button styles
 
-   🚫 but pls do NOT:
-   - remove the object-fit: cover property
-   - change the flex container structure
-   - modify overflow: hidden
-   - alter the auto margin centering
+    🚫 but pls do NOT:
+    - remove the object-fit: cover property on the image
+    - remove 'display: flex' and 'flex-direction: column' from .event-card-container
+    - modify overflow: hidden on container or image wrapper
+    - alter the auto margin centering (if applicable to the card in its grid)
 
-   contact me before making structural changes pls <3 ;p
-   thx for making it pretty guys 🥹💖
+    contact me before making structural changes pls <3 ;p
+    thx for making it pretty guys 🥹💖
 ============================================================================ */
 
-.event-poster-container {
+/* Event Card Container: The Heart of the Cuteness! (Now holds image AND text) */
+.event-card-container {
+    /* aspect-ratio: 4 / 5; */ /* Removed this from here, let grid handle height for consistency, or use min-height */
+    width: 100%;
+    max-width: 380px; /* A slightly cozier size for individual cards */
+    margin: 0 auto; /* Centers individual cards within their grid cell */
+    padding-top: 20px;
+    background: linear-gradient(to bottom, #faeded, #f8fdff); /* Pastel pink and soft lavender */
+    border: 3px dashed #fefefe; /* Cute dashed border in a coordinating pink */
+    border-radius: 25px; /* Super soft, rounded corners for a gentle look */
+    overflow: hidden; /* Keeps everything tidy inside */
+
+    display: flex;
+    flex-direction: column; /* Stack image on top of text details */
+    /* justify-content: center; */ /* No longer needed here as flex-direction is column */
+    /* align-items: center; */ /* No longer needed here as flex-direction is column */
+
+    box-shadow: 0 8px 20px rgba(255, 180, 200, 0.184); /* A delicate, rosy shadow that makes it pop */
+    transition: all 0.3s ease-in-out; /* Smooth transitions for a playful feel */
+    animation: bounceIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; /* A gentle, bouncy entrance */
+    position: relative; /* For cute overlays */
+
+    /* CRUCIAL for consistent height: Set a minimum height for all cards */
+    min-height: 550px; /* Adjust this value as needed to fit your content comfortably */
+}
+
+/* Hover Effect: A Little Wiggle! */
+.event-card-container:hover {
+    transform: translateY(-5px) scale(1.01); /* Wiggles up just a tiny bit */
+    box-shadow: 0 12px 25px rgba(255, 105, 180, 0.105); /* A slightly more vibrant shadow on hover */
+    border-color: #6d3a33b1; /* Border gets a touch brighter */
+}
+
+/* Optional: Sparkle overlay for extra magic! (Applies to the whole card) */
+.event-card-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at top left, rgba(255,255,255,0.1) 0%, transparent 40%),
+                radial-gradient(circle at bottom right, rgba(255,255,255,0.1) 0%, transparent 40%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none; /* Make sure it doesn't interfere with clicks */
+    border-radius: 25px; /* Match container border-radius */
+}
+
+.event-card-container:hover::after {
+    opacity: 1; /* Shines subtly on hover */
+}
+
+
+/* Image Wrapper: Picture Perfect */
+.event-poster-wrapper {
+    width: 100%;
+    aspect-ratio: 4 / 3; /* Aspect ratio for the image area (e.g., 4:3 for a landscape image) */
+    overflow: hidden; /* Ensures image respects the border-radius of the wrapper */
+    border-bottom: 2px solid rgba(255, 255, 255, 0.7); /* A subtle separator below the image */
+}
+
+.event-poster {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures image fills the wrapper without distortion */
+    /* border-top-left-radius: 22px; */ /* Optional: round top corners only if you like */
+    /* border-top-right-radius: 22px; */
+    filter: saturate(1.1) brightness(1.05); /* Makes colors a little more vivid */
+    transition: filter 0.3s ease;
+}
+
+.event-card-container:hover .event-poster { /* Note: This targets the image when the *card* is hovered */
+    filter: saturate(1.2) brightness(1.1); /* Even more pop on hover! */
+}
+
+/* Event Details Section: All the Text Content */
+.event-details {
+    padding: 10px; /* Padding inside the text box */
+    flex-grow: 1; /* Allows this section to fill available vertical space */
+    display: flex;
+    flex-direction: column; /* Stack text elements vertically */
+    justify-content: space-between; /* Pushes button/message to the bottom */
+    font-family: 'Quicksand', sans-serif; /* Friendly font for general text */
+    color: #0a0000; /* Soft dark text color */
+}
+
+.event-title {
+    font-family: 'Poppins', sans-serif; /* A slightly bolder font for titles */
+    font-size: 1.5rem;
+    color: #8B5FBF; /* Rich purple for titles */
+    text-align: center;
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    border-bottom: 1px dashed rgb(250, 183, 225); /* Subtle separator */
+}
+
+.event-info {
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.event-info strong {
+    color: #6A5ACD; /* A slightly darker purple for labels */
+}
+
+.event-description {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #000000;
+    margin-top: 10px;
+    margin-bottom: 20px; /* Space before button or message */
+    flex-grow: 1; /* Allows description to take up more space within the details section */
+}
+
+/* Cute Message for Passed Events: Sweetly Sentimental */
+.event-passed-message {
+    color: #E76A6A; /* Warm reddish-pink */
+    font-weight: bold;
+    font-style: italic;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1.05rem;
+    text-align: center;
+    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.8);
+    opacity: 0.9;
+    margin-top: auto; /* Pushes to the bottom of the flex container */
+    padding-top: 10px;
+    border-top: 1px dashed rgba(255, 105, 180, 0.3);
+}
+
+/* Apply Button Styling */
+.event-apply-button {
+    background-color: #152e4b; /* A vibrant purple */
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 20px; /* Space above the button */
+    align-self: center; /* Centers the button horizontally within the flex container */
+    box-shadow: 0 4px 10px rgba(160, 108, 213, 0.3);
+}
+
+.event-apply-button:hover {
+    background-color: #f5a8db; /* Darker purple on hover */
+    transform: translateY(-2px); /* Slight lift */
+    box-shadow: 0 6px 15px rgba(160, 108, 213, 0.4);
+}
+
+/* Keyframe Animation: A Cute Bounce! */
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.5) translateY(20px);
+    }
+    60% {
+        opacity: 1;
+        transform: scale(1.05) translateY(-5px); /* Overshoot slightly for the bounce */
+    }
+    100% {
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* .event-poster-container {
   aspect-ratio: 4 / 5;
   width: 100%;
   max-width: 400px;
   margin: 0 auto;
   background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
   overflow: hidden;          /* 🚫 -> prevents image bleed */
-  display: flex;             /* 🚫 -> required for centering */
-  justify-content: center;
-  align-items: center;
-}
+  /* display: flex;             🚫 -> required for centering */
+  /* justify-content: center; */
+  /* align-items: center; */
+/* } */
 
-.event-poster {
-  width: 100%;              /* 🚫 -> responsive width */
-  height: 100%;             /* 🚫 -> fills container */
-  object-fit: cover;         /* 🚫 -> ensures proper cropping */
-}
+/* .event-poster { */
+  /* width: 100%;              🚫 -> responsive width */
+  /* height: 100%;             🚫 -> fills container */
+  /* object-fit: cover;         🚫 -> ensures proper cropping */
+/* }
 
 .event-passed-message {
   color: rgb(231, 106, 106);
-}
+}  */

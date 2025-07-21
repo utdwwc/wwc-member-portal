@@ -120,7 +120,7 @@ const Homepage = () => {
 
             {/* --- EVENTS --- */}
             <section id="events" className="section section--events">
-                <EventsGrid
+                <EventsGrid className="event-card"
                     title="Events"
                     events={events.slice(0, 3)}
                     user={user}
