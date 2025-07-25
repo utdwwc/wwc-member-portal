@@ -38,7 +38,7 @@
     align-items: center;
     padding: 1.2rem 2rem;
     
-    background: #fce6e2;
+    background: #fcf2f0;
     /* linear-gradient(90deg, #f59fb0, #f2bdc7); */
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     font-family: 'Raleway', sans-serif;
@@ -78,7 +78,7 @@
     transition: all 0.01s ease;
     text-decoration: underline;
     /* margin-right: 1rem; */
-    color: #F7CAC9;
+    color: #02052b;
   }
 
 
@@ -155,16 +155,17 @@
   .section--header {
     justify-content: center;
     text-align: center;
-    margin-top: -100px;
+    margin-top: -160px;
     position: relative;
     /* background: #ffe5ea; */
-    height: 100%;
+    height: 50vh;
     border-radius: 0 0 50% 50% / 0 0 100px 100px;
     padding: 2rem;
     /* padding-top: 100px; */
     /* Marbling Background */
-    background: url('/src/pngs/pink_marble.png') center/cover no-repeat;
+    /* background: url('/src/pngs/pink_marble.png') center/cover no-repeat; */
     /* background-color: linear-gradient(to bottom, #ffe5ea, white); */
+    background: #ffd7d7;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
 
@@ -172,57 +173,63 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(255, 255, 255, 0); /* ← adjust this opacity - control if the swirl jpg is deeper or richer in color or softer */
+    background: rgba(255, 255, 255, 0.3); /* ← adjust this opacity - control if the swirl jpg is deeper or richer in color or softer */
     z-index: 0;
+    border-radius: 0 0 50% 50% / 0 0 100px 100px;
     pointer-events: none;
+    /* margin-bottom: 50px; */
   }
 
   .section--header > * {
     position: relative;
     z-index: 1;
+    /* margin-bottom: 50px; */
   }
 
   .glass-panel {
     width: 100%;
-    max-width: 1000px;
-    padding: 4rem;
+    max-width: 1300px;
+    padding: 2rem;
+    margin-top: 120px;
     border-radius: 20px;
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    /* box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); */
     display: flex;
     justify-content: center;
     align-items: center; 
+    /* margin-bottom: 50px; */
   }
 
   .header__title {
   font-family: 'Lobster', cursive;
-  font-size: 6rem;
+  font-size: 7rem;
   color: #2d3c4d;
   margin-bottom: 0.5rem;
+  font-weight: 300;
 }
 
   .header__subtitle {
     font-family: 'Raleway', sans-serif;
     font-weight: 700;
-    font-size: 3rem;
+    font-size: 3.3rem;
     color: #2d3c4d;
     margin-bottom: 1rem;
   }
 
   .header__description {
     font-family: 'Quicksand', sans-serif;
-    font-size: 1rem;
+    font-size: 1.2rem;
     color: #5a5a5a;
-    max-width: 600px;
+    max-width: 700px;
     margin: 0 auto;
     font-weight:600;
   }
 
   /* Events Section */
 .section--events {
-    background: linear-gradient(to bottom, #e5afb0, #feedee,#f8cdca);
+    background: linear-gradient(to bottom, rgb(249, 238, 238), #fff5f5,#fcdfdd);
     padding: 4rem 2rem; /* Keep existing padding */
     /* margin-top: -20px; Keep existing margin */
     /* Add padding bottom to give space for the View All Events button */
@@ -372,7 +379,7 @@
     height: auto;
     overflow: visible; /* prevents content clipping */
     /* background: linear-gradient(to bottom, white, #fee3e9, white); */
-    background: linear-gradient(to bottom, #f8cdca, #feedee,#f8cdca);
+    background: linear-gradient(to bottom, #fcdfdd, #fff5f5,#fcdfdd);
   }
 
   .values__grid {
@@ -487,7 +494,7 @@
 .section--team {
     padding: 4rem 2rem;
     /* background: linear-gradient(to bottom, white, #fcdae2, white); */
-    background: linear-gradient(to bottom, #f8cdca, #feedee,#fad6d3);
+    background: linear-gradient(to bottom, #fcdfdd, #fff5f5,#fcdfdd);
 
 }
 
@@ -639,7 +646,7 @@
     height: auto;
     overflow: visible; /* prevents content clipping */
     background: rgba(255,0,0,0.1);
-    background: linear-gradient(to bottom, #fad6d3, #feedee,#f8cdca);
+    background: linear-gradient(to bottom, #fcdfdd, #fff5f5,#fcdfdd);
   }
 
   .partners__grid {
