@@ -23,6 +23,26 @@
     thx for making it pretty guys 🥹💖
 ============================================================================ */
 
+/* 🎨 Alternating Background Styles */
+.event-card--blue {
+  background: linear-gradient(to bottom, #cee8fd, #f5fcff); /* light blue gradient */
+  border-color: #c7eaff;
+  box-shadow: 0 8px 20px rgba(173, 216, 230, 0.3);
+}
+
+.event-card--green {
+  background: linear-gradient(to bottom, #f2d1fe, #f6fcfb); /* soft teal/green gradient */
+  border-color: #b8e3da;
+  box-shadow: 0 8px 20px rgba(144, 238, 208, 0.3);
+}
+
+.event-card--pink {
+  background: linear-gradient(to bottom, #fadbe4, #fef9fb); /* gentle pink gradient */
+  border-color: #f9c6d9;
+  box-shadow: 0 8px 20px rgba(255, 192, 203, 0.3);
+}
+
+
 /* Event Card Container: The Heart of the Cuteness! (Now holds image AND text) */
 .event-card-container {
     /* aspect-ratio: 4 / 5; */ /* Removed this from here, let grid handle height for consistency, or use min-height */
@@ -30,7 +50,8 @@
     max-width: 380px; /* A slightly cozier size for individual cards */
     margin: 0 auto; /* Centers individual cards within their grid cell */
     padding-top: 20px;
-    background: linear-gradient(to bottom, #faeded, #f8fdff); /* Pastel pink and soft lavender */
+    /* background: linear-gradient(to bottom, #faeded, #f8fdff); Pastel pink and soft lavender */
+    /* background: #a5d6fc2f; */
     border: 3px dashed #fefefe; /* Cute dashed border in a coordinating pink */
     border-radius: 25px; /* Super soft, rounded corners for a gentle look */
     overflow: hidden; /* Keeps everything tidy inside */
@@ -53,7 +74,7 @@
 .event-card-container:hover {
     transform: translateY(-5px) scale(1.01); /* Wiggles up just a tiny bit */
     box-shadow: 0 12px 25px rgba(255, 105, 180, 0.105); /* A slightly more vibrant shadow on hover */
-    border-color: #6d3a33b1; /* Border gets a touch brighter */
+    border-color: #f2bdc7; /* Border gets a touch brighter */
 }
 
 /* Optional: Sparkle overlay for extra magic! (Applies to the whole card) */
@@ -127,7 +148,7 @@
 }
 
 .event-info strong {
-    color: #6A5ACD; /* A slightly darker purple for labels */
+    color: #184c74; /* A slightly darker purple for labels */
 }
 
 .event-description {
@@ -155,25 +176,29 @@
 }
 
 /* Apply Button Styling */
-.event-apply-button {
-    background-color: #152e4b; /* A vibrant purple */
+.event-button {
+    background-color: #184c74e9; /* A vibrant purple */
     color: white;
     border: none;
     border-radius: 20px;
     padding: 10px 20px;
+    padding-left:90px;
+    padding-right:90px;
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
     margin-top: 20px; /* Space above the button */
     align-self: center; /* Centers the button horizontally within the flex container */
-    box-shadow: 0 4px 10px rgba(160, 108, 213, 0.3);
+    box-shadow: 0 2px 15px rgba(160, 108, 213, 0.3);
 }
 
-.event-apply-button:hover {
-    background-color: #f5a8db; /* Darker purple on hover */
-    transform: translateY(-2px); /* Slight lift */
-    box-shadow: 0 6px 15px rgba(160, 108, 213, 0.4);
+.event-button:hover {
+    background-color: #f4cad2; /* Darker purple on hover */
+    transform: translateY(-1px); /* Slight lift */
+    box-shadow: 0 2px 20px rgba(186, 164, 207, 0.4);
+    color: #000000;
+    border: 2px solid #8c564e5a; 
 }
 
 /* Keyframe Animation: A Cute Bounce! */

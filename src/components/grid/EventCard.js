@@ -12,10 +12,15 @@ const EventCard = ({
   setRsvpStatus,
   setCurrentEvent,
   setIsModalOpen,
-  showButtons = true 
+  showButtons = true,
+  index = 0
 }) => {
+
+  const colorClasses = ['event-card--blue', 'event-card--green', 'event-card--pink'];
+  const colorClass = colorClasses[index % colorClasses.length];
+
   return (
-    <div className="event-card-container">
+    <div className={`event-card-container ${colorClass}`}>
 
       <div className="event-poster-container">
         {event.imageUrl ? (

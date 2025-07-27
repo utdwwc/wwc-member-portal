@@ -37,85 +37,88 @@
     justify-content: space-between;
     align-items: center;
     padding: 1.2rem 2rem;
-    
-    background: #fcf2f0;
+    background: #f0f1f2;
     /* linear-gradient(90deg, #f59fb0, #f2bdc7); */
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     font-family: 'Raleway', sans-serif;
     top: 0;
     position: sticky;          /* 🚫 -> must stay fixed at top */
     z-index: 100;             /* 🚫 -> ensures navbar stays on top */
-    color: #93564e;;
+    color: #184c74;;
   }
   
   .navbar__logo {
     font-weight: bold;
     font-size: 1.25rem;
     margin-left: 3rem;
+    font-family: 'Lobster', cursive;
   }
   
   .navbar__links {
-    display: flex;
-    align-items: center;
-    gap: 1rem; /* better than margin-left on individual buttons */
-    flex-wrap: nowrap; /* prevent wrapping */
-  }
-  .navbar__links button {
-    /* background: rgb(255, 205, 222);
-    border-radius: 5px; */
-    background: none;
-    text-decoration: underline #E6B0C0;
-    border: none;
-    margin-left: 1rem;
-    margin-right: 1rem;
-    cursor: pointer;
-    color: #800020;
-  }
-  
-    .navbar__links button:hover {
-    /* color: #164f73; */
-    transform: scale(1.0);
-    transition: all 0.01s ease;
-    text-decoration: underline;
-    /* margin-right: 1rem; */
-    color: #02052b;
-  }
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: nowrap;
+}
 
+.navbar__links button {
+  background: linear-gradient(to right, #184c74 50%, #ff6593 50%);
+  background-size: 200% 100%;
+  background-position: left bottom;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  border: none;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  cursor: pointer;
+  transition: background-position 0.4s ease, transform 0.1s ease;
+}
+
+.navbar__links button:hover {
+  transform: scale(1.01);
+  background-position: right bottom;
+  text-decoration: underline;
+}
+  /* background-color: #4285f4;  🚫 -> Google brand blue */
 
   
   /* ===== NAVBAR LOGIN BUTTON ===== */
   .navbar__login-button {
-    color: #800020;
+    color: #184c74;
     padding: 0.5rem 1rem;
-    border-radius: 4px;
-    border: none;
+    border-radius: 20px;
+    border: solid black;
     cursor: pointer;
     font-weight: 500;
-    margin-left: 1rem;
-    transition: all 0.2s ease;
+    /* margin-left: 1rem; */
+    /* transition: all 0.2s ease; */
+    transform: translateY(-1px);
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background-color: #4285f4;  /* 🚫 -> Google brand blue */
+    background-color: #ff6593;
+    /* background-color: #4285f4;  🚫 -> Google brand blue */
   }
   
   .navbar__login-button:hover {
-    background-color: #3367d6;
-    color: white;
+    /* background-color: #3367d6; */
+    color: #ff6593;
     transform: translateY(-1px);
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    
   }
   
-  /* Google icon */
+  /* Google icon
   .navbar__login-button::before {
     content: '';
     display: inline-block;
     width: 18px;
     height: 18px;
-    /* background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMTcuNiA5LjJsLS4xLTEuOEg5djMuNGg0LjhDMTMuNiAxMiAxMyAxMyAxMiAxMy42djIuMmgzYTguOCA4LjggMCAwIDAgMi42LTYuNnoiIGZpbGw9IiM0Mjg1RjQiIGZpbGwtcnVsZT0ibm9uemVybyIvPjxwYXRoIGQ9Ik05IDE4YzIuNCAwIDQuNS0uOCA2LTIuMmwtMy0yLjJhNS40IDUuNCAwIDAgMS04LTIuOUgxVjEzYTkgOSAwIDAgMCA4IDV6IiBmaWxsPSIjMzRBODUzIiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNNCAxMC43YTUuNCA1LjQgMCAwIDEgMC0zLjRWNUgxYTkgOSAwIDAgMCAwIDhsMy0yLjN6IiBmaWxsPSIjRkJCQzA1IiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNOSAzLjZjMS4zIDAgMi41LjQgMy40IDEuM0wxNSAyLjNBOSA5IDAgMCAwIDEgNWwzIDIuNGE1LjQgNS40IDAgMCAxIDUtMy43eiIgZmlsbD0iI0VBNDMzNSIgZmlsbC1ydWxlPSJub256ZXJvIi8+PHBhdGggZD0iTTAgMGgxOHYxOEgweiIvPjwvZz48L3N2Zz4='); */
+    /* background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMTcuNiA5LjJsLS4xLTEuOEg5djMuNGg0LjhDMTMuNiAxMiAxMyAxMyAxMiAxMy42djIuMmgzYTguOCA4LjggMCAwIDAgMi42LTYuNnoiIGZpbGw9IiM0Mjg1RjQiIGZpbGwtcnVsZT0ibm9uemVybyIvPjxwYXRoIGQ9Ik05IDE4YzIuNCAwIDQuNS0uOCA2LTIuMmwtMy0yLjJhNS40IDUuNCAwIDAgMS04LTIuOUgxVjEzYTkgOSAwIDAgMCA4IDV6IiBmaWxsPSIjMzRBODUzIiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNNCAxMC43YTUuNCA1LjQgMCAwIDEgMC0zLjRWNUgxYTkgOSAwIDAgMCAwIDhsMy0yLjN6IiBmaWxsPSIjRkJCQzA1IiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNOSAzLjZjMS4zIDAgMi41LjQgMy40IDEuM0wxNSAyLjNBOSA5IDAgMCAwIDEgNWwzIDIuNGE1LjQgNS40IDAgMCAxIDUtMy43eiIgZmlsbD0iI0VBNDMzNSIgZmlsbC1ydWxlPSJub256ZXJvIi8+PHBhdGggZD0iTTAgMGgxOHYxOEgweiIvPjwvZz48L3N2Zz4='); 
     background-size: contain;
   }
-  
+   */
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .navbar__links {
@@ -165,7 +168,7 @@
     /* Marbling Background */
     /* background: url('/src/pngs/pink_marble.png') center/cover no-repeat; */
     /* background-color: linear-gradient(to bottom, #ffe5ea, white); */
-    background: #ffd7d7;
+    background: #ffe5ea;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
 
@@ -205,7 +208,7 @@
   .header__title {
   font-family: 'Lobster', cursive;
   font-size: 7rem;
-  color: #2d3c4d;
+  color: #184c74;
   margin-bottom: 0.5rem;
   font-weight: 300;
 }
@@ -214,14 +217,14 @@
     font-family: 'Raleway', sans-serif;
     font-weight: 700;
     font-size: 3.3rem;
-    color: #2d3c4d;
+    color: #184c74;
     margin-bottom: 1rem;
   }
 
   .header__description {
     font-family: 'Quicksand', sans-serif;
     font-size: 1.2rem;
-    color: #5a5a5a;
+    color: #184c74;
     max-width: 700px;
     margin: 0 auto;
     font-weight:600;
@@ -229,7 +232,7 @@
 
   /* Events Section */
 .section--events {
-    background: linear-gradient(to bottom, rgb(249, 238, 238), #fff5f5,#fcdfdd);
+    background: #f0f1f2;
     padding: 4rem 2rem; /* Keep existing padding */
     /* margin-top: -20px; Keep existing margin */
     /* Add padding bottom to give space for the View All Events button */
@@ -291,9 +294,9 @@
 
 /* The "View All" Button: Now extra cute! */
 .view-all-events-button {
-    background-color: #8c564e7f; /* Soft lavender background */
+    background-color: #f4cad2; /* Soft lavender background */
     color: #000000; /* A gentle, soft dark gray for text */
-    border: 2px solid #8c564e; /* A matching, slightly darker lavender border */
+    border: 2px solid #8c564e5a; /* A matching, slightly darker lavender border */
     padding: 14px 32px; /* Slightly more generous padding for a softer feel */
     border-radius: 30px; /* Much more rounded, pill-like shape */
     font-size: 1.05rem; /* A little larger for readability and presence */
@@ -307,9 +310,9 @@
 }
 
 .view-all-events-button:hover {
-    background-color: #fee4ef; /* Changes to a soft pink on hover */
+    background-color: #f6a9b7; /* Changes to a soft pink on hover */
     color: #000000; /* Text turns white for contrast on hover */
-    border-color: #f79ac0; /* Border also changes to a matching pink */
+    border-color: #69413b5b; /* Border also changes to a matching pink */
     transform: translateY(-3px) scale(1); /* Lifts and slightly enlarges more noticeably */
     box-shadow: 0 8px 20px rgba(255, 180, 200, 0.3); /* A more prominent, rosy shadow on hover */
 }
@@ -379,7 +382,8 @@
     height: auto;
     overflow: visible; /* prevents content clipping */
     /* background: linear-gradient(to bottom, white, #fee3e9, white); */
-    background: linear-gradient(to bottom, #fcdfdd, #fff5f5,#fcdfdd);
+    /* background: linear-gradient(to bottom, #fcdfdd, #fff5f5,#fcdfdd); */
+    background: #d0e9fce9;
   }
 
   .values__grid {
@@ -494,8 +498,8 @@
 .section--team {
     padding: 4rem 2rem;
     /* background: linear-gradient(to bottom, white, #fcdae2, white); */
-    background: linear-gradient(to bottom, #fcdfdd, #fff5f5,#fcdfdd);
-
+    /* background: linear-gradient(to bottom, #fcdfdd, #fff5f5,#fcdfdd); */
+    background: #f0f1f2;
 }
 
 .team-header {
@@ -534,6 +538,25 @@
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
+}
+
+/* 🎨 Alternating Background Styles */
+.event-card--blue {
+  background: linear-gradient(to bottom, #cee8fd, #f5fcff); /* light blue gradient */
+  border-color: #c7eaff;
+  box-shadow: 0 8px 20px rgba(173, 216, 230, 0.3);
+}
+
+.event-card--green {
+  background: linear-gradient(to bottom, #f2d1fe, #f6fcfb); /* soft teal/green gradient */
+  border-color: #b8e3da;
+  box-shadow: 0 8px 20px rgba(144, 238, 208, 0.3);
+}
+
+.event-card--pink {
+  background: linear-gradient(to bottom, #fadbe4, #fef9fb); /* gentle pink gradient */
+  border-color: #f9c6d9;
+  box-shadow: 0 8px 20px rgba(255, 192, 203, 0.3);
 }
 
 .team-card:hover {
@@ -646,7 +669,8 @@
     height: auto;
     overflow: visible; /* prevents content clipping */
     background: rgba(255,0,0,0.1);
-    background: linear-gradient(to bottom, #fcdfdd, #fff5f5,#fcdfdd);
+    /* background: linear-gradient(to bottom, #fcdfdd, #fff5f5,#fcdfdd); */
+    background: #f0f1f2;
   }
 
   .partners__grid {

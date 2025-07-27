@@ -21,11 +21,12 @@ const EventsGrid = ({
     <section className="events-section">
       {title && <h2 className="section-title">{title}</h2>}
       <div className="events-grid">
-        {events.map((event) => (
+        {events.map((event, index) => (
           <EventCard 
             key={event._id} 
             event={event}
             user={user}
+            index={index}
             navigate={navigate}
             rsvpStatus={rsvpStatus}
             setRsvpStatus={setRsvpStatus}

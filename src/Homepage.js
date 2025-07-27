@@ -89,7 +89,7 @@ const Homepage = () => {
         <div className="homepage">
             {/* --- NAVBAR --- */}
             <nav className="navbar">
-                <div className="navbar__logo">Women Who Compute</div>
+                <div className="navbar__logo">WWC</div>
                 <div className="navbar__links">
                     <button onClick={() => scrollTo('header')}>Home</button>
                     <button onClick={() => scrollTo('events')}>Events</button>
@@ -130,7 +130,6 @@ const Homepage = () => {
                     setCurrentEvent={setCurrentEvent}
                     setIsModalOpen={setIsModalOpen}
                     showButtons={true}
-
                     showViewAll={true}
                     onViewAllClick={() => navigate('/login')}
                 />
