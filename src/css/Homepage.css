@@ -549,8 +549,8 @@
 
 .event-card--green {
   background: linear-gradient(to bottom, #f2d1fe, #f6fcfb); /* soft teal/green gradient */
-  border-color: #b8e3da;
-  box-shadow: 0 8px 20px rgba(144, 238, 208, 0.3);
+  border-color: #f2d1fe;
+  box-shadow: 0 8px 20px #f2d1fe70;
 }
 
 .event-card--pink {

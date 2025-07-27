@@ -32,13 +32,13 @@
 
 .event-card--green {
   background: linear-gradient(to bottom, #f2d1fe, #f6fcfb); /* soft teal/green gradient */
-  border-color: #b8e3da;
-  box-shadow: 0 8px 20px rgba(144, 238, 208, 0.3);
+  border-color: #ebbbfd;
+  box-shadow: 0 8px 20px #ecc4fb;
 }
 
 .event-card--pink {
   background: linear-gradient(to bottom, #fadbe4, #fef9fb); /* gentle pink gradient */
-  border-color: #f9c6d9;
+  border-color: #fedce9;
   box-shadow: 0 8px 20px rgba(255, 192, 203, 0.3);
 }
 
@@ -74,7 +74,7 @@
 .event-card-container:hover {
     transform: translateY(-5px) scale(1.01); /* Wiggles up just a tiny bit */
     box-shadow: 0 12px 25px rgba(255, 105, 180, 0.105); /* A slightly more vibrant shadow on hover */
-    border-color: #f2bdc7; /* Border gets a touch brighter */
+    border-color: #ffffff; /* Border gets a touch brighter */
 }
 
 /* Optional: Sparkle overlay for extra magic! (Applies to the whole card) */
