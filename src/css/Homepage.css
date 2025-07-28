@@ -168,7 +168,7 @@
     /* Marbling Background */
     /* background: url('/src/pngs/pink_marble.png') center/cover no-repeat; */
     /* background-color: linear-gradient(to bottom, #ffe5ea, white); */
-    background: #ffe5ea;
+    background: rgb(254, 199, 209);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
 
