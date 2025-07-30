@@ -69,20 +69,20 @@ const Homepage = () => {
     
     /* PARTNERS DATA */
     const partners = [
-        { name: 'JPMorgan Chase', logo: '#' },
-        { name: 'AT&T', logo: '#' },
-        { name: 'American Airlines', logo: '#' },
-        { name: 'State Farm', logo: '#' }, 
-        { name: 'Core Logic', logo: '#' },
-        { name: 'Cisco', logo: '#' },
-        { name: 'McAfee', logo: '#' },
-        { name: 'Allstate', logo: '#' },
-        { name: 'Intuit', logo: '#' },
-        { name: 'Celanese', logo: '#' },
-        { name: 'Fannie Mae', logo: '#' },
-        { name: 'USAA', logo: '#' },
-        { name: 'Blue Yonder', logo: '#' },
-        { name: 'CBRE', logo: '#' }
+        { name: 'JPMorgan Chase', logo: '/logos/jpmorgan.png' },
+        { name: 'AT&T', logo: '/logos/att.png' },
+        { name: 'American Airlines', logo: '/logos/aa.png' },
+        { name: 'State Farm', logo: '/logos/statefarm.png' }, 
+        { name: 'Core Logic', logo: '/logos/corelogic.png' },
+        { name: 'Cisco', logo: '/logos/cisco.svg' },
+        { name: 'McAfee', logo: '/logos/mcafee.png' },
+        { name: 'Allstate', logo: '/logos/allstate.png' },
+        { name: 'Intuit', logo: '/logos/intuit.svg' },
+        { name: 'Celanese', logo: '/logos/celanese.png' },
+        { name: 'Fannie Mae', logo: '/logos/fanniemae.png' },
+        { name: 'USAA', logo: '/logos/usaa.png' },
+        { name: 'Blue Yonder', logo: '/logos/blueyonder.png' },
+        { name: 'CBRE', logo: '/logos/cbre.png' }
     ];
 
     return (
@@ -140,18 +140,30 @@ const Homepage = () => {
                 <h2>What We Offer</h2>
                 <div className="values__grid">
                     <div className="value-card">
-                        <h3>Speed Mentoring</h3>
+                        <div className="value-card__icon-wrapper pink">
+                            <i className="fas fa-handshake value-card__icon"></i>
+                        </div>
+                        <h3>Mentorship</h3>
                         <p>Join our networking event armed with your resume, blazer, and elevator pitch to engage with Dallas' top engineers and recruiters for securing high-profile internships and jobs.</p>
                     </div>
                     <div className="value-card">
+                        <div className="value-card__icon-wrapper blue">
+                            <i className="fas fa-laptop-code value-card__icon"></i>
+                        </div>
                         <h3>Technical Workshops</h3>
                         <p>Through our technical workshops, led by industry engineers, we enhance students' programming skills for better career prospects.</p>
                     </div>
                     <div className="value-card">
+                        <div className="value-card__icon-wrapper pink">
+                            <i className="fas fa-comments value-card__icon"></i>
+                        </div>
                         <h3>Career Talks</h3>
                         <p>Explore the corporate engineering world through our career talks and the nature of work in diverse companies.</p>
                     </div>
                     <div className="value-card">
+                        <div className="value-card__icon-wrapper blue">
+                            <i className="fas fa-lightbulb value-card__icon"></i>
+                        </div>
                         <h3>WeHack</h3>
                         <p>WeHack at UTD: Empowering underrepresented tech innovators to build skills and solve complex problems through our women and non-binary focused hackathon.</p>
                     </div>
@@ -214,7 +226,7 @@ const Homepage = () => {
                 <div className="partners__grid">
                     {partners.map((partner, index) => (
                         <div key={index} className="partner-logo">
-                            {partner.name}
+                            <img src={partner.logo} alt={partner.name + ' logo'} />
                         </div>
                     ))}
                 </div>

@@ -80,33 +80,60 @@
   background-position: right bottom;
   text-decoration: underline;
 }
-  /* background-color: #4285f4;  🚫 -> Google brand blue */
 
   
   /* ===== NAVBAR LOGIN BUTTON ===== */
-  .navbar__login-button {
+  .navbar__links .navbar__login-button {
+    /* reset conflicting inherited styles */
+    background: none;
+    background-color: #f4cad2;
+    color: #000000;
+    background-clip: unset;
+    -webkit-background-clip: unset;
+
+    /* i used your "view all events" button as reference */
+    border: 2px solid #8c564e5a;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 5px 15px rgba(224, 187, 228, 0.4);
+    font-family: 'Quicksand', sans-serif;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    /*
     color: #184c74;
     padding: 0.5rem 1rem;
     border-radius: 20px;
     border: solid black;
     cursor: pointer;
     font-weight: 500;
-    /* margin-left: 1rem; */
-    /* transition: all 0.2s ease; */
     transform: translateY(-1px);
     display: flex;
     align-items: center;
     gap: 0.5rem;
     background-color: #ff6593;
-    /* background-color: #4285f4;  🚫 -> Google brand blue */
+    */
   }
   
-  .navbar__login-button:hover {
-    /* background-color: #3367d6; */
+  .navbar__links .navbar__login-button:hover {
+    background-color: #f6a9b7;
+    color: #000000;
+    border-color: #69413b5b;
+    transform: translateY(-3px) scale(1);
+    box-shadow: 0 8px 20px rgba(255, 180, 200, 0.3);
+    text-decoration: none;
+
+    /*
     color: #ff6593;
     transform: translateY(-1px);
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    
+    */
   }
   
   /* Google icon
@@ -119,6 +146,7 @@
     background-size: contain;
   }
    */
+
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .navbar__links {
@@ -127,7 +155,7 @@
     
     .navbar__login-button {
       margin: 0.5rem 0 0 0;
-      width: 100%;
+      /*width: 100%;*/
       justify-content: center;
     }
   }
@@ -241,15 +269,14 @@
     margin-top: -100px; 
 }
 
-.section-title { /* Assuming this class exists for the "Events" title */
-    font-family: 'Raleway', sans-serif;
-    font-weight: 500;
-    text-align: center;
-    font-size: 3rem;
-    margin-bottom: 40px;
-    color: #2d2d2d;
+.section-title { /* Assuming this class exists for the "Events" title */  
+  font-family: 'Raleway', sans-serif;
+  font-weight: 500;
+  text-align: center;
+  font-size: 3rem;
+  margin-bottom: 40px;
+  color: #2d2d2d;
 }
-
 
   /* .section-title {
     font-family: 'Raleway', sans-serif;
@@ -376,6 +403,7 @@
   
   /* Values Section */
   .section--values {
+    font-family: 'Raleway', sans-serif;
     padding: 4rem 2rem;
     width: 100%;
     min-height: 0 !important; /* overrides any inherited 100vh */
@@ -398,22 +426,67 @@
   }
   
   .value-card {
-  padding: 1.5rem;
-  border-radius: 12px; /* Slightly more rounded corners */
-  background: white;
-  /* Subtle inner shadow for depth */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    font-family: 'Raleway', sans-serif;
+    color: #184c74;
+    text-align: center;
+
+    padding: 1.5rem;
+    border-radius: 12px; /* Slightly more rounded corners */
+    background: white;
+    /* Subtle inner shadow for depth */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 400px;
+    min-height: 300px;
+    margin: 0 auto;
+    position: relative; /* Needed for the pseudo-element border */
+    overflow: hidden; /* Ensures content respects rounded corners */
+    transition: all 0.3s ease-in-out; /* Smooth transitions for all changes */
+  }
+
+  .section--values h2 {
+    color: #184c74;
+    font-weight: 600; /* or 800 for extra bold */
+    font-family: 'Raleway', sans-serif; /* or whatever font you prefer */
+    font-size: 1.75rem; /* adjust as needed */
+    text-align: center;
+  }
+
+  .section--values h3 {
+    font-weight: 600; /* or 700 for extra bold */
+    font-family: 'Raleway', sans-serif; /* or whatever font you prefer */
+    font-size: 1.75rem; /* adjust as needed */
+    text-align: center;
+  }
+
+  .value-card__icon {
+    font-size: 1.75rem;
+    color: #184c74;
+  }
+
+  .value-card__icon-wrapper {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  max-width: 400px;
-  min-height: 300px;
-  margin: 0 auto;
-  position: relative; /* Needed for the pseudo-element border */
-  overflow: hidden; /* Ensures content respects rounded corners */
-  transition: all 0.3s ease-in-out; /* Smooth transitions for all changes */
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
+
+/* Pastel Colors */
+.value-card__icon-wrapper.pink {
+  background-color: #f4cad2; /* pastel pink */
+}
+
+.value-card__icon-wrapper.blue {
+  background-color: #cde6f5; /* pastel blue */
+}
+
 
   /* Gradient border effect using a pseudo-element */
   .value-card::before {
@@ -662,7 +735,7 @@
 }
 
   /* Partners Section */
-    .section--partners {
+  .section--partners {
     padding: 4rem 2rem;
     width: 100%;
     min-height: 0 !important; /* overrides any inherited 100vh */
@@ -674,19 +747,32 @@
   }
 
   .partners__grid {
+    max-width: 1500px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-items: center;
     gap: 2rem;
     padding: 0 5rem;
   }
-  
+
   .partner-logo {
-    padding: 1.5rem;
-    border: 1px solid #eee;
-    background-color: white;
-    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px; /* uniform height for logo containers */
   }
+
+  .partner-logo img {
+    max-width: 100px;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .partner-logo img:hover {
+    transform: scale(1.05);
+  }
+
 
   /* ===== FOOTER ===== */
 .footer {
