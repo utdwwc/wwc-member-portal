@@ -45,11 +45,15 @@ const EventCard = ({
         <div className="event-meta">
           <p className="event-date">
             <strong>Date: </strong>
-            {new Date(event.date).toLocaleDateString('en-US', {
-              month: '2-digit',
-              day: '2-digit',
-              year: 'numeric'
-            })}
+            {(() => {
+              const date = new Date(event.date);
+              date.setDate(date.getDate() + 1);
+              return date.toLocaleDateString('en-US', {
+                month: '2-digit',
+                day: '2-digit',
+                year: 'numeric'
+              });
+            })()}
           </p>
           <p className="event-location">
             <strong>Location: </strong>
