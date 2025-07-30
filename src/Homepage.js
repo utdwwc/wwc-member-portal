@@ -69,20 +69,20 @@ const Homepage = () => {
     
     /* PARTNERS DATA */
     const partners = [
-        { name: 'JPMorgan Chase', logo: '#' },
-        { name: 'AT&T', logo: '#' },
-        { name: 'American Airlines', logo: '#' },
-        { name: 'State Farm', logo: '#' }, 
-        { name: 'Core Logic', logo: '#' },
-        { name: 'Cisco', logo: '#' },
-        { name: 'McAfee', logo: '#' },
-        { name: 'Allstate', logo: '#' },
-        { name: 'Intuit', logo: '#' },
-        { name: 'Celanese', logo: '#' },
-        { name: 'Fannie Mae', logo: '#' },
-        { name: 'USAA', logo: '#' },
-        { name: 'Blue Yonder', logo: '#' },
-        { name: 'CBRE', logo: '#' }
+        { name: 'JPMorgan Chase', logo: '/logos/jpmorgan.png' },
+        { name: 'AT&T', logo: '/logos/att.png' },
+        { name: 'American Airlines', logo: '/logos/aa.png' },
+        { name: 'State Farm', logo: '/logos/statefarm.png' }, 
+        { name: 'Core Logic', logo: '/logos/corelogic.png' },
+        { name: 'Cisco', logo: '/logos/cisco.svg' },
+        { name: 'McAfee', logo: '/logos/mcafee.png' },
+        { name: 'Allstate', logo: '/logos/allstate.png' },
+        { name: 'Intuit', logo: '/logos/intuit.svg' },
+        { name: 'Celanese', logo: '/logos/celanese.png' },
+        { name: 'Fannie Mae', logo: '/logos/fanniemae.png' },
+        { name: 'USAA', logo: '/logos/usaa.png' },
+        { name: 'Blue Yonder', logo: '/logos/blueyonder.png' },
+        { name: 'CBRE', logo: '/logos/cbre.png' }
     ];
 
     return (
@@ -214,7 +214,7 @@ const Homepage = () => {
                 <div className="partners__grid">
                     {partners.map((partner, index) => (
                         <div key={index} className="partner-logo">
-                            {partner.name}
+                            <img src={partner.logo} alt={partner.name + ' logo'} />
                         </div>
                     ))}
                 </div>

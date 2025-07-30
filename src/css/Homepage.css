@@ -146,6 +146,7 @@
     background-size: contain;
   }
    */
+
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .navbar__links {
@@ -703,17 +704,22 @@
   .partners__grid {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-items: center;
     gap: 2rem;
     padding: 0 5rem;
+
   }
-  
-  .partner-logo {
-    padding: 1.5rem;
-    border: 1px solid #eee;
-    background-color: white;
-    border-radius: 4px;
+
+  .partner-logo img {
+    max-width: 100px;
+    height: auto;
+    object-fit: contain;
   }
+
+  .partner-logo img:hover {
+    transform: scale(1.05);
+  }
+
 
   /* ===== FOOTER ===== */
 .footer {
