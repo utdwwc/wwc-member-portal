@@ -140,18 +140,30 @@ const Homepage = () => {
                 <h2>What We Offer</h2>
                 <div className="values__grid">
                     <div className="value-card">
-                        <h3>Speed Mentoring</h3>
+                        <div className="value-card__icon-wrapper pink">
+                            <i className="fas fa-handshake value-card__icon"></i>
+                        </div>
+                        <h3>Mentorship</h3>
                         <p>Join our networking event armed with your resume, blazer, and elevator pitch to engage with Dallas' top engineers and recruiters for securing high-profile internships and jobs.</p>
                     </div>
                     <div className="value-card">
+                        <div className="value-card__icon-wrapper blue">
+                            <i className="fas fa-laptop-code value-card__icon"></i>
+                        </div>
                         <h3>Technical Workshops</h3>
                         <p>Through our technical workshops, led by industry engineers, we enhance students' programming skills for better career prospects.</p>
                     </div>
                     <div className="value-card">
+                        <div className="value-card__icon-wrapper pink">
+                            <i className="fas fa-comments value-card__icon"></i>
+                        </div>
                         <h3>Career Talks</h3>
                         <p>Explore the corporate engineering world through our career talks and the nature of work in diverse companies.</p>
                     </div>
                     <div className="value-card">
+                        <div className="value-card__icon-wrapper blue">
+                            <i className="fas fa-lightbulb value-card__icon"></i>
+                        </div>
                         <h3>WeHack</h3>
                         <p>WeHack at UTD: Empowering underrepresented tech innovators to build skills and solve complex problems through our women and non-binary focused hackathon.</p>
                     </div>

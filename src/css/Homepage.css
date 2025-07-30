@@ -269,15 +269,14 @@
     margin-top: -100px; 
 }
 
-.section-title { /* Assuming this class exists for the "Events" title */
-    font-family: 'Raleway', sans-serif;
-    font-weight: 500;
-    text-align: center;
-    font-size: 3rem;
-    margin-bottom: 40px;
-    color: #2d2d2d;
+.section-title { /* Assuming this class exists for the "Events" title */  
+  font-family: 'Raleway', sans-serif;
+  font-weight: 500;
+  text-align: center;
+  font-size: 3rem;
+  margin-bottom: 40px;
+  color: #2d2d2d;
 }
-
 
   /* .section-title {
     font-family: 'Raleway', sans-serif;
@@ -404,6 +403,7 @@
   
   /* Values Section */
   .section--values {
+    font-family: 'Raleway', sans-serif;
     padding: 4rem 2rem;
     width: 100%;
     min-height: 0 !important; /* overrides any inherited 100vh */
@@ -426,22 +426,67 @@
   }
   
   .value-card {
-  padding: 1.5rem;
-  border-radius: 12px; /* Slightly more rounded corners */
-  background: white;
-  /* Subtle inner shadow for depth */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    font-family: 'Raleway', sans-serif;
+    color: #184c74;
+    text-align: center;
+
+    padding: 1.5rem;
+    border-radius: 12px; /* Slightly more rounded corners */
+    background: white;
+    /* Subtle inner shadow for depth */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 400px;
+    min-height: 300px;
+    margin: 0 auto;
+    position: relative; /* Needed for the pseudo-element border */
+    overflow: hidden; /* Ensures content respects rounded corners */
+    transition: all 0.3s ease-in-out; /* Smooth transitions for all changes */
+  }
+
+  .section--values h2 {
+    color: #184c74;
+    font-weight: 600; /* or 800 for extra bold */
+    font-family: 'Raleway', sans-serif; /* or whatever font you prefer */
+    font-size: 1.75rem; /* adjust as needed */
+    text-align: center;
+  }
+
+  .section--values h3 {
+    font-weight: 600; /* or 700 for extra bold */
+    font-family: 'Raleway', sans-serif; /* or whatever font you prefer */
+    font-size: 1.75rem; /* adjust as needed */
+    text-align: center;
+  }
+
+  .value-card__icon {
+    font-size: 1.75rem;
+    color: #184c74;
+  }
+
+  .value-card__icon-wrapper {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  max-width: 400px;
-  min-height: 300px;
-  margin: 0 auto;
-  position: relative; /* Needed for the pseudo-element border */
-  overflow: hidden; /* Ensures content respects rounded corners */
-  transition: all 0.3s ease-in-out; /* Smooth transitions for all changes */
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
+
+/* Pastel Colors */
+.value-card__icon-wrapper.pink {
+  background-color: #f4cad2; /* pastel pink */
+}
+
+.value-card__icon-wrapper.blue {
+  background-color: #cde6f5; /* pastel blue */
+}
+
 
   /* Gradient border effect using a pseudo-element */
   .value-card::before {
@@ -690,7 +735,7 @@
 }
 
   /* Partners Section */
-    .section--partners {
+  .section--partners {
     padding: 4rem 2rem;
     width: 100%;
     min-height: 0 !important; /* overrides any inherited 100vh */
@@ -702,16 +747,24 @@
   }
 
   .partners__grid {
+    max-width: 1500px;
     display: flex;
     flex-wrap: wrap;
     justify-items: center;
     gap: 2rem;
     padding: 0 5rem;
+  }
 
+  .partner-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px; /* uniform height for logo containers */
   }
 
   .partner-logo img {
     max-width: 100px;
+    width: 100%;
     height: auto;
     object-fit: contain;
   }
