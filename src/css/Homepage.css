@@ -24,7 +24,7 @@
 
 /* ===== BASE STYLES ===== */
 .homepage {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Raleway', sans-serif;
     color: #000000;
     margin: 0 auto;
     width: 100%;
@@ -582,8 +582,9 @@
 }
 
 .team-header {
-    text-align: center;
-    margin-bottom: 3rem;
+  font-family: 'Raleway', sans-serif;
+  text-align: center;
+  margin-bottom: 3rem;
 }
 
 .top-line, .bottom-line {
@@ -594,12 +595,13 @@
 }
 
 .scroll-text {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #2c3e50;
-    margin: 1rem 0;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+  font-family: 'Raleway', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 1rem 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
 .team-grid-container {
@@ -753,12 +755,19 @@
   }
 
   .partners__grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 columns */
+    grid-template-rows: repeat(2, auto);   /* 2 rows */
+    gap: 5rem;
+
+    /*
     max-width: 1500px;
     display: flex;
     flex-wrap: wrap;
     justify-items: center;
     gap: 2rem;
     padding: 0 5rem;
+    */
   }
 
   .partner-logo {
@@ -773,10 +782,14 @@
     width: 100%;
     height: auto;
     object-fit: contain;
+
+    transition: transform 0.3s ease, filter 0.3s ease, box-shadow 0.3s ease;
+    will-change: transform, filter, box-shadow;
   }
 
   .partner-logo img:hover {
-    transform: scale(1.05);
+    transform: scale(1.1) rotate(1deg); /* slightly pop and tilt */
+    filter: brightness(1.2) contrast(1.1); /* slightly enhance brightness/contrast */
   }
 
 
