@@ -51,7 +51,7 @@
     font-weight: bold;
     font-size: 1.25rem;
     margin-left: 3rem;
-    font-family: 'Lobster', cursive;
+    font-family: 'Dancing Script', cursive;
   }
   
   .navbar__links {
@@ -153,6 +153,10 @@
   @import url('https://fonts.googleapis.com/css2?family=Lobster&family=Raleway:wght@300;400;700&display=swap');
   @import url('https://fonts.googleapis.com/css2?family=Lobster&family=Lora:wght@400;600&display=swap');
   @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Parisienne&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Allura&display=swap');
 
   /* Header Section */
   .section--header {
@@ -168,7 +172,7 @@
     /* Marbling Background */
     /* background: url('/src/pngs/pink_marble.png') center/cover no-repeat; */
     /* background-color: linear-gradient(to bottom, #ffe5ea, white); */
-    background: rgb(254, 199, 209);
+    background: #fed8e0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
 
@@ -206,17 +210,19 @@
   }
 
   .header__title {
-  font-family: 'Lobster', cursive;
+  font-family:'Parisienne', cursive;
   font-size: 7rem;
   color: #184c74;
   margin-bottom: 0.5rem;
-  font-weight: 300;
+  font-weight: 400;
+  margin-right: 3rem;
+
 }
 
   .header__subtitle {
     font-family: 'Raleway', sans-serif;
-    font-weight: 700;
-    font-size: 3.3rem;
+    font-weight: 650;
+    font-size: 3rem;
     color: #184c74;
     margin-bottom: 1rem;
   }
@@ -227,7 +233,7 @@
     color: #184c74;
     max-width: 700px;
     margin: 0 auto;
-    font-weight:600;
+    font-weight:500;
   }
 
   /* Events Section */
