@@ -26,20 +26,20 @@
 /* 🎨 Alternating Background Styles */
 .event-card--blue {
   background: linear-gradient(to bottom, #cee8fd, #f5fcff); /* light blue gradient */
-  border-color: #c7eaff;
-  box-shadow: 0 8px 20px rgba(173, 216, 230, 0.3);
+  border-color: #000000;
+  /* box-shadow: 0 8px 20px rgba(173, 216, 230, 0.3); */
 }
 
-.event-card--green {
-  background: linear-gradient(to bottom, #f2d1fe, #f6fcfb); /* soft teal/green gradient */
-  border-color: #ebbbfd;
-  box-shadow: 0 8px 20px #ecc4fb;
+.event-card--purple {
+  background: linear-gradient(to bottom, #f0cffd, #f6fcfb); /* soft purple gradient */
+  border-color: #65068737;
+  /* box-shadow: 0 8px 20px #ecc4fb; */
 }
 
 .event-card--pink {
   background: linear-gradient(to bottom, #fadbe4, #fef9fb); /* gentle pink gradient */
-  border-color: #fedce9;
-  box-shadow: 0 8px 20px rgba(255, 192, 203, 0.3);
+  border-color: #90073c59;
+  /* box-shadow: 0 8px 20px rgba(255, 192, 203, 0.3); */
 }
 
 
@@ -52,7 +52,7 @@
     padding-top: 20px;
     /* background: linear-gradient(to bottom, #faeded, #f8fdff); Pastel pink and soft lavender */
     /* background: #a5d6fc2f; */
-    border: 3px dashed #fefefe; /* Cute dashed border in a coordinating pink */
+    border: 3px dashed #000000; /* Cute dashed border in a coordinating pink */
     border-radius: 25px; /* Super soft, rounded corners for a gentle look */
     overflow: hidden; /* Keeps everything tidy inside */
 
@@ -61,13 +61,14 @@
     /* justify-content: center; */ /* No longer needed here as flex-direction is column */
     /* align-items: center; */ /* No longer needed here as flex-direction is column */
 
-    box-shadow: 0 8px 20px rgba(255, 180, 200, 0.184); /* A delicate, rosy shadow that makes it pop */
+    /* box-shadow: 0 8px 20px rgba(255, 180, 200, 0.184); A delicate, rosy shadow that makes it pop */
     transition: all 0.3s ease-in-out; /* Smooth transitions for a playful feel */
     animation: bounceIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; /* A gentle, bouncy entrance */
     position: relative; /* For cute overlays */
 
     /* CRUCIAL for consistent height: Set a minimum height for all cards */
     min-height: 550px; /* Adjust this value as needed to fit your content comfortably */
+    margin-top: 40px;
 }
 
 /* Hover Effect: A Little Wiggle! */

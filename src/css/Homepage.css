@@ -429,6 +429,7 @@
     width: 100%;
     margin: 0;
     padding: 0 9rem;
+    margin-top: 40px;
   }
   
   .value-card {
@@ -577,7 +578,7 @@
 .section--team {
     padding: 4rem 2rem;
     /* background: linear-gradient(to bottom, white, #fcdae2, white); */
-    /* background: linear-gradient(to bottom, #fcdfdd, #fff5f5,#fcdfdd); */
+    background: linear-gradient(to bottom, #fcdfdd, #fff5f5,#fcdfdd);
     background: #f0f1f2;
 }
 
@@ -754,6 +755,12 @@
     background: #f0f1f2;
   }
 
+    .partners_header {
+    font-family: 'Raleway', sans-serif;
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
   .partners__grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr); /* 7 columns */
@@ -778,7 +785,7 @@
   }
 
   .partner-logo img {
-    max-width: 100px;
+    max-width: 120px;
     width: 100%;
     height: auto;
     object-fit: contain;

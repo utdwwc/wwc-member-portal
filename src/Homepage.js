@@ -120,8 +120,13 @@ const Homepage = () => {
 
             {/* --- EVENTS --- */}
             <section id="events" className="section section--events">
-                <EventsGrid className="event-card"
-                    title="Events"
+                <div className="events-header">
+                    <div className="top-line"></div>
+                    <div className="scroll-text">Events</div>
+                    <div className="bottom-line"></div>
+                </div>
+                <EventsGrid
+                    className="event-card"
                     events={events.slice(0, 3)}
                     user={user}
                     navigate={navigate}
@@ -135,9 +140,14 @@ const Homepage = () => {
                 />
             </section>
 
+
             {/* --- VALUES --- */}
             <section id="values" className="section section--values">
-                <h2>What We Offer</h2>
+                <div className="values-header">
+                    <div className="top-line"></div>
+                    <div className="scroll-text">Values</div>
+                    <div className="bottom-line"></div>
+                </div>
                 <div className="values__grid">
                     <div className="value-card">
                         <div className="value-card__icon-wrapper pink">
@@ -222,7 +232,11 @@ const Homepage = () => {
 
             {/* --- PARTNERS --- */}
             <section id="partners" className="section section--partners">
-                <h2>Our Partners</h2>
+                <div className="partners-header">
+                    <div className="top-line"></div>
+                    <div className="scroll-text">Our Partners</div>
+                    <div className="bottom-line"></div>
+                </div>
                 <div className="partners__grid">
                     {partners.map((partner, index) => (
                         <div key={index} className="partner-logo">
