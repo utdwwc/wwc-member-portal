@@ -31,7 +31,7 @@
 }
 
 .event-card--purple {
-  background: linear-gradient(to bottom, #f0cffd, #f6fcfb); /* soft purple gradient */
+  background: linear-gradient(to bottom, #f3dbfd, #f6fcfb); /* soft purple gradient */
   border-color: #65068737;
   /* box-shadow: 0 8px 20px #ecc4fb; */
 }
@@ -178,8 +178,8 @@
 
 /* Apply Button Styling */
 .event-button {
-    background-color: #184c74e9; /* A vibrant purple */
-    color: white;
+    background-color: #f4cad2; /* A vibrant purple */
+    color: rgb(75, 5, 5);
     border: none;
     border-radius: 20px;
     padding: 10px 20px;
@@ -195,10 +195,10 @@
 }
 
 .event-button:hover {
-    background-color: #f4cad2; /* Darker purple on hover */
+    background-color: #184c74e9; /* Darker purple on hover */
     transform: translateY(-1px); /* Slight lift */
     box-shadow: 0 2px 20px rgba(186, 164, 207, 0.4);
-    color: #000000;
+    color: #fffefe;
     border: 2px solid #8c564e5a; 
 }
 

@@ -114,7 +114,7 @@ const RegularEventsPage = () => {
 
     return (
         <div className="regular-events">
-            <h1 className="page-title">Women Who Compute Events</h1>
+            
             
             {/* Navigation buttons (moved outside event mapping) */}
             <div className="event-container">
@@ -155,9 +155,14 @@ const RegularEventsPage = () => {
                 </button>
             </div>
             
+            <h1 className="page-title">Women Who Compute Events</h1>
+
             <div className="events-grid-container">
+                {/* <div className='regular_events_title'>
+                    <p>Events</p>
+                </div> */}
                 <EventsGrid
-                    title="Events"
+                    
                     events={events}
                     user={user}
                     navigate={navigate}

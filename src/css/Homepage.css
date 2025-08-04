@@ -502,7 +502,7 @@
     inset: 0;
     border-radius: 12px;
     padding: 2px; /* Thickness of the border */
-    background: linear-gradient(45deg, #8c564e, #fefefe); /* Your choice of vibrant colors */
+    background: linear-gradient(45deg, #0a64a0, #fefefe); /* Your choice of vibrant colors */
     -webkit-mask:
       linear-gradient(#fff 0 0) content-box,
       linear-gradient(#fff 0 0);
@@ -514,6 +514,7 @@
   }
 
   .value-card:hover {
+    
     transform: translateY(-4px) rotateZ(1deg); /* More dynamic lift and slight rotation */
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.08); /* More prominent shadow */
   }
@@ -579,7 +580,7 @@
     padding: 4rem 2rem;
     /* background: linear-gradient(to bottom, white, #fcdae2, white); */
     background: linear-gradient(to bottom, #fcdfdd, #fff5f5,#fcdfdd);
-    background: #f0f1f2;
+    /* background: #f0f1f2; */
 }
 
 .team-header {
