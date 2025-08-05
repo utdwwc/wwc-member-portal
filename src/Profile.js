@@ -110,12 +110,14 @@ const Profile = () => {
    </div>
   
   <div>
-    <button
+    <button 
+      className='event-button event-button--primary'
       onClick={() => navigate('/regularEvents', { state: { user } })}>
         Back to Events
     </button>
 
     <button
+      className='event-button event-button--primary'
       onClick={() => navigate('/information', { state: { user } })}>
         Update Your Profile
     </button>

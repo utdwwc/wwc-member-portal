@@ -17,43 +17,96 @@
    contact me before making structural changes pls <3 ;p
 ============================================================================ */
 
-
-/* PROFILE CONTAINER */
+/* 🎨 THE CANVAS: PROFILE CONTAINER */
+/* This is where your details live, all cozy and centered. */
 .profile-details {
-  max-width: 800px;      /* 🚫 -> controls content width */
-  margin: 0 auto;
-  padding: 2rem;
+max-width: 800px;
+ margin: 0 auto;
+ padding: 2rem;
+ background: #ffe1e8; /* 🌸 A lovely pop of soft pink! */
+ border-radius: 1.5rem; /* 💖 Round those corners for extra cuteness! */
+ box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* ✨ A subtle, pretty shadow */
+}
+
+/* 💌 THE DETAILS: INDIVIDUAL CARDS */
+/* Each little card is a mini-gem, holding your precious info. */
+.detail-card {
+ background: #fff; /* ⚪ Pure white for a clean, fresh look */
+ padding: 1.5rem;
+ border-radius: 1rem; /* 🎀 More rounded corners! */
+ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); /* 🌈 A lighter shadow for a gentle lift */
+ transition: transform 0.2s ease-in-out; /* ✨ A little animated magic on hover! */
+ margin: 5px;
+}
+
+/* 💫 A fun hover effect for the cards */
+.detail-card:hover {
+ transform: translateY(-5px);
+ box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* 🏷️ THE HEADINGS: LABELS */
+/* These are the cute little signposts for your info! */
+.detail-label {
+ font-weight: 700; /* Bolder for extra impact */
+ color: #c43a75; /* 🎀 A deep, gorgeous rose pink */
+ margin-bottom: 0.5rem;
+ font-size: 0.9rem;
+ text-transform: uppercase;
+ letter-spacing: 0.1em; /* ✨ A bit more space for style */
+}
+
+/* ✍️ THE CONTENT: VALUES */
+/* The star of the show - your actual details! */
+.detail-value {
+ color: #4a5568;
+ font-size: 1.1rem;
+ line-height: 1.6; /* Nicer spacing for easy reading */
+}
+
+/* 📐 THE SPACING: UTILITIES */
+/* Making sure everything has its own little happy space. */
+.space-y-4 > * + * {
+ margin-top: 1.5rem; /* A little extra breathing room between the cards */
 }
 
 
+/* PROFILE CONTAINER */
+/* .profile-details { */
+  /* max-width: 800px;      🚫 -> controls content width */
+  /* margin: 0 auto;
+  padding: 2rem;
+} */
+
+
 /* DETAIL CARDS */
-.detail-card {
+/* .detail-card {
   background: white;
   padding: 1.5rem;
   border-radius: 0.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+} */
 
 
 /* DETAIL LABELS */
-.detail-label {
+/* .detail-label {
   font-weight: 600;
   color: #4a5568;
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-}
+} */
 
 
 /* DETAIL VALUES */
-.detail-value {
+/* .detail-value {
   color: #2d3748;
   font-size: 1.1rem;
-}
+} */
 
 
 /* SPACING UTILITIES */
-.space-y-4 > * + * {
+/* .space-y-4 > * + * {
   margin-top: 1rem;
-}
+} */

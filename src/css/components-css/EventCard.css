@@ -73,7 +73,7 @@
 
 /* Hover Effect: A Little Wiggle! */
 .event-card-container:hover {
-    transform: translateY(-5px) scale(1.01); /* Wiggles up just a tiny bit */
+    transform: translateY(-1px) scale(1.001); /* Wiggles up just a tiny bit */
     box-shadow: 0 12px 25px rgba(255, 105, 180, 0.105); /* A slightly more vibrant shadow on hover */
     border-color: #ffffff; /* Border gets a touch brighter */
 }
@@ -180,7 +180,7 @@
 .event-button {
     background-color: #f4cad2; /* A vibrant purple */
     color: rgb(75, 5, 5);
-    border: none;
+    border:#a40a26;
     border-radius: 20px;
     padding: 10px 20px;
     padding-left:90px;

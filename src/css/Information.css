@@ -19,71 +19,246 @@
 ============================================================================ */
 
 
-/* ===== BASE FORM CONTAINER ===== */
+/*
+***
+* INFORMATIONFORM.CSS — A PLAYFUL & PRETTY STYLING GUIDE
+***
+*/
+
+/* 🎨 THE BASE: FORM CONTAINER */
+/* Your form is now a charming, little centerpiece! */
 .information-form {
-  max-width: 600px;         /* 🚫 controls form width */
-  margin: 2rem auto;
+ max-width: 600px;
+ margin: 2rem auto;
+ padding: 2.5rem; /* A little extra room to breathe */
+ background: #fefcfb; /* A soft, creamy white */
+ border-radius: 1.5rem; /* Super round, friendly corners */
+ box-shadow: 0 8px 20px rgba(0,0,0,0.08); /* A gentle, inviting shadow */
+ border: 2px solid #fed8e0; /* 💖 A lovely pink border for a pop of color! */
+}
+
+/* 📝 FORM GROUPS */
+.form-group {
+ margin-bottom: 2rem; /* More space for a cleaner look */
+}
+
+.form-group label {
+ display: block;
+ margin-bottom: 0.75rem;
+ font-weight: 700; /* Bolder labels are easier to read */
+ color: #5a4f78; /* A deep, rich purple */
+ font-size: 1rem;
+ letter-spacing: 0.05em;
+}
+
+/* ✏️ INPUT STYLES */
+.form-group input[type="text"],
+.form-group input[type="email"],
+input[type="file"] {
+ width: 100%;
+ padding: 1rem; /* More padding for a softer feel */
+ border: 2px solid #e0e0e0; /* A subtle border */
+ border-radius: 0.75rem; /* Rounded input fields */
+ font-size: 1rem;
+ transition: all 0.3s ease; /* A smooth transition for focus */
+}
+
+/* 🪄 A little magic on focus! */
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus {
+ outline: none;
+ border-color: #f7a6b2; /* Focus on a pretty pink! */
+ box-shadow: 0 0 8px rgba(247, 166, 178, 0.5);
+}
+
+/* ☑️ CHECKBOX STYLES */
+.checkbox {
+ display: flex;
+ align-items: center;
+ font-size: 1rem;
+ color: #5a4f78;
+}
+
+.checkbox input {
+ margin-right: 0.75rem;
+ transform: scale(1.2); /* Slightly larger checkbox */
+}
+
+/* 🚨 ERROR + FEEDBACK MESSAGES */
+.error-message, .error {
+ color: #fff;
+ margin-bottom: 1rem;
+ padding: 0.75rem 1rem;
+ background: #f07171; /* A friendly, vibrant red for errors */
+ border-radius: 0.5rem;
+ font-weight: 600;
+}
+
+/* 📄 RESUME SECTION */
+.resume-section {
+ margin-bottom: 15px;
+}
+
+.resume-link {
+ color: #9a67a5; /* A beautiful lavender-purple */
+ text-decoration: underline;
+ font-weight: 600;
+}
+
+/* 🖼️ FILE INPUT + HELP TEXT */
+small {
+ display: block;
+ margin-top: 0.5rem;
+ color: #888;
+ font-size: 0.9rem;
+}
+
+
+/* ===== THE LAYOUT ===== */
+/* This container sets the stage for the whole form. */
+.information-container {
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ min-height: 100vh;
+ background-color: #fce4ec; /* A super-soft, inviting background! */
+ padding: 20px;
+}
+
+/* 💎 THE CARD */
+/* The card is now a precious gem, waiting for your details. */
+.information-card {
+ background: #fff;
+ padding: 2.5rem;
+ border-radius: 1.5rem;
+ text-align: center;
+ box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+ width: 100%;
+ max-width: 400px;
+ transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.information-card:hover {
+ transform: translateY(-8px); /* A more pronounced lift */
+ box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* 👑 CARD CONTENT */
+.information-title {
+ color: #5a4f78;
+ margin-bottom: 1.5rem;
+ font-size: 2rem;
+ font-weight: 800; /* Bold and beautiful */
+}
+
+.information-text {
+ color: #7f8c9f;
+ line-height: 1.7;
+ margin-bottom: 2rem;
+}
+
+/* 👆 BUTTON STYLES */
+.information-button {
+ margin-top: 1.5rem;
+ width: 100%;
+ padding: 1rem; /* More padding for a bigger, friendlier button */
+ border: none;
+ border-radius: 0.75rem;
+ background-color: #c43a75; /* A gorgeous rose pink */
+ color: white;
+ font-size: 1.1rem;
+ font-weight: 700;
+ cursor: pointer;
+ transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.information-button:hover {
+ background-color: #e35a96; /* A slightly lighter shade on hover */
+ transform: translateY(-2px); /* A fun little lift! */
+}
+
+/* 📱 MOBILE RESPONSIVE ADJUSTMENTS */
+@media (max-width: 480px) {
+ .information-container {
+ padding: 1rem;
+ align-items: flex-start;
+ padding-top: 2rem;
+ }
+ .information-card {
+ padding: 2rem;
+ }
+
+ .information-title {
+ font-size: 1.75rem;
+ margin-bottom: 1rem;
+ }
+}
+
+/* ===== BASE FORM CONTAINER ===== */
+/* .information-form { */
+  /* max-width: 600px;         🚫 controls form width */
+  /* margin: 2rem auto;
   padding: 2rem;
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
-
+ */
 
 /* ===== FORM GROUPS ===== */
-.form-group {
+/* .form-group {
   margin-bottom: 1.5rem;
-}
+} */
 
-.form-group label {
+/* .form-group label {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 500;
 }
-
+ */
 
 /* ===== INPUT STYLES ===== */
-.form-group input[type="text"],
+/* .form-group input[type="text"],
 .form-group input[type="email"] {
   width: 100%;               /* 🚫 keep full width for alignment */
-  padding: 0.75rem;
+  /* padding: 0.75rem;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 1rem;
-}
+}  */
 
 
 /* ===== CHECKBOX STYLES ===== */
-.checkbox {
-  display: flex;
-  align-items: center; /* 🚫 layout critical */
-}
+/* .checkbox { */
+  /* display: flex; */
+  /* align-items: center; 🚫 layout critical */
+/* } */
 
-.checkbox input {
-  margin-right: 0.5rem;
-}
+/* .checkbox input { */
+  /* margin-right: 0.5rem; */
+/* } */
 
 
 /* ===== ERROR + FEEDBACK MESSAGES ===== */
-.error-message {
+/* .error-message {
   color: #d32f2f;
   margin-bottom: 1rem;
   padding: 0.5rem;
   background: #fde0e0;
   border-radius: 4px;
-}
+} */
 
-.error {
+/* .error {
   color: #d32f2f;
   padding: 10px;
   background: #fde0e0;
   border-radius: 4px;
   margin-bottom: 15px;
-}
+} */
 
 
 /* ===== RESUME SECTION ===== */
-.resume-section {
+/* .resume-section {
   margin-bottom: 10px;
 }
 
@@ -91,11 +266,11 @@
   color: #6c497c;
   text-decoration: underline;
   font-weight: 500;
-}
+} */
 
 
 /* ===== FILE INPUT + HELP TEXT ===== */
-input[type="file"] {
+/* input[type="file"] {
   margin-top: 5px;
   width: 100%;
 }
@@ -105,22 +280,22 @@ small {
   margin-top: 4px;
   color: #666;
   font-size: 0.8rem;
-}
+} */
 
 
 /* ===== BASE LAYOUT CONTAINER ===== */
-.information-container {
-  display: flex;             /* 🚫 layout critical */
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+/* .information-container { */
+  /* display: flex;             🚫 layout critical */
+  /* justify-content: center; */
+  /* align-items: center; */
+  /* min-height: 100vh;
   background-color: #f5f5f5;
   padding: 20px;
-}
+} */
 
 
 /* ===== CARD STYLING ===== */
-.information-card {
+/* .information-card {
   background: #fff;
   padding: 2rem;
   border-radius: 8px;
@@ -128,32 +303,32 @@ small {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;           /* 🚫 important for layout */
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  /* transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.information-card:hover {
-  transform: translateY(-5px);
+.information-card:hover { */
+  /* transform: translateY(-5px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-}
+} */ 
 
 
 /* ===== CARD CONTENT ===== */
-.information-title {
+/* .information-title {
   color: #2c3e50;
   margin-bottom: 1.5rem;
   font-size: 1.8rem;
-  /* ✅ font styling can be customized */
-}
+  /* font styling can be customized */ 
+/* } */
 
-.information-text {
+/* .information-text {
   color: #34495e;
   line-height: 1.6;
   margin-bottom: 1.5rem;
-}
+} */
 
 
 /* ===== BUTTON STYLES ===== */
-.information-button {
+/* .information-button {
   margin-top: 1rem;
   width: 100%;
   padding: 0.75rem;
@@ -164,15 +339,15 @@ small {
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.2s ease;
-}
+} */
 
-.information-button:hover {
+/* .information-button:hover {
   background-color: #8e5fa3;
-}
+} */
 
 
 /* ===== MOBILE RESPONSIVE ADJUSTMENTS ===== */
-@media (max-width: 480px) {
+/* @media (max-width: 480px) { 
   .information-container {
     padding: 15px;
     align-items: flex-start;
@@ -186,5 +361,4 @@ small {
   .information-title {
     font-size: 1.5rem;
     margin-bottom: 1rem;
-  }
-}
+  } */
