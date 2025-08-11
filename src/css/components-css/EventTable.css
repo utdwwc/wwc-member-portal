@@ -23,8 +23,8 @@
 
 /* ===== GLOBAL VARIABLES & CONTAINER ===== */
 .event-table-container {
-  --primary-color: #6c497c;
-  --primary-hover: #8e5fa3;
+  /* --primary-color: #6c497c;
+  --primary-hover: #8e5fa3; */
   --secondary-color: #6c757d;
   --success-color: #28a745;
   --warning-color: #ffc107;

@@ -31,7 +31,7 @@
 }
 
 .event-card--purple {
-  background: linear-gradient(to bottom, #f3dbfd, #f6fcfb); /* soft purple gradient */
+  background: linear-gradient(to bottom, #f6e4fe, #f6fcfb); /* soft purple gradient */
   border-color: #65068737;
   /* box-shadow: 0 8px 20px #ecc4fb; */
 }
@@ -178,9 +178,9 @@
 
 /* Apply Button Styling */
 .event-button {
-    background-color: #f4cad2; /* A vibrant purple */
+    background-color: #ffc8d2; /* A vibrant purple */
     color: rgb(75, 5, 5);
-    border:#a40a26;
+    border:#e30830;
     border-radius: 20px;
     padding: 10px 20px;
     padding-left:90px;
@@ -191,7 +191,7 @@
     transition: background-color 0.3s ease, transform 0.2s ease;
     margin-top: 20px; /* Space above the button */
     align-self: center; /* Centers the button horizontally within the flex container */
-    box-shadow: 0 2px 15px rgba(160, 108, 213, 0.3);
+    box-shadow: 0 2px 15px rgba(213, 108, 176, 0.3);
 }
 
 .event-button:hover {

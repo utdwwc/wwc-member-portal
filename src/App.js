@@ -68,11 +68,13 @@ function App() {
   return (
     <div className="container">
       <div className="card">
-        <h1 className="heading">Women Who Compute Club</h1>
+        <h1 className="heading">Women Who Compute</h1>
         {user ? (
           <div className="user-info">
-            <h2>Welcome, {user.name}</h2>
-            <p>Email: {user.utdEmail}</p>
+              <div className='info'>
+                <h2>Welcome, {user.name}</h2>
+                <p>Email: {user.utdEmail}</p>
+              </div>
             <button
               className="button"
               onClick={() => navigate('/regularevents', {

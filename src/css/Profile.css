@@ -20,12 +20,14 @@
 /* 🎨 THE CANVAS: PROFILE CONTAINER */
 /* This is where your details live, all cozy and centered. */
 .profile-details {
-max-width: 800px;
+max-width: 900px;
  margin: 0 auto;
  padding: 2rem;
- background: #ffe1e8; /* 🌸 A lovely pop of soft pink! */
+ background: #fbe3e9; /* 🌸 A lovely pop of soft pink! */
  border-radius: 1.5rem; /* 💖 Round those corners for extra cuteness! */
  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* ✨ A subtle, pretty shadow */
+ font-family: 'Quicksand', sans-serif;
+ /* align-items: center; */
 }
 
 /* 💌 THE DETAILS: INDIVIDUAL CARDS */
@@ -37,6 +39,13 @@ max-width: 800px;
  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); /* 🌈 A lighter shadow for a gentle lift */
  transition: transform 0.2s ease-in-out; /* ✨ A little animated magic on hover! */
  margin: 5px;
+}
+
+.profile-header {
+  font-size: 20px;
+  display: flex;
+  justify-content: center; /* horizontal */
+  align-items: center;     /* vertical */
 }
 
 /* 💫 A fun hover effect for the cards */
