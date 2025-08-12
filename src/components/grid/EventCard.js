@@ -17,7 +17,8 @@ const EventCard = ({
 }) => {
 
   const colorClasses = ['event-card--blue', 'event-card--green', 'event-card--pink'];
-  const colorClass = colorClasses[index % colorClasses.length];
+  // const colorClass = colorClasses[index % colorClasses.length];
+  const colorClass = colorClasses[Math.floor(Math.random() * colorClasses.length)];
 
   return (
     <div className={`event-card-container ${colorClass}`}>
