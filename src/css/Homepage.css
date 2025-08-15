@@ -608,11 +608,20 @@
 
 .team-grid-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /*changed this from auto-fit to 4*/
+    grid-template-columns: repeat(5, minmax(200px, 1fr)); /* Fixed 5 columns */
     gap: 2rem;
     width: 100%;
     margin: 0 auto;
     padding: 0 10rem;
+
+  /*
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 10rem;
+    */
 }
 
 .team-card {
