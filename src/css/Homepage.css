@@ -613,15 +613,34 @@
     width: 100%;
     margin: 0 auto;
     padding: 0 10rem;
+}
 
-  /*
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
-    width: 100%;
-    margin: 0 auto;
-    padding: 0 10rem;
-    */
+/* For smaller screens, you can add media queries to adjust the layout */
+@media (max-width: 1600px) {
+    .team-grid-container {
+        grid-template-columns: repeat(4, minmax(200px, 1fr));
+        padding: 0 5rem;
+    }
+}
+
+@media (max-width: 1200px) {
+    .team-grid-container {
+        grid-template-columns: repeat(3, minmax(200px, 1fr));
+        padding: 0 3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .team-grid-container {
+        grid-template-columns: repeat(2, minmax(200px, 1fr));
+        padding: 0 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .team-grid-container {
+        grid-template-columns: 1fr;
+    }
 }
 
 .team-card {
@@ -727,8 +746,8 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .team-grid-container {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        padding: 0 2rem;
+        grid-template-columns: repeat(2, minmax(200px, 1fr));
+        padding: 0 1rem;
     }
     
     .team-image-container {
