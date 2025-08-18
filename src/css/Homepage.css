@@ -234,7 +234,6 @@
 .section--events {
     background: #f0f1f2;
     padding: 12rem 2rem 6rem; /* Consolidated padding */
-    width: 100%;
     position: relative; /* Needed for proper stacking */
     z-index: 1; /* Ensures section stays above other elements */
     min-height: 100vh; /* Ensures minimum full viewport height */
@@ -249,16 +248,19 @@
   color: #2d2d2d;
 }
 
+.events-section {
+  width: 100%;
+}
+
 /* Grid layout for events */
 .events-grid {
     display: grid;
     grid-template-columns: repeat( auto-fit, minmax(300px, 1fr)); /* Increased minmax from 250px to 300px for larger cards */
-    gap: 30px;
+    gap: 50px;
     width: 100%;
-    margin: 0 auto;
     max-width: 1300px;
+    margin: 0 auto;
     padding: 0 2rem;
-
     align-items: stretch;
     justify-content: center;
 }
