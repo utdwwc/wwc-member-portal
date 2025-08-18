@@ -1,178 +1,195 @@
 /* ============================================================================
-   OFFICERFORM.CSS — STYLING GUIDE FOR DESIGNERS
-   ----------------------------------------------------------------------------
-   this stylesheet controls the layout and visual presentation of:
-   the Create Officer Form in the admins page 
+   OFFICERFORM.CSS — STYLING GUIDE FOR DESIGNERS
+   ----------------------------------------------------------------------------
+   This stylesheet controls the layout and visual presentation of:
+   The Create Officer Form on the Admin page
 
-   ✅ u can totally modify:
-    - colors (except those affecting accessibility)
-    - padding/margin values
-    - border radii and box shadows
-    - font sizes and weights
-    - transition durations
+   ✅ You can totally modify:
+    - Colors (except those affecting accessibility)
+    - Padding/margin values
+    - Border radii and box shadows
+    - Font sizes and weights
+    - Transition durations
 
-   🚫 but pls do NOT:
-   - modify core form structure or layout properties
-   - change form input accessibility features
-   - alter the responsive breakpoints without testing
-   - remove or modify focus states on interactive elements
+   🚫 But please do NOT:
+   - Modify core form structure or layout properties
+   - Change form input accessibility features
+   - Alter the responsive breakpoints without testing
+   - Remove or modify focus states on interactive elements
 
-   contact me before making structural changes pls <3 ;p
-   thx for making it pretty guys 🥹💖
+   Contact me before making structural changes please <3 ;p
+   Thanks for making it pretty, guys 🥹💖
 ============================================================================ */
 
 /* ===== FORM CONTAINER ===== */
 .admin-form-container {
-  width: 100%;                    /* 🚫 */
-  max-width: 1200px;              /* 🚫 */
-  margin: 0 auto;                 /* 🚫 */
-  padding: 0 1rem;
+ width: 100%;
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 0 1rem;
 }
 
 /* ===== FORM STYLING ===== */
 .admin-form {
-  background: #f8f9fa;
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  margin-bottom: 2rem;
+ background: #ffffff;
+ border-radius: 16px;
+ padding: 3rem;
+ box-shadow: 0 12px 24px rgba(144, 7, 60, 0.05);
+ margin-bottom: 2rem;
+ border: 1px solid #f2dce4;
 }
 
 /* Form heading */
 .admin-form h2 {
-  margin-bottom: 1.5rem;
-  color: #333;
-  font-size: 1.75rem;
+ margin-bottom: 1.5rem;
+ color: #3c0b1f;
+ font-size: 2rem;
+ font-weight: 700;
 }
 
 /* Alert messages */
 .admin-alert {
-  margin-bottom: 1.5rem;
+ margin-bottom: 1.5rem;
+ background-color: #fef4f6;
+ color: #90073c;
+ padding: 0.75rem;
+ border-radius: 8px;
+ border: 1px solid #90073c59;
 }
 
 /* ===== TABLE ADAPTATIONS ===== */
 .admin-table {
-  width: 100%;                    /* 🚫 */
-  margin-bottom: 1.5rem;
-  background: white;
-  border-radius: 8px;
-  overflow: hidden;               /* 🚫 */
+ width: 100%;
+ margin-bottom: 1.5rem;
+ background: #fef9fb;
+ border-radius: 12px;
+ overflow: hidden;
+ box-shadow: 0 4px 12px rgba(144, 7, 60, 0.05);
 }
 
 /* Table cells */
 .admin-table td {
-  padding: 1rem;
-  vertical-align: top;            /* 🚫 */
-  border-color: #e0e0e0;
+ padding: 1.25rem;
+ vertical-align: top;
+ border-color: #f2dce4;
 }
 
 /* ===== FORM ELEMENTS ===== */
 
 /* Labels */
 .admin-label {
-  font-weight: 500;
-  color: #444;
-  margin-bottom: 0.5rem;
-  display: block;                 /* 🚫 */
+ font-weight: 600;
+ color: #6c1236;
+ margin-bottom: 0.75rem;
+ display: block;
+ font-size: 1rem;
 }
 
 /* Input fields */
 .admin-input {
-  width: 100%;                    /* 🚫 */
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 1rem;
-  transition: border-color 0.2s;
-  background-color: white;
+ width: 100%;
+ padding: 1rem;
+ border: 1px solid #fecde0;
+ border-radius: 10px;
+ font-size: 1rem;
+ transition: all 0.3s ease;
+ background-color: #fef9fb;
+ color: #3c0b1f;
 }
 
 /* Input focus state - CRITICAL for accessibility */
 .admin-input:focus {
-  outline: none;                    /* 🚫 */
-  border-color: #8e5fa3;
-  box-shadow: 0 0 0 2px rgba(142, 95, 163, 0.2);
+ outline: none;
+ border-color: #90073c;
+ box-shadow: 0 0 0 4px #90073c26;
+ background-color: #fff;
 }
 
 /* ===== FILE UPLOAD STYLING ===== */
 .admin-file-input {
-  padding: 0.5rem;
-  border: 1px dashed #ccc;
-  border-radius: 6px;
-  background: white;
+ padding: 0.75rem;
+ border: 2px dashed #f2dce4;
+ border-radius: 10px;
+ background: #fef9fb;
 }
 
 /* Image preview */
 .admin-image-preview {
-  border: 2px solid #e0e0e0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+ border: 2px solid #f2dce4;
+ box-shadow: 0 4px 12px rgba(144, 7, 60, 0.1);
+ border-radius: 12px;
 }
 
 /* ===== FORM ACTIONS ===== */
 .form-actions {
-  display: flex;                  /* 🚫 */
-  justify-content: flex-end;
-  margin-top: 1.5rem;
+ display: flex;
+ justify-content: flex-end;
+ margin-top: 2rem;
 }
 
 /* Primary form button */
 .details-button {
-  background-color: #8e5fa3;
-  color: white;                 /* 🚫 */
-  padding: 0.6rem 1.5rem;
-  border: none;                   /* 🚫 */
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: all 0.2s;
-  cursor: pointer;                /* 🚫 */
+ background-color: #90073c;
+ color: white;
+ padding: 0.75rem 2rem;
+ border: none;
+ border-radius: 25px;
+ font-size: 1rem;
+ font-weight: 600;
+ transition: all 0.3s ease;
+ cursor: pointer;
+ box-shadow: 0 4px 15px rgba(144, 7, 60, 0.2);
 }
 
 /* Button states */
 .details-button:hover {
-  background-color: #6c497c;
-  transform: translateY(-1px);
+ background-color: #6c1236;
+ transform: translateY(-2px);
+ box-shadow: 0 6px 20px rgba(144, 7, 60, 0.3);
 }
 
 .details-button:active {
-  transform: translateY(0);
+ transform: translateY(0);
+ box-shadow: 0 2px 10px rgba(144, 7, 60, 0.2);
 }
 
 .details-button:disabled {
-  background-color: #b39ebf;
-  cursor: not-allowed;            /* 🚫 */
-  transform: none;                /* 🚫 */
+ background-color: #b39ebf;
+ cursor: not-allowed;
+ transform: none;
+ box-shadow: none;
 }
 
 /* ===== RESPONSIVE ADJUSTMENTS ===== */
 
 /* Tablet and below (768px) */
 @media (max-width: 768px) {
-  .admin-form {
-    padding: 1.5rem;
-  }
-  
-  /* Responsive table behavior */
-  .admin-table {
-    display: block;               /* 🚫 */
-    overflow-x: auto;             /* 🚫 */
-  }
-  
-  .admin-table tr {
-    display: flex;                /* 🚫 */
-    flex-direction: column;       /* 🚫 */
-  }
-  
-  .admin-table td {
-    padding: 0.75rem;
-  }
-  
-  /* Form actions adjustment */
-  .form-actions {
-    justify-content: center;
-  }
-  
-  .details-button {
-    width: 100%;                  /* 🚫 */
-  }
+ .admin-form {
+ padding: 1.5rem;
+ }
+ 
+ /* Responsive table behavior */
+ .admin-table {
+ display: block;
+ overflow-x: auto;
+ white-space: nowrap;
+ }
+ 
+ .admin-table tr {
+ display: flex;
+ flex-direction: column;
+ }
+ 
+ .admin-table td {
+ padding: 0.75rem;
+ }
+ 
+ /* Form actions adjustment */
+ .form-actions {
+ justify-content: center;
+ }
+ 
+ .details-button {
+ width: 100%;
+ }
 }

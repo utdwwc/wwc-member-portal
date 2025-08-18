@@ -1,219 +1,260 @@
 /* ============================================================================
-   USERSTABLE.CSS — STYLING GUIDE FOR DESIGNERS
-   ----------------------------------------------------------------------------
-   this stylesheet controls the layout and visual presentation of:
-   the Users Info Table in the admins page 
+   USERSTABLE.CSS — STYLING GUIDE FOR DESIGNERS
+   ----------------------------------------------------------------------------
+   This stylesheet controls the layout and visual presentation of:
+   The Users Info Table in the Admin page
 
-   ✅ u can totally modify:
-    - color values through CSS variables
-    - font sizes (maintaining REM units)
-    - spacing/padding values
-    - border radii and box shadows
-    - transition durations and easing
+   ✅ You can totally modify:
+    - Color values through CSS variables
+    - Font sizes (maintaining REM units)
+    - Spacing/padding values
+    - Border radii and box shadows
+    - Transition durations and easing
 
-   🚫 but pls do NOT:
-   - modify table structure or overflow properties
-   - change CSS variable names or remove them
-   - alter the search input's focus states
-   - modify media query breakpoints without testing
+   🚫 But please do NOT:
+   - Modify table structure or overflow properties
+   - Change CSS variable names or remove them
+   - Alter the search input's focus states
+   - Modify media query breakpoints without testing
 
-   contact me before making structural changes pls <3 ;p
-   thx for making it pretty guys 🥹💖
+   Contact me before making structural changes please <3 ;p
+   Thanks for making it pretty, guys 🥹💖
 ============================================================================ */
 
 /* ===== GLOBAL VARIABLES & CONTAINER ===== */
 .users-table-container {
-  --primary-color: #6c497c;
-  --primary-hover: #8e5fa3;
-  --info-color: #17a2b8;
-  --light-color: #f8f9fa;
-  --dark-color: #343a40;
-  --border-color: #dee2e6;
-  --text-color: #212529;
-  
-  /* 🚫 do not modify structural styles below */
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 1rem;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+ --primary-color: #90073c;
+ --primary-hover: #6c1236;
+ --info-color: #5a1135;
+ --light-color: #fef9fb;
+ --dark-color: #3c0b1f;
+ --border-color: #f2dce4;
+ --text-color: #3c0b1f;
+
+ /* 🚫 do not modify structural styles below */
+ width: 100%;
+ max-width: 1400px;
+ margin: 0 auto;
+ padding: 0 1rem;
+ font-family: 'Poppins', sans-serif;
 }
 
 /* ===== HEADER STYLING ===== */
 .users-table-container h2 {
-  color: var(--dark-color);
-  font-size: 1.75rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid var(--primary-color);
+ color: var(--dark-color);
+ font-size: 2rem;
+ font-weight: 700;
+ margin-bottom: 1.5rem;
+ padding-bottom: 0.75rem;
+ border-bottom: 3px solid var(--border-color);
+ text-transform: uppercase;
+ letter-spacing: 1px;
 }
 
 /* ===== SEARCH BAR ===== */
 .search-input {
-  max-width: 400px;
-  margin: 0 auto;                               /* 🚫 */
-  border-radius: 20px;
-  padding: 10px 20px;
-  border: 2px solid var(--primary-color);
+ max-width: 400px;
+ margin: 0 auto;
+ border-radius: 30px;
+ padding: 12px 24px;
+ border: 2px solid var(--border-color);
+ background-color: var(--light-color);
+ box-shadow: 0 4px 12px rgba(144, 7, 60, 0.05);
 }
 
 .search-input:focus {
-  border-color: var(--primary-hover);
-  box-shadow: 0 0 0 0.25rem rgba(108, 73, 124, 0.25);
+ border-color: var(--primary-color);
+ box-shadow: 0 0 0 4px #90073c26;
+ background-color: white;
 }
 
 /* ===== MAIN TABLE STYLING ===== */
 .users-table-container .admin-table {
-  width: 100%;                                  /* 🚫 */
-  margin: 1.5rem 0;
-  border-collapse: separate;                    /* 🚫 */
-  border-spacing: 0;                            /* 🚫 */
-  border-radius: 8px;
-  overflow: hidden;                             /* 🚫 */
-  box-shadow: 0 0 0 1px var(--border-color);
+ width: 100%;
+ margin: 2rem 0;
+ border-collapse: separate;
+ border-spacing: 0;
+ border-radius: 12px;
+ overflow: hidden;
+ box-shadow: 0 8px 24px rgba(144, 7, 60, 0.08);
 }
 
 /* Table Header Cells */
 .users-table-container .admin-table th {
-  background-color: var(--primary-color);
-  color: white;
-  padding: 1rem;
-  font-weight: 500;
-  text-align: left;                             /* 🚫 */
-  vertical-align: middle;                       /* 🚫 */
+ background-color: var(--primary-color);
+ color: white;
+ padding: 1.25rem 1rem;
+ font-weight: 600;
+ text-align: left;
+ vertical-align: middle;
+ text-transform: uppercase;
+ letter-spacing: 0.5px;
 }
 
 /* Table Body Cells */
 .users-table-container .admin-table td {
-  padding: 0.75rem;
-  vertical-align: middle;                       /* 🚫 */
-  border-top: 1px solid var(--border-color);
+ padding: 1rem;
+ vertical-align: middle;
+ border-top: 1px solid var(--border-color);
+ background-color: white;
+ color: var(--text-color);
+}
+
+/* Alternating Row Colors */
+.users-table-container .admin-table tr:nth-child(even) td {
+ background-color: #fef4f6;
 }
 
 /* Row Hover Effect */
 .users-table-container .admin-table tr:hover td {
-  background-color: rgba(108, 73, 124, 0.05);
+ background-color: #fadbe4;
+ transition: background-color 0.2s ease-in-out;
 }
 
 /* ===== ACTION BUTTON ===== */
 .users-table-container .btn-info {
-  background-color: var(--info-color);
-  border-color: var(--info-color);
-  color: white;
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  transition: all 0.2s ease;
+ background-color: var(--info-color);
+ color: white;
+ padding: 0.6rem 1.25rem;
+ font-size: 0.85rem;
+ font-weight: 600;
+ border: none;
+ border-radius: 20px;
+ cursor: pointer;
+ transition: all 0.3s ease;
 }
 
 .users-table-container .btn-info:hover {
-  background-color: #138496;
-  border-color: #117a8b;
-  transform: translateY(-1px);
+ background-color: #3c0b1f;
+ transform: translateY(-2px);
+ box-shadow: 0 4px 12px rgba(90, 17, 53, 0.3);
 }
 
 /* ===== EXPANDED USER DETAILS ===== */
 .users-table-container .user-details {
-  background-color: var(--light-color);
-  padding: 1.5rem;
-  border-radius: 0 0 8px 8px;
+ background-color: var(--light-color);
+ padding: 2rem;
+ border-radius: 0 0 12px 12px;
+ border-top: 1px dashed var(--border-color);
 }
 
 /* ===== NESTED DETAILS TABLE ===== */
 .users-table-container .details-table {
-  width: 100%;                                  /* 🚫 */
-  margin: 0;
-  background-color: white;
-  border-radius: 6px;
-  overflow: hidden;                             /* 🚫 */
-  box-shadow: 0 0 0 1px var(--border-color);
+ width: 100%;
+ margin: 0;
+ background-color: white;
+ border-radius: 8px;
+ overflow: hidden;
+ box-shadow: 0 4px 12px rgba(144, 7, 60, 0.05);
+}
+
+/* Table Body Cells */
+.users-table-container .details-table td {
+ padding: 1rem;
+ border-top: 1px solid var(--border-color);
+}
+
+.users-table-container .details-table tr:first-child td {
+ border-top: none;
 }
 
 /* ===== EMAIL LINK STYLING ===== */
 .users-table-container a[href^="mailto:"] {
-  color: var(--primary-color);
-  text-decoration: none;
-  transition: color 0.2s;
+ color: var(--primary-color);
+ text-decoration: none;
+ font-weight: 500;
+ transition: color 0.2s;
 }
 
 .users-table-container a[href^="mailto:"]:hover {
-  color: var(--primary-hover);
-  text-decoration: underline;
+ color: var(--primary-hover);
+ text-decoration: underline;
 }
 
 /* ===== LIST STYLING IN DETAILS ===== */
 .users-table-container .user-details ul {
-  padding-left: 1.25rem;
-  margin: 0.5rem 0;
+ padding-left: 1.5rem;
+ margin: 0.75rem 0;
 }
 
 .users-table-container .user-details li {
-  margin-bottom: 0.25rem;
+ margin-bottom: 0.5rem;
 }
 
 /* ===== PAGINATION STYLING ===== */
 .users-table-container .pagination {
-  margin: 1.5rem 0;
-  justify-content: center;                          /* 🚫 */
+ margin: 2rem 0;
+ justify-content: center;
 }
 
 .users-table-container .page-item.active .page-link {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
+ background-color: var(--primary-color);
+ border-color: var(--primary-color);
+ box-shadow: 0 2px 8px rgba(144, 7, 60, 0.2);
 }
 
 .users-table-container .page-link {
-  color: var(--primary-color);
-  border: 1px solid var(--border-color);
-  margin: 0 0.25rem;
-  border-radius: 4px;
+ color: var(--primary-color);
+ border: 1px solid var(--border-color);
+ margin: 0 0.25rem;
+ border-radius: 8px;
+ padding: 0.6rem 1rem;
+ font-weight: 600;
+ transition: all 0.3s;
+}
+
+.users-table-container .page-link:hover {
+ background-color: #fef4f6;
+ border-color: var(--primary-hover);
 }
 
 /* ===== MONOSPACE TEXT FOR IDs ===== */
 .users-table-container .text-monospace {
-  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 0.9em;
+ font-family: 'Courier New', monospace;
+ font-size: 0.9em;
+ color: #8d6274;
 }
 
 /* ===== RESPONSIVE ADJUSTMENTS ===== */
 /* Tablet View (992px and below) */
 @media (max-width: 992px) {
-  .users-table-container .admin-table {
-    display: block;                             /* 🚫 */
-    overflow-x: auto;                           /* 🚫 */
-  }
+ .users-table-container .admin-table {
+ display: block;
+ overflow-x: auto;
+ white-space: nowrap;
+ }
 }
 
 /* Mobile View (768px and below) */
 @media (max-width: 768px) {
-  .users-table-container {
-    padding: 0 0.5rem;
-  }
-  
-  .users-table-container h2 {
-    font-size: 1.5rem;
-  }
-  
-  .users-table-container .admin-table th,
-  .users-table-container .admin-table td {
-    padding: 0.6rem;
-    font-size: 0.9rem;
-  }
-  
-  .users-table-container .user-details {
-    padding: 1rem;
-  }
-  
-  .users-table-container .details-table td {
-    padding: 0.5rem;
-    font-size: 0.85rem;
-  }
+.users-table-container {
+ padding: 0 0.5rem;
+ }
+ 
+ .users-table-container h2 {
+ font-size: 1.75rem;
+ }
+ 
+ .users-table-container .admin-table th,
+ .users-table-container .admin-table td {
+ padding: 0.8rem;
+ font-size: 0.9rem;
+ }
+ .users-table-container .user-details {
+ padding: 1.5rem;
+ }
+ 
+ .users-table-container .details-table td {
+ padding: 0.75rem;
+ font-size: 0.85rem;
+ }
 }
 
 /* Small Mobile View (576px and below) */
 @media (max-width: 576px) {
-  .users-table-container .btn-info {
-    display: block;                         /* 🚫 */
-    width: 100%;                            /* 🚫 */
-  }
+ .users-table-container .btn-info {
+ display: block;
+ width: 100%;
+ margin-bottom: 0.5rem;
+ }
 }
