@@ -1,132 +1,142 @@
 /* ============================================================================
-   MODAL.CSS — STYLING GUIDE FOR DESIGNERS
-   ----------------------------------------------------------------------------
-   this stylesheet controls the layout and visual presentation of:
-   the RSVP Confirmation pop-up Modal
+   MODAL.CSS — STYLING GUIDE FOR DESIGNERS
+   ----------------------------------------------------------------------------
+   This stylesheet controls the layout and visual presentation of:
+   The RSVP Confirmation pop-up Modal
 
-   ✅ u can totally:
-   - change modal background colors (current: #6c497c)
-   - adjust shadows, rounded corners, and animations
-   - modify button styles (except Google blue #4285f4)
-   - edit typography and text spacing
-   - add hover/active states for buttons
+   ✅ You can totally:
+   - Change modal background colors
+   - Adjust shadows, rounded corners, and animations
+   - Modify button styles (except Google blue #4285f4)
+   - Edit typography and text spacing
+   - Add hover/active states for buttons
 
-   🚫 but pls do NOT:
-   - remove the fixed positioning or z-index
-   - change the modal's flex container structure
-   - alter the Google-branded blue button color
-   - modify the 480px mobile breakpoint
+   🚫 But please do NOT:
+   - Remove the fixed positioning or z-index
+   - Change the modal's flex container structure
+   - Alter the Google-branded blue button color
+   - Modify the 480px mobile breakpoint
 
-   contact me before making structural changes pls <3 ;p
-   thx for making it pretty guys 🥹💖
+   Contact me before making structural changes please <3 ;p
+   Thanks for making it pretty, guys 🥹💖
 ============================================================================ */
-
 
 /* ===== MODAL OVERLAY ===== */
 .modal-overlay {
-  position: fixed;           /* 🚫 -> must cover entire viewport */
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #6c497c;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;            /* 🚫 -> must sit above all content */
+ position: fixed;
+ top: 0;
+ left: 0;
+ right: 0;
+ bottom: 0;
+ background: linear-gradient(to bottom, #fadbe4, #fef9fb);
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ z-index: 1000;
 }
 
 /* ===== MODAL CONTENT - SQUARE FORMAT ===== */
 .modal-content {
-  background-color: #6c497c;
-  padding: 2.5rem;
-  border-radius: 12px;
-  text-align: center;
-  width: 380px;
-  min-height: 380px;        /* 🚫 -> maintain square proportions */
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+ background-color: #fef9fb;
+ padding: 2.5rem;
+ border-radius: 12px;
+ border: 2px solid #90073c59;
+ text-align: center;
+ width: 380px;
+ min-height: 380px;
+ /* box-shadow: 0 8px 32px rgba(144, 7, 60, 0.2); */
+ display: flex;
+ flex-direction: column;
+ justify-content: space-between;
+ animation: modalFadeIn 0.5s ease-out;
 }
 
 /* ===== TEXT STYLES ===== */
 .modal-content h2 {
-  color: #ffffff;
-  margin-bottom: 1.5rem;
-  font-size: 1.8rem;       /* 🚫 -> relative to button text */
+ color: #90073c;
+ margin-bottom: 1.5rem;
+ font-size: 1.8rem;
+ font-family: 'Georgia', serif;
 }
 
 .modal-content p {
-  color: #ffffff; /* slightly lighter text color */
-  font-size: 1.1rem;
-  line-height: 1.6;
-  margin-bottom: 2rem;
+ color: #5a1135;
+ font-size: 1.1rem;
+ line-height: 1.6;
+ margin-bottom: 2rem;
+ font-family: 'Helvetica Neue', sans-serif;
 }
 
 /* ===== BUTTON CONTAINER ===== */
 .modal-content .button-container {
-  display: flex;
-  justify-content: center;
-  gap: 1rem; /* space between buttons */
+ display: flex;
+ justify-content: center;
+ gap: 1rem;
 }
 
 /* ===== BUTTON STYLES ===== */
 .modal-button {
-  padding: 0.8rem 1.8rem;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
+ padding: 0.8rem 1.8rem;
+ border: none;
+ border-radius: 20px;
+ font-size: 1rem;
+ font-weight: 700;
+ cursor: pointer;
+ transition: all 0.3s ease;
+ text-transform: uppercase;
+ letter-spacing: 0.5px;
 }
 
 .modal-button-primary {
-  background-color: #4285f4; /* 🚫 -> Google brand color */
-  color: white;
+ background-color: #90073c;
+ color: white;
+ box-shadow: 0 4px 12px rgba(144, 7, 60, 0.3);
 }
 
 .modal-button-primary:hover {
-  background-color: #3367d6;
-  transform: translateY(-1px);
+ background-color: #5a1135;
+ transform: translateY(-2px);
+ box-shadow: 0 6px 16px rgba(144, 7, 60, 0.4);
+ 
 }
 
 .modal-button-secondary {
-  background-color: #f1f3f4; /* light gray */
-  color: #3c4043;
+ background-color: #90073c;
+ color: white;
+ box-shadow: 0 4px 12px rgba(144, 7, 60, 0.3);
 }
 
 .modal-button-secondary:hover {
-  background-color: #dadce0;
-  transform: translateY(-1px);
+ background-color: #5a1135;
+ transform: translateY(-2px);
+ box-shadow: 0 6px 16px rgba(144, 7, 60, 0.4);
 }
 
 /* ===== ANIMATIONS ===== */
 @keyframes modalFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+ from {
+  opacity: 0;
+  transform: translateY(-20px);
+ }
+ to {
+  opacity: 1;
+ transform: translateY(0);
+ }
 }
 
 /* ===== RESPONSIVE ADJUSTMENTS ===== */
-@media (max-width: 480px) {  /* 🚫 -> breakpoint locked */
-  .modal-content {
-    width: 90%;             /* 🚫 -> needs side margins */
-    min-height: 340px;
-    padding: 1.8rem;
-  }
-  
-  .modal-content h2 {
-    font-size: 1.5rem;
-  }
-  
-  .modal-button {
-    padding: 0.7rem 1.5rem;
-  }
+@media (max-width: 480px) {
+ .modal-content {
+ width: 90%;
+ min-height: 340px;
+ padding: 1.8rem;
+}
+
+ .modal-content h2 {
+ font-size: 1.5rem;
+}
+
+ .modal-button {
+ padding: 0.7rem 1.5rem;
+ }
 }
