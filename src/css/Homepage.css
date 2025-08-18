@@ -232,7 +232,7 @@
 
   /* Events Section */
 .section--events {
-    background: #f0f1f2;
+    background: linear-gradient(180deg, #f9f5f6, #fefefe);
     padding: 12rem 2rem 6rem; /* Consolidated padding */
     position: relative; /* Needed for proper stacking */
     z-index: 1; /* Ensures section stays above other elements */
@@ -525,7 +525,7 @@
 .section--team {
     padding: 4rem 2rem;
     /* background: linear-gradient(to bottom, white, #fcdae2, white); */
-    background: linear-gradient(to bottom, #fcdfdd, #fff5f5,#fcdfdd);
+    background: linear-gradient(to bottom, #fcdfdd, #fff5f5,#fde6e5);
     /* background: #f0f1f2; */
 }
 
@@ -631,7 +631,7 @@
     width: 100%; /* Or a fixed width like 150px */
     height: 100%; /* Or a fixed height like 150px */
     object-fit: cover; /* Ensures the image fills the container, cropping excess */
-    object-position:0px -80px; /* This is the key! Positions the image from the top. */
+    object-position:0px -70px; /* This is the key! Positions the image from the top. */
     /* border-radius: 50%; Still makes it circular or rounded */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
