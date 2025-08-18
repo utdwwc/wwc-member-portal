@@ -23,218 +23,182 @@
     thx for making it pretty guys 🥹💖
 ============================================================================ */
 
-/* 🎨 Alternating Background Styles */
+/* ===== CARD STYLES ===== */
+.event-card-container {
+  box-sizing: border-box;
+  width: 100%;
+  aspect-ratio: 4 / 5;   /* keep a poster-like shape */
+  margin: 40px auto 0;
+  perspective: 1000px;
+  cursor: pointer;
+  border: 3px dashed #000000;
+  border-radius: 25px;
+  position: relative;
+  background: transparent;
+}
+
+/* ===== COLOR VARIANTS ===== */
 .event-card--blue {
-  background: linear-gradient(to bottom, #cee8fd, #f5fcff); /* light blue gradient */
+  background: linear-gradient(to bottom, #cee8fd, #f5fcff);
   border-color: #000000;
-  /* box-shadow: 0 8px 20px rgba(173, 216, 230, 0.3); */
 }
 
 .event-card--purple {
-  background: linear-gradient(to bottom, #f6e4fe, #f6fcfb); /* soft purple gradient */
+  background: linear-gradient(to bottom, #f6e4fe, #f6fcfb);
   border-color: #65068737;
-  /* box-shadow: 0 8px 20px #ecc4fb; */
 }
 
 .event-card--pink {
-  background: linear-gradient(to bottom, #fadbe4, #fef9fb); /* gentle pink gradient */
+  background: linear-gradient(to bottom, #fadbe4, #fef9fb);
   border-color: #90073c59;
-  /* box-shadow: 0 8px 20px rgba(255, 192, 203, 0.3); */
 }
 
-
-/* Event Card Container: The Heart of the Cuteness! (Now holds image AND text) */
-.event-card-container {
-    /* aspect-ratio: 4 / 5; */ /* Removed this from here, let grid handle height for consistency, or use min-height */
-    width: 100%;
-    max-width: 380px; /* A slightly cozier size for individual cards */
-    margin: 0 auto; /* Centers individual cards within their grid cell */
-    padding-top: 20px;
-    /* background: linear-gradient(to bottom, #faeded, #f8fdff); Pastel pink and soft lavender */
-    /* background: #a5d6fc2f; */
-    border: 3px dashed #000000; /* Cute dashed border in a coordinating pink */
-    border-radius: 25px; /* Super soft, rounded corners for a gentle look */
-    overflow: hidden; /* Keeps everything tidy inside */
-
-    display: flex;
-    flex-direction: column; /* Stack image on top of text details */
-    /* justify-content: center; */ /* No longer needed here as flex-direction is column */
-    /* align-items: center; */ /* No longer needed here as flex-direction is column */
-
-    /* box-shadow: 0 8px 20px rgba(255, 180, 200, 0.184); A delicate, rosy shadow that makes it pop */
-    transition: all 0.3s ease-in-out; /* Smooth transitions for a playful feel */
-    animation: bounceIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; /* A gentle, bouncy entrance */
-    position: relative; /* For cute overlays */
-
-    /* CRUCIAL for consistent height: Set a minimum height for all cards */
-    min-height: 550px; /* Adjust this value as needed to fit your content comfortably */
-    margin-top: 40px;
+/* ===== FLIP MECHANICS ===== */
+.event-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  border-radius: 22px;
 }
 
-/* Hover Effect: A Little Wiggle! */
-.event-card-container:hover {
-    transform: translateY(-1px) scale(1.001); /* Wiggles up just a tiny bit */
-    box-shadow: 0 12px 25px rgba(255, 105, 180, 0.105); /* A slightly more vibrant shadow on hover */
-    border-color: #ffffff; /* Border gets a touch brighter */
+.event-card-container.flipped .event-card-inner {
+  transform: rotateY(180deg);
 }
 
-/* Optional: Sparkle overlay for extra magic! (Applies to the whole card) */
-.event-card-container::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at top left, rgba(255,255,255,0.1) 0%, transparent 40%),
-                radial-gradient(circle at bottom right, rgba(255,255,255,0.1) 0%, transparent 40%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none; /* Make sure it doesn't interfere with clicks */
-    border-radius: 25px; /* Match container border-radius */
+.event-card-front,
+.event-card-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 22px;
+  overflow: hidden; /* Keep rounded corners */
 }
 
-.event-card-container:hover::after {
-    opacity: 1; /* Shines subtly on hover */
+/* ===== FRONT SIDE (POSTER) ===== */
+.event-card-front {
+  background: transparent;
+  aspect-ratio: 4/5;
+  padding: 20px;
 }
 
-
-/* Image Wrapper: Picture Perfect */
-.event-poster-wrapper {
-    width: 100%;
-    aspect-ratio: 4 / 3; /* Aspect ratio for the image area (e.g., 4:3 for a landscape image) */
-    overflow: hidden; /* Ensures image respects the border-radius of the wrapper */
-    border-bottom: 2px solid rgba(255, 255, 255, 0.7); /* A subtle separator below the image */
+.event-poster-container {
+  width: 100%;
+  aspect-ratio: 4/5; /*controls dimensions of poster container*/ 
+  max-width: 400px;
 }
 
 .event-poster {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Ensures image fills the wrapper without distortion */
-    /* border-top-left-radius: 22px; */ /* Optional: round top corners only if you like */
-    /* border-top-right-radius: 22px; */
-    filter: saturate(1.1) brightness(1.05); /* Makes colors a little more vivid */
-    transition: filter 0.3s ease;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-.event-card-container:hover .event-poster { /* Note: This targets the image when the *card* is hovered */
-    filter: saturate(1.2) brightness(1.1); /* Even more pop on hover! */
+/* ===== BACK SIDE (DETAILS) ===== */
+.event-card-back {
+  background: inherit;
+  transform: rotateY(180deg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Event Details Section: All the Text Content */
 .event-details {
-    padding: 10px; /* Padding inside the text box */
-    flex-grow: 1; /* Allows this section to fill available vertical space */
-    display: flex;
-    flex-direction: column; /* Stack text elements vertically */
-    justify-content: space-between; /* Pushes button/message to the bottom */
-    font-family: 'Quicksand', sans-serif; /* Friendly font for general text */
-    color: #0a0000; /* Soft dark text color */
+  font-size: 1.1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
+/* ===== TYPOGRAPHY ===== */
 .event-title {
-    font-family: 'Poppins', sans-serif; /* A slightly bolder font for titles */
-    font-size: 1.5rem;
-    color: #8B5FBF; /* Rich purple for titles */
-    text-align: center;
-    margin-bottom: 15px;
-    padding-bottom: 5px;
-    border-bottom: 1px dashed rgb(250, 183, 225); /* Subtle separator */
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.5rem;
+  color: #8B5FBF;
+  text-align: center;
+  margin-bottom: 15px;
+  padding-bottom: 5px;
+  border-bottom: 1px dashed rgb(250, 183, 225);
 }
 
 .event-info {
-    font-size: 0.95rem;
-    margin-bottom: 8px;
-    line-height: 1.4;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+  line-height: 1.4;
 }
 
 .event-info strong {
-    color: #184c74; /* A slightly darker purple for labels */
+  color: #184c74;
 }
 
 .event-description {
-    font-size: 0.9rem;
-    line-height: 1.6;
-    color: #000000;
-    margin-top: 10px;
-    margin-bottom: 20px; /* Space before button or message */
-    flex-grow: 1; /* Allows description to take up more space within the details section */
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #000000;
+  margin: 10px 0 20px;
+  flex-grow: 1;
 }
 
-/* Cute Message for Passed Events: Sweetly Sentimental */
-.event-passed-message {
-    color: #E76A6A; /* Warm reddish-pink */
-    font-weight: bold;
-    font-style: italic;
-    font-family: 'Quicksand', sans-serif;
-    font-size: 1.05rem;
-    text-align: center;
-    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.8);
-    opacity: 0.9;
-    margin-top: auto; /* Pushes to the bottom of the flex container */
-    padding-top: 10px;
-    border-top: 1px dashed rgba(255, 105, 180, 0.3);
-}
-
-/* Apply Button Styling */
+/* ===== BUTTONS & MESSAGES ===== */
 .event-button {
-    background-color: #fed5dc; /* A vibrant purple */
-    color: rgb(75, 5, 5);
-    border:#e30830;
-    border-radius: 20px;
-    padding: 10px 20px;
-    padding-left:90px;
-    padding-right:90px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    margin-top: 20px; /* Space above the button */
-    align-self: center; /* Centers the button horizontally within the flex container */
-    box-shadow: 0 2px 15px rgba(213, 108, 176, 0.3);
+  background-color: #fed5dc;
+  color: rgb(75, 5, 5);
+  border: none;
+  border-radius: 20px;
+  padding: 10px 90px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+  align-self: center;
+  box-shadow: 0 2px 15px rgba(213, 108, 176, 0.3);
 }
 
 .event-button:hover {
-    background-color: #184c74e9; /* Darker purple on hover */
-    transform: translateY(-1px); /* Slight lift */
-    box-shadow: 0 2px 20px rgba(186, 164, 207, 0.4);
-    color: #fffefe;
-    border: 2px solid #8c564e5a; 
+  background-color: #184c74e9;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 20px rgba(186, 164, 207, 0.4);
+  color: #fffefe;
 }
-
-/* Keyframe Animation: A Cute Bounce! */
-@keyframes bounceIn {
-    0% {
-        opacity: 0;
-        transform: scale(0.5) translateY(20px);
-    }
-    60% {
-        opacity: 1;
-        transform: scale(1.05) translateY(-5px); /* Overshoot slightly for the bounce */
-    }
-    100% {
-        transform: scale(1) translateY(0);
-    }
-}
-
-/* .event-poster-container {
-  aspect-ratio: 4 / 5;
-  width: 100%;
-  max-width: 400px;
-  margin: 0 auto;
-  background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
-  overflow: hidden;          /* 🚫 -> prevents image bleed */
-  /* display: flex;             🚫 -> required for centering */
-  /* justify-content: center; */
-  /* align-items: center; */
-/* } */
-
-/* .event-poster { */
-  /* width: 100%;              🚫 -> responsive width */
-  /* height: 100%;             🚫 -> fills container */
-  /* object-fit: cover;         🚫 -> ensures proper cropping */
-/* }
 
 .event-passed-message {
-  color: rgb(231, 106, 106);
-}  */
+  color: #E76A6A;
+  font-weight: bold;
+  font-style: italic;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(255, 105, 180, 0.3);
+}
+
+/* ===== SPECIAL EFFECTS ===== */
+.event-card-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at top left, rgba(255,255,255,0.1) 0%, transparent 40%),
+              radial-gradient(circle at bottom right, rgba(255,255,255,0.1) 0%, transparent 40%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  border-radius: 22px;
+}
+
+.event-card-container:hover::after {
+  opacity: 1;
+}
+
+@keyframes bounceIn {
+  0% { opacity: 0; transform: scale(0.5) translateY(20px); }
+  60% { opacity: 1; transform: scale(1.05) translateY(-5px); }
+  100% { transform: scale(1) translateY(0); }
+}

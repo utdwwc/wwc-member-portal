@@ -105,20 +105,6 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-
-    /*
-    color: #184c74;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    border: solid black;
-    cursor: pointer;
-    font-weight: 500;
-    transform: translateY(-1px);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background-color: #ff6593;
-    */
   }
   
   .navbar__links .navbar__login-button:hover {
@@ -128,24 +114,7 @@
     transform: translateY(-3px) scale(1);
     box-shadow: 0 8px 20px rgba(255, 180, 200, 0.3);
     text-decoration: none;
-
-    /*
-    color: #ff6593;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    */
   }
-  
-  /* Google icon
-  .navbar__login-button::before {
-    content: '';
-    display: inline-block;
-    width: 18px;
-    height: 18px;
-    /* background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMTcuNiA5LjJsLS4xLTEuOEg5djMuNGg0LjhDMTMuNiAxMiAxMyAxMyAxMiAxMy42djIuMmgzYTguOCA4LjggMCAwIDAgMi42LTYuNnoiIGZpbGw9IiM0Mjg1RjQiIGZpbGwtcnVsZT0ibm9uemVybyIvPjxwYXRoIGQ9Ik05IDE4YzIuNCAwIDQuNS0uOCA2LTIuMmwtMy0yLjJhNS40IDUuNCAwIDAgMS04LTIuOUgxVjEzYTkgOSAwIDAgMCA4IDV6IiBmaWxsPSIjMzRBODUzIiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNNCAxMC43YTUuNCA1LjQgMCAwIDEgMC0zLjRWNUgxYTkgOSAwIDAgMCAwIDhsMy0yLjN6IiBmaWxsPSIjRkJCQzA1IiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNOSAzLjZjMS4zIDAgMi41LjQgMy40IDEuM0wxNSAyLjNBOSA5IDAgMCAwIDEgNWwzIDIuNGE1LjQgNS40IDAgMCAxIDUtMy43eiIgZmlsbD0iI0VBNDMzNSIgZmlsbC1ydWxlPSJub256ZXJvIi8+PHBhdGggZD0iTTAgMGgxOHYxOEgweiIvPjwvZz48L3N2Zz4='); 
-    background-size: contain;
-  }
-   */
 
   /* Responsive adjustments */
   @media (max-width: 768px) {
@@ -163,7 +132,7 @@
   /* ===== SECTIONS ===== */
   .section {
     padding: 4rem 2rem;
-    min-height: 100vh;        /* 🚫 -> full-viewport sections */
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -192,7 +161,6 @@
     text-align: center;
     margin-top: -160px;
     position: relative;
-    /* background: #ffe5ea; */
     height: 50vh;
     border-radius: 0 0 50% 50% / 0 0 100px 100px;
     padding: 2rem;
@@ -230,11 +198,9 @@
     background: rgba(255, 255, 255, 0);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-    /* box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); */
     display: flex;
     justify-content: center;
     align-items: center; 
-    /* margin-bottom: 50px; */
   }
 
   .header__title {
@@ -267,12 +233,10 @@
   /* Events Section */
 .section--events {
     background: #f0f1f2;
-    padding: 4rem 2rem; /* Keep existing padding */
-    /* margin-top: -20px; Keep existing margin */
-    /* Add padding bottom to give space for the View All Events button */
-    padding-top: 12rem;
-    padding-bottom: 6rem;
-    margin-top: -100px; 
+    padding: 12rem 2rem 6rem; /* Consolidated padding */
+    position: relative; /* Needed for proper stacking */
+    z-index: 1; /* Ensures section stays above other elements */
+    min-height: 100vh; /* Ensures minimum full viewport height */
 }
 
 .section-title { /* Assuming this class exists for the "Events" title */  
@@ -284,42 +248,24 @@
   color: #2d2d2d;
 }
 
-  /* .section-title {
-    font-family: 'Raleway', sans-serif;
-    font-weight: 500;
-    text-align: center;
-    font-size: 3rem;
-    margin-bottom: 40px;
-    color: #2d2d2d;
-  } */
-
-  /* Grid layout for events */
-.events-grid {
-    display: grid;
-    /* Responsive columns: at least 300px wide, fills space */
-    grid-template-columns: repeat( auto-fit, minmax(300px, 1fr)); /* Increased minmax from 250px to 300px for larger cards */
-    gap: 30px; /* Slightly increased gap for better spacing */
-    width: 100%;
-    margin: 0 auto;
-    max-width: 1300px; /* Adjust this max-width for the entire grid of cards */
-    padding: 0 2rem; /* Keep existing padding */
-
-    align-items: stretch; /* CRUCIAL: Ensures all cards in the grid stretch to the same height */
-    justify-content: center; /* Centers the grid items if they don't fill the entire row */
+.events-section {
+  width: 100%;
 }
 
-  /* Grid layout for events */
-  /* .events-grid {
-    display: grid;            /* 🚫 -> core layout system 
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /*made it 3 instead of 3
-    gap: 25px;
+/* Grid layout for events */
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat( auto-fit, minmax(300px, 1fr)); /* Increased minmax from 250px to 300px for larger cards */
+    gap: 50px;
     width: 100%;
+    max-width: 1300px;
     margin: 0 auto;
-    /*max-width: 950px;  /*changed this from 1400px to 950px
     padding: 0 2rem;
-  } */
+    align-items: stretch;
+    justify-content: center;
+}
 
-  /* View All button container (no changes here, just for context) */
+/* View All button container (no changes here, just for context) */
 .view-all-container {
     text-align: center;
     margin-top: 50px;
@@ -613,15 +559,34 @@
     width: 100%;
     margin: 0 auto;
     padding: 0 10rem;
+}
 
-  /*
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
-    width: 100%;
-    margin: 0 auto;
-    padding: 0 10rem;
-    */
+/* For smaller screens, you can add media queries to adjust the layout */
+@media (max-width: 1600px) {
+    .team-grid-container {
+        grid-template-columns: repeat(4, minmax(200px, 1fr));
+        padding: 0 5rem;
+    }
+}
+
+@media (max-width: 1200px) {
+    .team-grid-container {
+        grid-template-columns: repeat(3, minmax(200px, 1fr));
+        padding: 0 3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .team-grid-container {
+        grid-template-columns: repeat(2, minmax(200px, 1fr));
+        padding: 0 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .team-grid-container {
+        grid-template-columns: 1fr;
+    }
 }
 
 .team-card {
@@ -727,8 +692,8 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .team-grid-container {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        padding: 0 2rem;
+        grid-template-columns: repeat(2, minmax(200px, 1fr));
+        padding: 0 1rem;
     }
     
     .team-image-container {
