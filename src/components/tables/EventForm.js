@@ -93,7 +93,7 @@ const EventForm = ({ onEventCreated }) => {
           onChange={handleEventChange} 
           required 
         />
-        <input 
+        <textarea 
           type="text" 
           name="description" 
           placeholder="Event Description" 
