@@ -23,11 +23,22 @@
 max-width: 900px;
  margin: 0 auto;
  padding: 2rem;
- background: #fecad7; /* 🌸 A lovely pop of soft pink! */
+ background: #fceaef; /* 🌸 A lovely pop of soft pink! */
  border-radius: 1.5rem; /* 💖 Round those corners for extra cuteness! */
  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* ✨ A subtle, pretty shadow */
  font-family: 'Quicksand', sans-serif;
  /* align-items: center; */
+}
+
+.profile-buttons{
+  align-items: center;
+  justify-items: center;
+  border: #fff dotted;
+  background-color: #fff;
+  padding: 10px;
+  padding-top: 0px;
+  padding-bottom: 20px;
+  border-radius: 20px;
 }
 
 /* 💌 THE DETAILS: INDIVIDUAL CARDS */

@@ -50,6 +50,20 @@ const Profile = () => {
   return (
     <div className="profile-details space-y-4">
 
+      <div className='profile-buttons'>
+        <button 
+          className='event-button event-button--primary'
+          onClick={() => navigate('/regularEvents', { state: { user } })}>
+            Back to Events
+        </button>
+
+        <button
+          className='event-button event-button--primary'
+          onClick={() => navigate('/information', { state: { user } })}>
+            Update Your Profile
+        </button>
+      </div>
+
       {/* profile header */}
       <div className="profile-header mb-6">
         <h1 className="text-3xl font-bold text-gray-800">{user.name}'s Profile</h1>
@@ -109,19 +123,7 @@ const Profile = () => {
         )}
    </div>
   
-  <div>
-    <button 
-      className='event-button event-button--primary'
-      onClick={() => navigate('/regularEvents', { state: { user } })}>
-        Back to Events
-    </button>
-
-    <button
-      className='event-button event-button--primary'
-      onClick={() => navigate('/information', { state: { user } })}>
-        Update Your Profile
-    </button>
-  </div>
+  
 
 </div>
   );

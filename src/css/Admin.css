@@ -1,265 +1,322 @@
 /* ============================================================================
-   ADMIN.CSS — STYLING GUIDE FOR DESIGNERS
-   ----------------------------------------------------------------------------
-   this stylesheet controls the layout and visual presentation of:
-   the Admin dashboard (including tables, forms, user/RSVP data displays)
+   ADMIN.CSS — STYLING GUIDE FOR DESIGNERS
+   ----------------------------------------------------------------------------
+   This stylesheet controls the layout and visual presentation of:
+   The Admin dashboard (including tables, forms, user/RSVP data displays)
 
-   ✅ u can totally:
-   - change colors
-   - adjust typography
-   - modify shadows, rounded corners, hover effects
-   - tweak form input styles and button animations
+   ✅ You can totally:
+   - Change colors
+   - Adjust typography
+   - Modify shadows, rounded corners, hover effects
+   - Tweak form input styles and button animations
 
-   🚫 but pls do NOT:
-   - alter table structure (critical for data display)
-   - change form input types/labels (breaks React logic)
-   - modify mobile breakpoint (768px)
-   - remove any z-index or position properties
+   🚫 But please do NOT:
+   - Alter table structure (critical for data display)
+   - Change form input types/labels (breaks React logic)
+   - Modify mobile breakpoint (768px)
+   - Remove any z-index or position properties
 
-   contact me before making structural changes pls <3 ;p
-   thx for making it pretty guys 🥹💖
+   Contact me before making structural changes please <3 ;p
+   Thanks for making it pretty, guys 🥹💖
 ============================================================================ */
 
 
 /* ===== CORE DASHBOARD LAYOUT ===== */
 .admin-dashboard {
-  padding: 2rem;
-  max-width: 1400px;          /* 🚫 -> content width constraint */
-  margin: 0 auto;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* ✅ try other fonts! */
+ padding: 3rem 2rem;
+ max-width: 1400px;
+ margin: 0 auto;
+ font-family: 'Poppins', sans-serif;
+ background: linear-gradient(to bottom, #fef9fb, #fadbe4);
+ color: #3c0b1f;
 }
 
 
 /* ===== SECTION HEADERS ===== */
 .admin-dashboard h1 {
-  color: #2c3e50;
-  margin-bottom: 1.5rem;
-  border-bottom: 2px solid #6c497c;
-  padding-bottom: 0.5rem;
+ color: #90073c;
+ margin-bottom: 2rem;
+ border-bottom: 3px solid #fecde0;
+ padding-bottom: 0.75rem;
+ font-weight: 700;
+ text-transform: uppercase;
+ letter-spacing: 1px;
 }
 
 .admin-dashboard h2 {
-  color: #34495e;
-  margin: 2rem 0 1rem;
-  font-size: 1.5rem;         /* 🚫 -> relative to table text */
+ color: #6c1236;
+ margin: 3rem 0 1.25rem;
+ font-size: 1.8rem;
+ font-weight: 600;
 }
 
 .event-form-wrapper {
-  margin-bottom: 5rem;
+ margin-bottom: 5rem;
 }
 
 .officer-form-wrapper {
-  margin-bottom: 2rem;
+ margin-bottom: 2rem;
 }
-
 
 
 /* ===== ERROR MESSAGES ===== */
 .admin-error {
-  color: #e74c3c;
-  background-color: #fadbd8;
-  padding: 0.75rem;
-  border-radius: 4px;
-  border: 1px solid #f5b7b1;
+ color: #90073c;
+ background-color: #fef4f6;
+ padding: 0.75rem;
+ border-radius: 8px;
+ border: 1px solid #90073c59;
+ font-weight: 500;
 }
 
 
 /* ===== EVENT FORM ===== */
 .event-form-container {
-  width: 100%;
-  max-width: 1200px;  /* Adjust based on your layout needs */
-  margin: 0 auto;
-  padding: 0 1rem;
+ width: 100%;
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 0 1rem;
 }
 
 .event-form {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  background: #f8f9fa;
-  border-radius: 12px;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  width: 100%;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+ gap: 2rem;
+ box-shadow: 0 12px 24px rgba(144, 7, 60, 0.05);
+ background: #ffffff;
+ border-radius: 16px;
+ padding: 3rem;
+ margin-bottom: 2rem;
+ border: 1px solid #f2dce4;
 }
 
 /* Form header */
 .event-form h2 {
-  grid-column: 1 / -1;
-  margin: 0 0 1rem 0;
-  font-size: 1.75rem;
-  color: #333;
+ grid-column: 1 / -1;
+ margin: 0 0 1.5rem 0;
+ font-size: 2rem;
+ color: #3c0b1f;
 }
 
 /* Full-width form groups */
 .event-form .form-group-full {
-  grid-column: 1 / -1;
+ grid-column: 1 / -1;
 }
 
 /* Standard form groups */
 .event-form .form-group {
-  display: flex;
-  flex-direction: column;
-  min-width: 0; /* Prevent grid blowout */
+ display: flex;
+ flex-direction: column;
+ min-width: 0;
 }
 
 .event-form label {
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-  color: #444;
-  font-size: 0.95rem;
+ font-weight: 600;
+ margin-bottom: 0.75rem;
+ color: #6c1236;
+ font-size: 1rem;
 }
 
 .event-form input,
 .event-form textarea,
 .event-form select {
-  width: 100%;
-  padding: 0.875rem;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 1rem;
-  transition: border-color 0.2s;
-  background-color: white;
+ width: 100%;
+ padding: 1rem;
+ border: 1px solid #fecde0;
+ border-radius: 10px;
+ font-size: 1rem;
+ transition: all 0.3s ease;
+ background-color: #fef9fb;
+ color: #3c0b1f;
 }
 
 .event-form input:focus,
 .event-form textarea:focus {
-  outline: none;
-  border-color: #8e5fa3;
-  box-shadow: 0 0 0 2px rgba(142, 95, 163, 0.2);
+ outline: none;
+ border-color: #90073c;
+ box-shadow: 0 0 0 4px #90073c26;
+ background-color: #fff;
 }
 
 /* Checkbox specific styles */
 .event-form input[type="checkbox"] {
-  width: auto;
-  margin-right: 0.75rem;
+ width: auto;
+ margin-right: 0.75rem;
+ accent-color: #90073c;
 }
 
 .event-form .checkbox-group {
-  display: flex;
-  align-items: center;
-  padding: 0.5rem 0;
+ display: flex;
+ align-items: center;
+ padding: 0.5rem 0;
 }
 
 /* File upload styling */
 .event-form .file-upload-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+ display: flex;
+ flex-direction: column;
+ gap: 0.5rem;
 }
 
 .event-form .file-preview {
-  max-width: 100%;
-  height: auto;
-  border-radius: 4px;
-  margin-top: 0.5rem;
+ max-width: 100%;
+ height: auto;
+ border-radius: 8px;
+ margin-top: 0.5rem;
+ border: 1px solid #fecde0;
 }
 
 /* Form actions (submit button) */
 .event-form-actions {
-  grid-column: 1 / -1;
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 1rem;
+ grid-column: 1 / -1;
+ display: flex;
+ justify-content: flex-end;
+ gap: 1.5rem;
+ margin-top: 1.5rem;
 }
 
 .event-form button {
-  background-color: #8e5fa3;
-  color: white;
-  padding: 0.5rem 1.25rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: all 0.2s;
-  min-width: 120px;
-  height: auto;
+ background-color: #90073c;
+ color: white;
+ padding: 0.75rem 2rem;
+ border: none;
+ border-radius: 25px;
+ cursor: pointer;
+ font-size: 1rem;
+ font-weight: 600;
+ transition: all 0.3s ease;
+ min-width: 120px;
+ box-shadow: 0 4px 15px rgba(144, 7, 60, 0.2);
 }
 
 .event-form button:hover {
-  background-color: #6c497c;
-  transform: translateY(-1px);
+ background-color: #6c1236;
+ transform: translateY(-2px);
+ box-shadow: 0 6px 20px rgba(144, 7, 60, 0.3);
 }
 
 .event-form button:active {
-  transform: translateY(0);
+ transform: translateY(0);
+ box-shadow: 0 2px 10px rgba(144, 7, 60, 0.2);
 }
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .event-form {
-    grid-template-columns: 1fr;
-    padding: 1.5rem;
-  }
-  
-  .event-form-actions {
-    flex-direction: column;
-  }
-  
-  .event-form button {
-    width: auto;
-    padding: 0.5rem 1rem;
-  }
-}
-
 
 /* ===== DATA TABLES ===== */
 .admin-table {
-  width: 100%;               /* 🚫 -> full-width required */
-  border-collapse: collapse; /* 🚫 -> keeps borders clean */
+ width: 100%;
+ border-collapse: collapse;
+ font-size: 0.95rem;
+ border-radius: 12px;
+ overflow: hidden;
+ box-shadow: 0 8px 16px rgba(144, 7, 60, 0.05);
+}
+
+.admin-table th, .admin-table td {
+ padding: 1rem 1.25rem;
+ text-align: left;
 }
 
 .admin-table th {
-  background-color: #6c497c;
-  color: white;              /* 🚫 -> must stay light text */
+ background-color: #90073c;
+ color: white;
+ font-weight: 600;
+ text-transform: uppercase;
 }
 
 .admin-table tr:nth-child(even) {
-  background-color: #f2f2f2;
+ background-color: #fef4f6;
 }
 
 .admin-table tr:hover {
-  background-color: #e8f4fc;
+ background-color: #fadbe4;
+ transition: background-color 0.2s;
 }
 
 
 /* ===== TOGGLE BUTTONS ===== */
 .details-toggle {
-  background-color: #8e5fa3; 
-  transition: background-color 0.2s;
+ background-color: #6c1236;
+ color: white;
+ padding: 0.5rem 1rem;
+ border-radius: 20px;
+ font-size: 0.85rem;
+ font-weight: 600;
+ transition: all 0.3s ease;
+}
+
+.details-toggle:hover {
+ background-color: #3c0b1f;
+ transform: translateY(-1px);
 }
 
 
 /* ===== NESTED TABLES ===== */
 .nested-table th {
-  background-color: #95a5a6;
-  font-size: 0.9rem;        /* 🚫 -> relative to parent */
+ background-color: #fecde0;
+ color: #3c0b1f;
+ font-size: 0.9rem;
+ font-weight: 600;
+}
+
+.nested-table td {
+ background-color: #fff;
+ border-top: 1px solid #f2dce4;
 }
 
 
 /* ===== DETAIL PANELS ===== */
-.applicant-details {
-  background-color: #f8f9fa;
+.applicant-details, .user-details {
+ background-color: #fef9fb;
+ padding: 2rem;
+ margin-top: 1rem;
+ border-radius: 12px;
+ border: 1px solid #f2dce4;
 }
-
-.user-details {
-  background-color: #ecf0f1;
-}
-
 
 /* ===== ACTION BUTTONS ===== */
 .button {
-  transition: all 0.2s ease;
-  margin: 0 10px 10px 0;     /* 🚫 -> consistent spacing */
+ transition: all 0.3s ease;
+ margin: 0 10px 10px 0;
+ background-color: #90073c;
+ color: white;
+ padding: 0.75rem 1.5rem;
+ border-radius: 25px;
+ font-weight: 600;
+}
+
+.button:hover {
+ background-color: #6c1236;
+ transform: translateY(-2px);
 }
 
 
 /* ===== MOBILE RESPONSIVENESS ===== */
-@media (max-width: 768px) {  /* 🚫 -> breakpoint locked */
-  .admin-table {
-    display: block;          /* 🚫 -> enables horizontal scroll */
-  }
+@media (max-width: 768px) {
+ .admin-dashboard {
+ padding: 1.5rem 1rem;
+ }
+ 
+ .event-form {
+ grid-template-columns: 1fr;
+ padding: 1.5rem;
+ gap: 1rem;
+ }
+ 
+ .event-form h2 {
+ font-size: 1.75rem;
+ }
+ 
+ .event-form-actions {
+ flex-direction: column;
+}
+ 
+ .event-form button {
+ width: 100%;
+ padding: 0.75rem 1rem;
+}
+ 
+ .admin-table {
+ display: block;
+ overflow-x: auto;
+ white-space: nowrap;
+ }
 }

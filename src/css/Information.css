@@ -164,7 +164,7 @@ small {
  padding: 1rem; /* More padding for a bigger, friendlier button */
  border: none;
  border-radius: 0.75rem;
- background-color: #c43a75; /* A gorgeous rose pink */
+ background-color: #90073c; /* A gorgeous rose pink */
  color: white;
  font-size: 1.1rem;
  font-weight: 700;
@@ -173,7 +173,7 @@ small {
 }
 
 .information-button:hover {
- background-color: #e35a96; /* A slightly lighter shade on hover */
+ background-color: #5a1135; /* A slightly lighter shade on hover */
  transform: translateY(-2px); /* A fun little lift! */
 }
 
