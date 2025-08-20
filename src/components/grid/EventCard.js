@@ -15,8 +15,8 @@ const EventCard = ({
   index = 0
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
-  const colorClasses = ['event-card--blue', 'event-card--green', 'event-card--pink'];
-  const colorClass = colorClasses[Math.floor(Math.random() * colorClasses.length)];
+  const colorClasses = ['event-card--blue', 'event-card--purple', 'event-card--pink'];
+  const colorClass = colorClasses[index % 3]; // alternates between 0, 1, 2
 
   const handleFlip = () => {
     setIsFlipped(!isFlipped);
