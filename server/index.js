@@ -11,7 +11,7 @@ const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const authRoutes = require('./auth');
 const officersRouter = require('./routes/officers.route');
 
