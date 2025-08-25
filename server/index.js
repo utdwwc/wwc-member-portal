@@ -36,12 +36,23 @@ app.use('/api', authRoutes);
 app.use('/api/officers', officersRouter);
 
 //CORS
-app.use(cors({
+const corsOptions = {
+  origin: [
+    'https://wwc-member-portal.vercel.app', // Vercel frontend
+    'http://localhost:3000', // local development
+    'http://localhost:3001' // optional: other local ports
+  ],
+  credentials: true, // If you're using cookies/auth tokens
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
+/* app.use(cors({
   origin: 'http://localhost:3000',
   methods: ['GET', 'POST', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
-}));
+})); */
 
 
 /*  ==========================================  */
