@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { api } from './services/api';
 import './css/Homepage.css';
 import EventsGrid from './components/grid/EventsGrid';
 import './css/components-css/EventCard.css';
@@ -25,8 +26,11 @@ const Homepage = () => {
     useEffect(() => {
         const fetchEvents = async () => {
             try {
+                const data = await api.getEvents();
+                /* REPLACED: fetch call with centralized api config
                 const response = await fetch('http://localhost:4000/regularevents');
                 const data = await response.json();
+                */
                 
                 //sort events by date (newest first)
                 const sortedEvents = data.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -52,11 +56,15 @@ const Homepage = () => {
     useEffect(() => {
         const fetchOfficers = async () => {
             try {
+                const data = await api.getOfficers();
+                /* REPLACED: fetch call with centralized api config
                 const response = await fetch('/api/officers');
                 if (!response.ok) {
                     throw new Error('Failed to fetch officers');
                 }
                 const data = await response.json();
+                */
+
                 setTeam(data);
             } catch (err) {
                 setError(err.message);
