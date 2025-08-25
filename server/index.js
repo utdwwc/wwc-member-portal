@@ -16,9 +16,18 @@ const authRoutes = require('./auth');
 const officersRouter = require('./routes/officers.route');
 
 require('./db/connection');
+const app = express();
+
+//root handler
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'Server is running!',
+    status: 'OK',
+    timestamp: new Date().toISOString()
+  });
+});
 
 //middleware
-const app = express();
 app.use(express.json()); //middleware to parse JSON requests
 app.use(express.urlencoded({ extended: true }));
 
