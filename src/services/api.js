@@ -13,19 +13,16 @@ export const API_ENDPOINTS = {
 
   // User Endpoints
   USERS: {
-    BASE: `${API_BASE_URL}/api/users`,
-    BY_ID: (id) => `${API_BASE_URL}/api/users/${id}`,
-    PROFILE: `${API_BASE_URL}/api/users/profile`,
-    UPDATE_PROFILE: `${API_BASE_URL}/api/users/profile/update`,
+    BASE: `${API_BASE_URL}/users`,
+    BY_ID: (id) => `${API_BASE_URL}/user/${id}`,
+    PROFILE: `${API_BASE_URL}/user/profile`,
   },
 
   // Event Endpoints
   EVENTS: {
-    BASE: `${API_BASE_URL}/api/events`,
-    BY_ID: (id) => `${API_BASE_URL}/api/events/${id}`,
-    REGULAR: `${API_BASE_URL}/api/events/regular`,
-    UPCOMING: `${API_BASE_URL}/api/events/upcoming`,
-    PAST: `${API_BASE_URL}/api/events/past`,
+    BASE: `${API_BASE_URL}/regularevents`,
+    BY_ID: (id) => `${API_BASE_URL}/regularevents/${id}`,
+    SPECIFIC_EVENT: (eventId) => `${API_BASE_URL}/api/events/${eventId}`,
   },
 
   // Event Check-in Endpoints
@@ -38,20 +35,17 @@ export const API_ENDPOINTS = {
 
   // Application Endpoints
   APPLICATIONS: {
-    BASE: `${API_BASE_URL}/api/applications`,
-    BY_ID: (id) => `${API_BASE_URL}/api/applications/${id}`,
-    EVENT: (eventId) => `${API_BASE_URL}/api/applications/event/${eventId}`,
-    USER: (userId) => `${API_BASE_URL}/api/applications/user/${userId}`,
-    STATUS: (appId) => `${API_BASE_URL}/api/applications/${appId}/status`,
+    BASE: `${API_BASE_URL}/eventapplications`,
+    BY_ID: (id) => `${API_BASE_URL}/eventapplications/${id}`,
+    EVENT: (eventId) => `${API_BASE_URL}/eventapplications/event/${eventId}`,
+    USER: (userId) => `${API_BASE_URL}/eventapplications/user/${userId}`,
+    STATUS: (appId) => `${API_BASE_URL}/eventapplications/${appId}/status`,
   },
 
-  // Admin Endpoints
-  ADMIN: {
-    USERS: `${API_BASE_URL}/api/admin/users`,
-    EVENTS: `${API_BASE_URL}/api/admin/events`,
-    STATS: `${API_BASE_URL}/api/admin/stats`,
-    OFFICERS: `${API_BASE_URL}/api/admin/officers`,
-    APPLICATIONS: `${API_BASE_URL}/api/admin/applications`,
+  // Officer Endpoints
+  OFFICERS: {
+    BASE: `${API_BASE_URL}/api/officers`,
+    BY_ID: (id) => `${API_BASE_URL}/api/officers/${id}`,
   },
 
   // Information/Content Endpoints
@@ -64,7 +58,7 @@ export const API_ENDPOINTS = {
 };
 
 // Helper function for API requests
-export const apiRequest = async (endpoint, options = {}) => {
+export const apiRequest = async (endpoint, options = {}) => {  
   const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
   
   const defaultHeaders = {
@@ -81,7 +75,6 @@ export const apiRequest = async (endpoint, options = {}) => {
         ...defaultHeaders,
         ...options.headers,
       },
-      credentials: 'include', // For cookies if using them
       ...options,
     });
 
@@ -111,27 +104,62 @@ export const api = {
 
   getProfile: () => apiRequest(API_ENDPOINTS.USERS.PROFILE),
 
+
   // Event functions
   getEvents: () => apiRequest(API_ENDPOINTS.EVENTS.BASE),
   getEvent: (id) => apiRequest(API_ENDPOINTS.EVENTS.BY_ID(id)),
+  getEventForCheckin: (eventId) => apiRequest(API_ENDPOINTS.EVENTS.SPECIFIC_EVENT(eventId)),
   createEvent: (eventData) => apiRequest(API_ENDPOINTS.EVENTS.BASE, {
     method: 'POST',
     body: JSON.stringify(eventData),
   }),
-
-  // Check-in functions
-  checkIn: (checkInData) => apiRequest(API_ENDPOINTS.CHECKIN.BASE, {
-    method: 'POST',
-    body: JSON.stringify(checkInData),
+  updateEvent: (id, eventData) => apiRequest(API_ENDPOINTS.EVENTS.BY_ID(id), {
+    method: 'PATCH',
+    body: JSON.stringify(eventData),
   }),
+  deleteEvent: (id) => apiRequest(API_ENDPOINTS.EVENTS.BY_ID(id), {
+    method: 'DELETE',
+  }),
+
+
+  // User functions
+  getUsers: () => apiRequest(API_ENDPOINTS.USERS.BASE),
+  getUser: (id) => apiRequest(API_ENDPOINTS.USERS.BY_ID(id)),
+  getUserByGmail: (gmail) => apiRequest(`${API_BASE_URL}/user/gmail/${gmail}`),
+  updateUser: (id, userData) => apiRequest(API_ENDPOINTS.USERS.BY_ID(id), {
+    method: 'PATCH',
+    body: JSON.stringify(userData),
+  }),
+
+
+  // Officer functions
+  getOfficers: () => apiRequest(API_ENDPOINTS.OFFICERS.BASE),
+  getOfficer: (id) => apiRequest(API_ENDPOINTS.OFFICERS.BY_ID(id)),
+  createOfficer: (officerData) => apiRequest(API_ENDPOINTS.OFFICERS.BASE, {
+    method: 'POST',
+    body: JSON.stringify(officerData),
+  }),
+  updateOfficer: (id, officerData) => apiRequest(API_ENDPOINTS.OFFICERS.BY_ID(id), {
+    method: 'PATCH',
+    body: JSON.stringify(officerData),
+  }),
+  deleteOfficer: (id) => apiRequest(API_ENDPOINTS.OFFICERS.BY_ID(id), {
+    method: 'DELETE',
+  }),
+
 
   // Application functions
   submitApplication: (applicationData) => apiRequest(API_ENDPOINTS.APPLICATIONS.BASE, {
     method: 'POST',
     body: JSON.stringify(applicationData),
   }),
+  getApplications: () => apiRequest(API_ENDPOINTS.APPLICATIONS.BASE),
+  getApplication: (id) => apiRequest(API_ENDPOINTS.APPLICATIONS.BY_ID(id)),
 
-  // Admin functions
-  getUsers: () => apiRequest(API_ENDPOINTS.ADMIN.USERS),
-  getStats: () => apiRequest(API_ENDPOINTS.ADMIN.STATS),
+
+  // Check-in functions
+  checkIn: (checkInData) => apiRequest(API_ENDPOINTS.CHECKIN.BASE, {
+    method: 'POST',
+    body: JSON.stringify(checkInData),
+  }),
 };

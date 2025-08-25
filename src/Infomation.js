@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { api } from './services/api';
 import './css/Information.css';
 
 function Information() {
@@ -97,6 +98,10 @@ function Information() {
     try {
       //update profile data
       console.log('Updating profile data:', formData);
+
+      const updatedUser = await api.updateUser(user._id, formData);
+      console.log('Profile update successful:', updatedUser);
+      /* REPLACED: fetch call with centralized API config
       const response = await fetch(
         `http://localhost:4000/user/${user._id}`,
         {
@@ -108,15 +113,18 @@ function Information() {
           body: JSON.stringify(formData)
         }
       );
-
       if (!response.ok) {
         const errorMsg = `Profile update failed with status ${response.status}`;
         console.error(errorMsg);
         throw new Error(errorMsg);
       }
-      
       const updatedUser = await response.json();
       console.log('Profile update successful:', updatedUser);
+      */
+
+      //update localStorage with the updated user data
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      
       navigate('/profile', { state: { user: updatedUser } });
     } catch (err) {
       console.error('Profile update error:', err);
