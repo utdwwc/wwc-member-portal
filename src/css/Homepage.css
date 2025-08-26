@@ -51,7 +51,7 @@
     font-weight: bold;
     font-size: 1.25rem;
     margin-left: 3rem;
-    font-family: 'Dancing Script', cursive;
+    font-family: 'Raleway', sans-serif;
   }
   
   .navbar__links {
@@ -204,12 +204,12 @@
   }
 
   .header__title {
-  font-family:'Parisienne', cursive;
-  font-size: 7rem;
+  font-family: 'Raleway', sans-serif;
+  font-size: 5rem;
   color: #184c74;
   margin-bottom: 0.5rem;
   font-weight: 400;
-  margin-right: 3rem;
+  /* margin-right: 3rem; */
 
 }
 
@@ -777,7 +777,7 @@
 
   /* ===== FOOTER ===== */
 .footer {
-    background-color: #152e4b;
+    background-color: #0e2b41;
     color: rgb(255, 255, 255);
     padding: 2rem 0;
     text-align: center;
