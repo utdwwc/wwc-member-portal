@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { api } from './services/api';
 import './css/Profile.css';
 
 const Profile = () => {
@@ -23,14 +24,15 @@ const Profile = () => {
         return;
       }
 
-      //fetch fresh data from backend
+      const userData = await api.getUser(storedUser._id);
+      setUser(userData);
+      /* REPLACED: fetch call with centralized api config
       const response = await fetch(`http://localhost:4000/user/${storedUser._id}`, {
         headers: { 'Authorization': `Bearer ${storedUser.token}` }
       });
-
       if (!response.ok) throw new Error('Failed to fetch user');
       const userData = await response.json();
-      setUser(userData); //no need to filter out _id/googleId here
+      setUser(userData); */
       
     } catch (error) {
       console.error('Error fetching user:', error);

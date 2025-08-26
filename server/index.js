@@ -11,14 +11,23 @@ const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const authRoutes = require('./auth');
 const officersRouter = require('./routes/officers.route');
 
 require('./db/connection');
+const app = express();
+
+//root handler
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'Server is running!',
+    status: 'OK',
+    timestamp: new Date().toISOString()
+  });
+});
 
 //middleware
-const app = express();
 app.use(express.json()); //middleware to parse JSON requests
 app.use(express.urlencoded({ extended: true }));
 
@@ -27,12 +36,23 @@ app.use('/api', authRoutes);
 app.use('/api/officers', officersRouter);
 
 //CORS
-app.use(cors({
+const corsOptions = {
+  origin: [
+    'https://wwc-member-portal.vercel.app', // Vercel frontend
+    'http://localhost:3000', // local development
+    'http://localhost:3001' // optional: other local ports
+  ],
+  credentials: true, // If you're using cookies/auth tokens
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
+/* app.use(cors({
   origin: 'http://localhost:3000',
   methods: ['GET', 'POST', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
-}));
+})); */
 
 
 /*  ==========================================  */
@@ -664,6 +684,6 @@ app.get('/events/attendance', async (req, res) => {
 these out/back in all the time */
 app.listen(4000, () => {
   console.log('Server is running on port 4000');
-}); 
+});
 
 module.exports = app;

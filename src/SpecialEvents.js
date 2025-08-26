@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { api } from './services/api';
 import './css/SpecialEvents.css';
 
 const EventApplicationForm = () => {
@@ -71,6 +72,9 @@ const EventApplicationForm = () => {
             
             console.log('Submitting application:', payload);
             
+            const data = await api.submitApplication(payload);
+            console.log('Server response:', data);
+            /* REPLACED: old fetch call with centralized API
             const response = await fetch('http://localhost:4000/eventapplications/', {
                 method: 'POST',
                 headers: {
@@ -87,6 +91,7 @@ const EventApplicationForm = () => {
     
             const data = await response.json();
             console.log('Server response:', data);
+            */
             
             setShowSuccessMessage(true);
             setSubmissionMessage('Application submitted successfully!');
