@@ -164,12 +164,11 @@ const EventCheckIn = () => {
           userEmail: currentUser.email
         })
       });
-      */
-
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.error || 'Check-in failed');
       }
+      */
 
       setSuccess('Successfully checked in!');
       setAlreadyCheckedIn(true);
