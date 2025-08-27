@@ -14,6 +14,7 @@ app.post('/auth/google', async (req, res) => {
     res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
     res.header('Access-Control-Allow-Methods', 'POST');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
+    res.header('Access-Control-Allow-Origin', 'https://wwc-member-portal.vercel.app');
   
     try {
       const { token } = req.body;
