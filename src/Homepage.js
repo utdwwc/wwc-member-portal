@@ -207,7 +207,7 @@ const Homepage = () => {
                                 <div className="team-image-container">
                                     <img 
                                         src={officer.imageUrl || 'default-officer-image.jpg'} 
-                                        alt={officer.name} 
+                                        alt={officer.imageUrl} 
                                         className="team-image"
                                     />
                                     <div className="team-social-links">
