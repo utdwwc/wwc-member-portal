@@ -3,6 +3,7 @@ import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { Button, Alert, Card, Spinner, Badge, Modal } from 'react-bootstrap';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import { useAuth } from './hooks/useAuth';
+import { api } from './services/api';
 import './css/EventCheckIn.css';
 
 const EventCheckIn = () => {
@@ -39,12 +40,20 @@ const EventCheckIn = () => {
     const fetchEventData = async () => {
       try {
         setError('');
-      
+        
+        const eventData = await api.getEventForCheckin(eventID);
+        setEvent({
+          _id: eventData._id,
+          eventId: eventData._id,
+          title: eventData.title,
+          date: eventData.date,
+          location: eventData.location
+        });
+        /* REPLACED: fetch call with centralized api
         const res = await fetch(`/api/events/${eventID}`);
         if (!res.ok) {
           throw new Error(res.status === 404 ? 'Event not found' : 'Failed to fetch event');
         }
-      
         const eventData = await res.json();
         setEvent({
           _id: eventData._id,
@@ -53,6 +62,8 @@ const EventCheckIn = () => {
           date: eventData.date,
           location: eventData.location
         });
+        */
+
       } catch (err) {
         console.error('❌ Event fetch error:', err);
         setError(err.message);
@@ -75,11 +86,17 @@ const EventCheckIn = () => {
     if (currentUser && event?.eventId) {
       const checkAttendance = async () => {
         try {
+          
+          const data = await api.checkUserAttendance(currentUser._id);
+          setAlreadyCheckedIn(data.exists);
+          /* REPLACED: fetch call with centralized api
           const res = await fetch(`/api/events/users/${currentUser._id}/attendance`);
           if (res.ok) {
             const data = await res.json();
             setAlreadyCheckedIn(data.exists);
           }
+          */
+
         } catch (err) {
           console.error('Attendance check error:', err);
         }
@@ -128,6 +145,13 @@ const EventCheckIn = () => {
       setError('');
       setSuccess('');
 
+      await api.checkIn({
+        eventId: event.eventId,
+        userId: currentUser._id,
+        userName: currentUser.name || currentUser.email,
+        userEmail: currentUser.email
+      });
+      /* REPLACED: fetch call with centralized api
       const res = await fetch(`/api/events/${event.eventId}/check-in`, {
         method: 'POST',
         headers: {
@@ -140,6 +164,7 @@ const EventCheckIn = () => {
           userEmail: currentUser.email
         })
       });
+      */
 
       if (!res.ok) {
         const errorData = await res.json();
