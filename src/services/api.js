@@ -27,10 +27,10 @@ export const API_ENDPOINTS = {
 
   // Event Check-in Endpoints
   CHECKIN: {
-    BASE: `${API_BASE_URL}/api/checkin`,
-    EVENT: (eventId) => `${API_BASE_URL}/api/checkin/event/${eventId}`,
-    USER: (userId) => `${API_BASE_URL}/api/checkin/user/${userId}`,
-    VERIFY: `${API_BASE_URL}/api/checkin/verify`,
+    CHECK_IN: (eventId) => `${API_BASE_URL}/api/events/${eventId}/check-in`,
+    ATTENDEES: (eventId) => `${API_BASE_URL}/api/events/${eventId}/attendees`,
+    USER_ATTENDANCE: (userId) => `${API_BASE_URL}/api/events/users/${userId}/attendance`,
+    ATTENDANCE_STATS: `${API_BASE_URL}/events/attendance`,
   },
 
   // Application Endpoints
@@ -158,8 +158,17 @@ export const api = {
 
 
   // Check-in functions
-  checkIn: (checkInData) => apiRequest(API_ENDPOINTS.CHECKIN.BASE, {
-    method: 'POST',
-    body: JSON.stringify(checkInData),
-  }),
+  checkIn: (checkInData) => {
+    const { eventId, ...data } = checkInData;
+    return apiRequest(API_ENDPOINTS.CHECKIN.CHECK_IN(eventId), {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  getEventAttendees: (eventId) => apiRequest(API_ENDPOINTS.CHECKIN.ATTENDEES(eventId)),
+
+  checkUserAttendance: (userId) => apiRequest(API_ENDPOINTS.CHECKIN.USER_ATTENDANCE(userId)),
+
+  getAttendanceStats: () => apiRequest(API_ENDPOINTS.CHECKIN.ATTENDANCE_STATS),
 };
